@@ -1,0 +1,47 @@
+---
+title: "Setup for Causal Inference and Causal Data Science Course"
+subtitle: "To complete before start of the course"
+author: "Wouter van Amsterdam"
+eval: false
+bibliography: references.bib
+nocite: |
+  @*
+format: 
+  html:
+    toc: true
+    self-contained: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+---
+
+We will work with R.
+You can use your preferred way of working in R to do the practicals. Our preferred way is this:
+
+- Create a new folder with a good name, e.g., `practicals_causal_datascience` 
+- Open RStudio
+- Create a new project from RStudio, which you associate with the folder
+- Create a `raw_data` subfolder
+- Create an R script for the current practical, e.g., `introduction.R`
+- Create your well-documented and [well-styled](https://style.tidyverse.org/) code in this R script
+
+We try to make our practicals light in the number of required packages, but these are needed:
+
+You can install them via ...
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| code-fold: false
+#| eval: false
+
+install.packages(c("data.table"))
+```
+
+## Recommended reading
+
+::: {#refs}
+
+:::

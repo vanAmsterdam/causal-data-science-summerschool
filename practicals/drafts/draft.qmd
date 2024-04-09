@@ -1,0 +1,80 @@
+---
+title: "Draft practical: "
+subtitle: "subtitle"
+author: "Wouter van Amsterdam"
+eval: false
+bibliography: references.bib
+format: 
+  html:
+    toc: true
+    self-contained: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+---
+
+In this practical, ...
+
+
+::: {.callout-tip appearance="default" icon=true}
+The answers to each exercise are available as a collapsed `code` block. Try to work out the answer yourself before looking at this code block!
+:::
+
+First we load a package
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| code-fold: false
+#| eval: true
+
+library(survival)
+```
+
+In this practical, we will also use the following two packages:
+
+::: {.callout-note}
+## Exercise 1
+Grab a coffee
+:::
+
+
+::: {.callout-note}
+## Exercise 2
+Load the `mtcars` dataset in R 
+
+```{r}
+#| label: data-true
+#| eval: true
+
+data(mtcars)
+```
+
+:::
+
+## Non-coding questions
+
+::: {.callout-tip collapse="true"}
+## Question Foo
+
+answer: bar
+
+:::
+
+<!--Here's a cool fontawesome icon {{< fa thumbs-up >}}-->
+
+::: {.callout-goals}
+## my goals
+:::
+
+
+## Conclusion
+
+You learned ABC
+
+## Further reading
+
+Read Chapter 9 of Pearls Causality [@pearlCausalDiagramsIdentification2009]
+

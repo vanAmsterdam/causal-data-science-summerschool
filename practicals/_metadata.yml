@@ -1,0 +1,9 @@
+# Enable banner style title blocks
+title-block-banner: true
+toc: true
+page-layout: article
+
+# freeze computational output when source changed
+# execute when source changes
+execute:
+  freeze: auto
