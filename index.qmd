@@ -1,7 +1,27 @@
 ---
-title: "Causal-data-science-summerschool"
+title: "Causal Inference and Causal Data Science Summerschool"
 ---
 
-This is a Quarto website.
+## Course objectives
 
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+Learn causal inference and causal data science
+
+## Schedule
+
+
+
+## Instructors
+
+- Oisín Ryan (coordinator)
+- Bas Penning-de Vries
+- [Wouter van Amsterdam](https://vanamsterdam.github.io)
+
+## Links
+
+- Course home on [utrechtsummerschool.nl](https://utrechtsummerschool.nl/courses/healthcare/introduction-to-causal-inference-and-causal-data-science)
+
+## License
+
+All course materials are licensed under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+
+![cc](https://mirrors.creativecommons.org/presskit/icons/cc.svg) ![by](https://mirrors.creativecommons.org/presskit/icons/by.svg)
