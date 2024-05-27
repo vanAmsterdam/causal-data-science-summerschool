@@ -9,6 +9,7 @@ format:
         incremental: true
         width: 1600
         height: 900
+        logo: umcu_blue.png
 categories:
     - SCM
     - day2

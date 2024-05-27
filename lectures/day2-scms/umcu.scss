@@ -6,24 +6,33 @@ $jet: #131516;
 $accent: #107895;
 $accent2: #9a2515;
 
+// UMCU colors (taken from official powerpoint template)
+$darkblue: #1961AB;
+//$umcudarkblue: #00539E;
+$lightblue: #0F84C9;
+$green: #79B829;
+$gray: #B7B1A9;
+$red: #D0103A;
+
 /*-- scss:rules --*/
 
 // title and headings
 
 .reveal h2 {
+  color: $darkblue;
   font-weight: lighter;
   font-size: 1.4em;
 }
 
 .reveal h3 {
-  color: $accent;
+  color: $lightblue;
   font-style: italic;
   font-weight: lighter;
   font-size: 0.95em;
 }
 
 .reveal h4 {
-  color: $accent2;
+  color: $red;
   font-weight: normal;
   margin-top: 1.25em;
 }
@@ -31,7 +40,7 @@ $accent2: #9a2515;
 // alerts etc.
 
 .alert {
-  color: $accent2;
+  color: $red;
 }
 
 .fg {
@@ -43,6 +52,4 @@ $accent2: #9a2515;
   padding: 0.1em;
   border-radius: 5px;
   display: inline-block;
-}.alert {
-  color: $accent2;
 }
