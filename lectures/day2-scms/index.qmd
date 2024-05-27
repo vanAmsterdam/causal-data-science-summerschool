@@ -1,0 +1,56 @@
+---
+title: Structural Causal Models
+subtitle: introduction
+author: Wouter van Amsterdam
+date: 2024-08-06
+format: 
+    revealjs:
+        theme: umcu.scss
+        incremental: true
+        width: 1600
+        height: 900
+categories:
+    - SCM
+    - day2
+---
+
+## Causal inference frameworks
+
+### What are they for?
+
+#### Mathematical language to
+  - define *causal* quantities
+  - express *assumptions*
+  - derive how to *estimate* causal effects
+
+## Causal inference frameworks
+
+### Why learn more than one?
+
+<!--todo: add hyperlink to day 1 materials-->
+
+- On day 1 we learned about the Potential Outcomes framework
+    - Defines causal effects in terms of (averages of) *individual potential outcomes*
+    - Estimation requires assumptions of (conditional) exchangeability and positivity / overlap
+- There isn't only 1 way to think about causality, find one that '*clicks*'
+- Now we will learn another framework: *structural causal models* (SCMs)
+    - SCM approach is broader in that it can define more different types of causal questions
+- Equivalence: given the same data and assumptions, get the same estimates
+
+## topics
+
+- SCMs as computer programs
+- DAGs
+  - variable types: confounders, mediators, colliders
+- d-separation
+- identifyability
+  - back-door criterion
+  - follow rules of do calculus
+- bonus queries:
+  - counterfactuals
+  - probability of necessity, probability of sufficiency
+
+## VS potential outcomes
+
+- definition of causal effect (PO: unobserved counterfactuals, SCM: DAG)
+

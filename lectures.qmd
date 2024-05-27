@@ -1,0 +1,8 @@
+---
+title: "Lectures"
+listing:
+  contents: lectures
+  sort: "title desc"
+  type: default
+  categories: true
+---

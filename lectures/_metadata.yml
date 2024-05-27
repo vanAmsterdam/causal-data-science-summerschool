@@ -1,0 +1,7 @@
+# only execute code-blocks when source code changes
+execute:
+  freeze: auto
+
+toc: true
+toc-depth: 1
+page-layout: article
