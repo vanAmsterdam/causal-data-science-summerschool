@@ -13,6 +13,7 @@ format:
 categories:
     - SCM
     - day2
+bibliography: bibliography.bib
 ---
 
 ## Causal inference frameworks
@@ -41,6 +42,8 @@ categories:
 ## topics
 
 - SCMs as computer programs
+  - intervention as change in program
+    - perfect versus soft intervention
 - DAGs
   - variable types: confounders, mediators, colliders
 - d-separation
@@ -51,7 +54,110 @@ categories:
   - counterfactuals
   - probability of necessity, probability of sufficiency
 
-## VS potential outcomes
+## The world as a computer program
+
+### Think of the world as a computer program with a set of 
+
+- (endogenous) *variables*:
+  - `surgery` = duration of surgery (hours)
+  - `los` = length of stay in hospital post surgery (days)
+  - `survival` = survival time (years)
+- *background variables* (exogenous):
+  - `u_surgery`
+  - `u_los`
+  - `u_survival`
+- *functions* `f_` for each *variable* which depend on its *parents* `pa_` and its own *background* `u_`:
+  - `surgery = f_surgery(pa_surgery,u_surgery)`
+  - `los = f_los(pa_los, u_los)`
+  - `survival = f_survival(pa_survival, u_survival)`
+  
+:::{.fragment}
+
+<!-- The variables $\mathbb{V}$, background $\mathbb{U}$ and functions $\mathbb{F}$  -->
+Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009]
+
+:::
+
+## Structural Causal Model 1
+
+```{r}
+#| label: scm1
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1-3|5-7|9-11|13-18|20"
+#| output-location: fragment
+
+f_surgery <- function(u_surgery) { # pa_surgery = {}
+  u_surgery
+}
+
+f_los <- function(surgery, u_los) { # pa_los = {surgery}
+  surgery + u_los
+}
+
+f_survival <- function(surgery, los, u_survival) { # pa_survival = {sugery, los}
+  survival = los - 2 * surgery + u_survival
+}
+
+model1 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+model1(2, 1, 5)
+```
+
+## Submodel and Effect of Action
+
+Take `model1`, replace `f_los` with a specific *value* (e.g. `7` days):
+
+. . .
+
+```{r}
+#| label: submodel1
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|3|8"
+#| output-location: fragment
+
+submodel7 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 7
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+submodel7(2, 1, 5)
+```
+
+. . .
+
+This results in a *submodel* (`submodel7`) which is the *effect of action*
+
+$$
+ \text{do}(\text{los}=7)
+$$
+
+Denoted with the so-called *do-operator*
+
+. . .
+
+Intuitively this can be interpreted as *leave everything the same in the world,
+but set this variable `los` to this value `7`*
+
+## recursive Structural Causal Models have a unique implied Directed Acyclic Graphs
+
+- note that `model1` is *recursive*, i.e. *acyclic*, meaning when following the chain of parents, you will never end up at the same variable twice
+- each acyclic SCM implies a unique Directed Acyclic Graph
+- for the remainder, we assume recursiveness
+
+
+
+# SCM vs potential outcomes
 
 - definition of causal effect (PO: unobserved counterfactuals, SCM: DAG)
+
+## References
 
