@@ -14,6 +14,8 @@ categories:
     - SCM
     - day2
 bibliography: bibliography.bib
+filters:
+  - imagify
 ---
 
 ## Causal inference frameworks
@@ -43,9 +45,8 @@ bibliography: bibliography.bib
 
 - SCMs as computer programs
   - intervention as change in program
-    - perfect versus soft intervention
+  - non-deterministic scms
 - DAGs
-  - variable types: confounders, mediators, colliders
 - d-separation
 - identifyability
   - back-door criterion
@@ -53,6 +54,11 @@ bibliography: bibliography.bib
 - bonus queries:
   - counterfactuals
   - probability of necessity, probability of sufficiency
+ 
+- topics for lecture 2
+  - variable types: confounders, mediators, colliders
+  - perfect versus soft intervention
+  - critique of scm / cross-world assumptions
 
 ## The world as a computer program
 
@@ -99,19 +105,101 @@ f_survival <- function(surgery, los, u_survival) { # pa_survival = {sugery, los}
   survival = los - 2 * surgery + u_survival
 }
 
-model1 <- function(u_surgery, u_los, u_survival) {
-  surgery = f_surgery(u_surgery)
-  los = f_los(surgery, u_los)
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
   survival = f_survival(surgery, los, u_survival)
   c(surgery=surgery, los=los, survival=survival)
 }
-
-model1(2, 1, 5)
+scm1(2, 1, 5)
 ```
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag
+#| execute: false
+#| echo: true
+#| code-line-numbers: "|2"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![](pg_0001.png){.fragment}
+::::
+:::
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag2
+#| execute: false
+#| echo: true
+#| code-line-numbers: "3"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![](pg_0002.png)
+::::
+:::
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag3
+#| execute: false
+#| echo: true
+#| code-line-numbers: "4"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![DAG1](pg_0003.png){#fig-dag1}
+::::
+:::
+
+. . .
+
+`scm1` and [@fig-dag1] are mathematically equivalent
+for the remainder, we assume recursiveness
+
+<!--## DAG
+
+![DAGof SCM1](scm1.tikz){#fig-dag1}-->
+<!--![DAGof SCM1](_imagify/6a9691a041df06466e320f961ae2ebdc9aee7c5a.svg)-->
+<!--![DAGof SCM1](/Users/wamster3/git/causal-data-science-summerschool/lectures/day2-scms/_imagify/6a9691a041df06466e320f961ae2ebdc9aee7c5a.svg)-->
 
 ## Submodel and Effect of Action
 
-Take `model1`, replace `f_los` with a specific *value* (e.g. `7` days):
+In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
 
 . . .
 
@@ -135,24 +223,21 @@ submodel7(2, 1, 5)
 . . .
 
 This results in a *submodel* (`submodel7`) which is the *effect of action*
+denoted with the so-called *do-operator*
 
 $$
  \text{do}(\text{los}=7)
 $$
-
-Denoted with the so-called *do-operator*
 
 . . .
 
 Intuitively this can be interpreted as *leave everything the same in the world,
 but set this variable `los` to this value `7`*
 
-## recursive Structural Causal Models have a unique implied Directed Acyclic Graphs
+. . . 
 
-- note that `model1` is *recursive*, i.e. *acyclic*, meaning when following the chain of parents, you will never end up at the same variable twice
-- each acyclic SCM implies a unique Directed Acyclic Graph
-- for the remainder, we assume recursiveness
-
+The *Potential Response* of `survival` is the value that `survival` would take
+by setting do(los$=7$) for a particular value of `U` (in this case it is 5).
 
 
 # SCM vs potential outcomes

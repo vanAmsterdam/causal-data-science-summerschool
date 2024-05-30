@@ -8,7 +8,7 @@ Learn causal inference and causal data science
 
 ## Schedule
 
-
+## Lectures
 
 ## Instructors
 
