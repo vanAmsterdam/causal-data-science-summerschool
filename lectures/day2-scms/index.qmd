@@ -29,6 +29,13 @@ suppressMessages({
 })
 ```
 
+<!--
+
+Qs:
+
+1. what knowledge of probability to expect? e.g. conditioning
+
+--->
 
 ## Causal inference frameworks
 
@@ -53,24 +60,37 @@ suppressMessages({
     - SCM approach is broader in that it can define more different types of causal questions
 - Equivalence: given the same data and assumptions, get the same estimates
 
-## topics
+## lecture 1 topics
 
 - SCMs as computer programs
   - intervention as change in program
-  - non-deterministic scms
-- DAGs
-- d-separation
-- identifyability
+- causal identifyability with DAGs
+  - d-separation
   - back-door criterion
   - follow rules of do calculus
-- bonus queries:
-  - counterfactuals
-  - probability of necessity, probability of sufficiency
  
-- topics for lecture 2
+## lecture 2 topics
+
   - variable types: confounders, mediators, colliders
   - perfect versus soft intervention
   - critique of scm / cross-world assumptions
+
+## practical 1
+
+  - drawing and using dags
+  - same data, different dags, different answers
+  - testing d-separation?
+
+## lecture 3 topics
+
+  - bonus queries:
+    - counterfactuals
+    - probability of necessity, probability of sufficiency
+  - Pearl Causal Hierarchy
+
+## practical 2
+
+  - causal ladder: what Q is this?
 
 # Structural Causal Models: definitions
 
