@@ -10,13 +10,25 @@ format:
         width: 1600
         height: 900
         logo: umcu_blue.png
+        center: true
 categories:
     - SCM
     - day2
 bibliography: bibliography.bib
-filters:
-  - imagify
 ---
+
+```{r}
+#| label: setup
+#| echo: false
+#| execute: true
+
+suppressMessages({
+  library(purrr)
+  library(data.table)
+  library(ggplot2); theme_set(theme_bw())
+})
+```
+
 
 ## Causal inference frameworks
 
@@ -59,6 +71,8 @@ filters:
   - variable types: confounders, mediators, colliders
   - perfect versus soft intervention
   - critique of scm / cross-world assumptions
+
+# Structural Causal Models: definitions
 
 ## The world as a computer program
 
@@ -134,7 +148,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![](pg_0001.png){.fragment}
+![](scm1_01.png){.fragment}
 ::::
 :::
 
@@ -158,7 +172,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![](pg_0002.png)
+![](scm1_02.png)
 ::::
 :::
 
@@ -182,27 +196,22 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![DAG1](pg_0003.png){#fig-dag1}
+![](scm1_03.png)
 ::::
 :::
 
 . . .
 
-`scm1` and [@fig-dag1] are mathematically equivalent
+`scm1` and the DAG are mathematically equivalent
+
 for the remainder, we assume recursiveness
-
-<!--## DAG
-
-![DAGof SCM1](scm1.tikz){#fig-dag1}-->
-<!--![DAGof SCM1](_imagify/6a9691a041df06466e320f961ae2ebdc9aee7c5a.svg)-->
-<!--![DAGof SCM1](/Users/wamster3/git/causal-data-science-summerschool/lectures/day2-scms/_imagify/6a9691a041df06466e320f961ae2ebdc9aee7c5a.svg)-->
 
 ## Submodel and Effect of Action
 
 In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
 
-. . .
-
+:::{.columns}
+::::{.column width="50%"}
 ```{r}
 #| label: submodel1
 #| execute: false
@@ -222,6 +231,18 @@ submodel7(2, 1, 5)
 
 . . .
 
+::::
+::::{.column width="50%"}
+::::: {.r-stack}
+
+![](scm1_03.png){.fragment}
+
+![](scm1_04.png){.fragment}
+
+:::::
+::::
+:::
+
 This results in a *submodel* (`submodel7`) which is the *effect of action*
 denoted with the so-called *do-operator*
 
@@ -237,8 +258,89 @@ but set this variable `los` to this value `7`*
 . . . 
 
 The *Potential Response* of `survival` is the value that `survival` would take
-by setting do(los$=7$) for a particular value of `U` (in this case it is 5).
+by setting do(los$=7$) for a particular value of `U` (in this case it is 8).
 
+## Specifying a distribution for exogenous variables U 
+
+```{r}
+#| label: pu
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|2|3|4|7"
+#| output-location: "fragment"
+sample_u <- function() {
+    u_surgery  = runif(1,  2,  8)
+    u_los      = runif(1, -1,  7)
+    u_survival = runif(1,  8, 13)
+    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
+}
+sample_u()
+```
+
+. . .
+
+```{r}
+#| label: fig-u_samples
+#| execute: true
+#| echo: false
+#| fig-align: "center"
+#| fig-cap: "1000 random samples of U"
+N = 1e3
+us <- map(1:N, ~sample_u())
+udf <- us |> map(~data.table(t(.x))) |> rbindlist()
+udfm <- melt(udf, measure.vars=names(us[[1]]))
+ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## A Probabilistic Causal Model is a SCM with a distribution over U
+
+```{r}
+#| label: pcm1
+#| echo: true
+#| execute: true
+#| output-location: "fragment"
+#| code-line-numbers: "1|2|3|7"
+sample_pcm <- function() {
+  U <- sample_u()
+  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
+  c(U, V)
+}
+  
+sample_pcm()
+```
+
+. . .
+
+```{r}
+#| label: fig-pcm1-samples
+#| echo: false
+#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
+vs <- map(us, ~do.call(scm1, as.list(.x)))
+vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
+vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
+ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+# From SCMs to real data
+
+## Recap of definitions
+
+- *Structural Causal model*:
+  - exogenous variables U
+  - endogenous variables
+  - deterministic functions `f_i(pa_i,u_i)`
+- *Effect of Action* do$(T=t)$: replace `f_T` with fixed value `t`
+- *Probabilistic Causal Model*: SCM + distribution over U
+
+## In the real world
+
+- we do not observe U
+- we typically do not know `f_`
+  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
+- we are presented with realizations $V_i$ of this SCM over a random sample of U
+  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
+- we may be interest in knowing:
+  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
 
 # SCM vs potential outcomes
 
