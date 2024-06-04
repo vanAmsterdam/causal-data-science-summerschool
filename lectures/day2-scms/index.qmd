@@ -4,13 +4,20 @@ subtitle: introduction
 author: Wouter van Amsterdam
 date: 2024-08-06
 format: 
-    revealjs:
-        theme: umcu.scss
-        incremental: true
-        width: 1600
-        height: 900
-        logo: umcu_blue.png
-        center: true
+    html:
+        toc: true
+        toc-depth: 2
+        number-sections: true
+    #revealjs:
+        #theme: umcu.scss
+        #incremental: true
+        #width: 1600
+        #height: 900
+        #logo: umcu_blue.png
+        #center: true
+execute:
+    warning: false
+    message: false
 categories:
     - SCM
     - day2
@@ -91,6 +98,7 @@ Qs:
 ## practical 2
 
   - causal ladder: what Q is this?
+  - give data of hierarchy and answer the Q
 
 # Structural Causal Models: definitions
 
@@ -114,7 +122,7 @@ Qs:
 :::{.fragment}
 
 <!-- The variables $\mathbb{V}$, background $\mathbb{U}$ and functions $\mathbb{F}$  -->
-Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009]
+Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009, and further]
 
 :::
 
@@ -147,6 +155,124 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 }
 scm1(2, 1, 5)
 ```
+
+## Submodel and Effect of Action
+
+In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
+
+```{r}
+#| label: submodel1
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|3|8"
+#| output-location: fragment
+
+submodel7 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 7
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+submodel7(2, 1, 5)
+```
+
+## Specifying a distribution for exogenous variables U 
+
+```{r}
+#| label: pu
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|2|3|4|7"
+#| output-location: "fragment"
+sample_u <- function() {
+    u_surgery  = runif(1,  2,  8)
+    u_los      = runif(1, -1,  7)
+    u_survival = runif(1,  8, 13)
+    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
+}
+sample_u()
+```
+
+. . .
+
+```{r}
+#| label: fig-u_samples
+#| execute: true
+#| echo: false
+#| fig-align: "center"
+#| fig-cap: "1000 random samples of U"
+N = 1e3
+us <- map(1:N, ~sample_u())
+udf <- us |> map(~data.table(t(.x))) |> rbindlist()
+udfm <- melt(udf, measure.vars=names(us[[1]]))
+ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## A Probabilistic Causal Model is a SCM with a distribution over U
+
+```{r}
+#| label: pcm1
+#| echo: true
+#| execute: true
+#| output-location: "fragment"
+#| code-line-numbers: "1|2|3|7"
+sample_pcm <- function() {
+  U <- sample_u()
+  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
+  c(U, V)
+}
+  
+sample_pcm()
+```
+
+. . .
+
+```{r}
+#| label: fig-pcm1-samples
+#| echo: false
+#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
+vs <- map(us, ~do.call(scm1, as.list(.x)))
+vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
+vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
+ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## Identification
+
+
+
+# From SCMs to real data with Directed Acyclic Graphs
+
+## Recap of definitions
+
+- *Structural Causal model*:
+  - exogenous variables U
+  - endogenous variables
+  - deterministic functions `f_i(pa_i,u_i)`
+- *Effect of Action* do$(T=t)$: *submodel* where `f_T` replaced with fixed value `t`
+- *Probabilistic Causal Model*: SCM + distribution over U
+
+## In the real world
+
+- we do not observe U
+- we typically do not know `f_`
+  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
+- we are presented with realizations $V_i$ of this SCM over a random sample of U
+  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
+- we may be interest in knowing:
+  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
+
+. . .
+
+When and how might we learn the answer to such questions?
+
+## Needed steps
+
+1. what is a directed acyclic graph
+2. define identifyability
+3. rules for identifyability based on DAGs
+   a. the backdoor rule (+ backdoor adjustment)
 
 ## Recursive Structural Causal Models imply a Directed Acyclic Graph
 
@@ -222,18 +348,18 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 
 . . .
 
-`scm1` and the DAG are mathematically equivalent
+`scm1` and the DAG are equivalent (they describe the same knowledge of the world)
 
 for the remainder, we assume recursiveness
 
-## Submodel and Effect of Action
+## Submodel and Effect of Action as a mutilated DAG
 
 In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
 
 :::{.columns}
 ::::{.column width="50%"}
 ```{r}
-#| label: submodel1
+#| label: submodel-dag
 #| execute: false
 #| echo: true
 #| code-line-numbers: "1|3|8"
@@ -263,104 +389,7 @@ submodel7(2, 1, 5)
 ::::
 :::
 
-This results in a *submodel* (`submodel7`) which is the *effect of action*
-denoted with the so-called *do-operator*
-
-$$
- \text{do}(\text{los}=7)
-$$
-
-. . .
-
-Intuitively this can be interpreted as *leave everything the same in the world,
-but set this variable `los` to this value `7`*
-
-. . . 
-
-The *Potential Response* of `survival` is the value that `survival` would take
-by setting do(los$=7$) for a particular value of `U` (in this case it is 8).
-
-## Specifying a distribution for exogenous variables U 
-
-```{r}
-#| label: pu
-#| execute: false
-#| echo: true
-#| code-line-numbers: "1|2|3|4|7"
-#| output-location: "fragment"
-sample_u <- function() {
-    u_surgery  = runif(1,  2,  8)
-    u_los      = runif(1, -1,  7)
-    u_survival = runif(1,  8, 13)
-    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
-}
-sample_u()
-```
-
-. . .
-
-```{r}
-#| label: fig-u_samples
-#| execute: true
-#| echo: false
-#| fig-align: "center"
-#| fig-cap: "1000 random samples of U"
-N = 1e3
-us <- map(1:N, ~sample_u())
-udf <- us |> map(~data.table(t(.x))) |> rbindlist()
-udfm <- melt(udf, measure.vars=names(us[[1]]))
-ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
-```
-
-## A Probabilistic Causal Model is a SCM with a distribution over U
-
-```{r}
-#| label: pcm1
-#| echo: true
-#| execute: true
-#| output-location: "fragment"
-#| code-line-numbers: "1|2|3|7"
-sample_pcm <- function() {
-  U <- sample_u()
-  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
-  c(U, V)
-}
-  
-sample_pcm()
-```
-
-. . .
-
-```{r}
-#| label: fig-pcm1-samples
-#| echo: false
-#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
-vs <- map(us, ~do.call(scm1, as.list(.x)))
-vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
-vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
-ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
-```
-
-# From SCMs to real data
-
-## Recap of definitions
-
-- *Structural Causal model*:
-  - exogenous variables U
-  - endogenous variables
-  - deterministic functions `f_i(pa_i,u_i)`
-- *Effect of Action* do$(T=t)$: replace `f_T` with fixed value `t`
-- *Probabilistic Causal Model*: SCM + distribution over U
-
-## In the real world
-
-- we do not observe U
-- we typically do not know `f_`
-  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
-- we are presented with realizations $V_i$ of this SCM over a random sample of U
-  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
-- we may be interest in knowing:
-  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
+The DAG describes a submodel where $T$ no longer 'listens' to any variables but is controlled to be equal to a specific value (7)
 
 # SCM vs potential outcomes
 
