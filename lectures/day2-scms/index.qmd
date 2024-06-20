@@ -4,17 +4,17 @@ subtitle: introduction
 author: Wouter van Amsterdam
 date: 2024-08-06
 format: 
-    html:
-        toc: true
-        toc-depth: 2
-        number-sections: true
-    #revealjs:
-        #theme: umcu.scss
-        #incremental: true
-        #width: 1600
-        #height: 900
-        #logo: umcu_blue.png
-        #center: true
+    #html:
+        #toc: true
+        #toc-depth: 2
+        #number-sections: true
+    revealjs:
+        theme: umcu.scss
+        incremental: true
+        width: 1600
+        height: 900
+        logo: umcu_blue.png
+        center: true
 execute:
     warning: false
     message: false
@@ -61,7 +61,7 @@ Qs:
 
 - On day 1 we learned about the Potential Outcomes framework
     - Defines causal effects in terms of (averages of) *individual potential outcomes*
-    - Estimation requires assumptions of (conditional) exchangeability and positivity / overlap
+    - Estimation requires assumptions of (conditional) exchangeability and positivity / overlap and consistency
 - There isn't only 1 way to think about causality, find one that '*clicks*'
 - Now we will learn another framework: *structural causal models* (SCMs)
     - SCM approach is broader in that it can define more different types of causal questions
@@ -72,33 +72,42 @@ Qs:
 - SCMs as computer programs
   - intervention as change in program
 - causal identifyability with DAGs
+  - variable types: confounders, mediators, colliders (tinder: hot and intelligent / single ;on tinder)
+    - confounders; storks; randomized, breaking arrows
   - d-separation
   - back-door criterion
   - follow rules of do calculus
+
+
+-  DAG
+  1. what is the world
+  2. what can we estimate and how?
+  3. confounders / colliders
+  4. backdoor
  
 ## lecture 2 topics
 
-  - variable types: confounders, mediators, colliders
   - perfect versus soft intervention
   - critique of scm / cross-world assumptions
 
 ## practical 1
 
-  - drawing and using dags
+  - drawing and using dags (what to condition on); daggity
   - same data, different dags, different answers
-  - testing d-separation?
 
 ## lecture 3 topics
 
   - bonus queries:
     - counterfactuals
     - probability of necessity, probability of sufficiency
+    - actual causality (Joe Halpern)
   - Pearl Causal Hierarchy
 
 ## practical 2
 
   - causal ladder: what Q is this?
   - give data of hierarchy and answer the Q
+  - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
 
 # Structural Causal Models: definitions
 
@@ -159,6 +168,8 @@ scm1(2, 1, 5)
 ## Submodel and Effect of Action
 
 In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
+
+<!-- todo: make this side-by-side -->
 
 ```{r}
 #| label: submodel1
@@ -390,6 +401,53 @@ submodel7(2, 1, 5)
 :::
 
 The DAG describes a submodel where $T$ no longer 'listens' to any variables but is controlled to be equal to a specific value (7)
+
+## Limitations of DAGs
+
+- the number of possible dags grows super-exponentially in the number of nodes
+- 8: >700 billion
+- 9: >1000 trillion
+- DAGs are great thinking tools but maybe not suitable as a formal identification approach?
+
+![A003024, https://oeis.org/A003024/list](A003024.png)
+
+## The death of DAGs?
+
+```{r}
+#| eval: false
+#| label: a003024
+a003024 <- c(1,1,3,25,543,29281,3781503,1138779265,
+783702329343,1213442454842881,4175098976430598143,
+31603459396418917607425,
+521939651343829405020504063,
+18676600744432035186664816926721,
+1439428141044398334941790719839535103)
+a_years <- a003024 / 31556952 # n seconds in gregorian calendar year
+a_days <- a_years * 365.2425 # n seconds in gregorian calendar year
+adf <- data.table(days=a_days, years=a_years, seconds=a003024)
+adf[, hours:=days*24]
+adf[, n_nodes:=.I-1]
+adf[, an_hour:=hours > 1.]
+adf[, a_day:=days > 1.]
+adf[, a_year:=years > 1.]
+adf[, human_species:=years > 3e5]
+adf[, age_universe:=years > 13.787e9]
+adf[n_nodes>1, list(n_nodes, n_dags=seconds, an_hour, a_day, a_year, human_species, age_universe)]
+```
+
+| n_nodes | n_dags              | time at 1 sec / DAG |
+|---------|---------------------|---------------------|
+| 1       | 1                   |                     |
+| 2       | 3                   |                     |
+| 3       | 25                  |                     |
+| 4       | 543                 |                     |
+| 5       | 29281               | > an hour           |
+| 6       | 3781503             | > a day             |
+| 7       | 1138779265          | > a year            |
+| 8       | 783702329343        |                     |
+| 9       | 1213442454842881    | > human species     |
+| 10      | 4175098976430598143 | > age of universe   |
+
 
 # SCM vs potential outcomes
 
