@@ -109,6 +109,41 @@ Qs:
   - give data of hierarchy and answer the Q
   - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
 
+# Games and Graphs
+
+## Hotelmanager tycoon
+
+you run a hotel (Backdoor Bay Resort) and want to optimize tips by offering the best drink
+
+treatment: drink: (soda / tea)
+
+turns out, staff give soda on good weather days, tea on bad weather days
+
+soda on good weather day = happy customer, tip=5
+tea on bad weather day = grumpy customer with consolation, tip = 4
+soda on bad weather day = grumpy customer, tip = 0
+tea on good weather day = happy customer though puzzeled by drink, tip=3
+
+confounder: weather (good / bad)
+
+You have information on total tips and given drinks, and find
+- soda: tip=5
+- tea: tip=4
+
+conclude: always give soda; 
+result: 2.5 tip (only half of expected)
+
+*conclusion 1*: seeing is not doing
+
+**to follow-up**
+
+- DAG to picture the game
+- doing = mutilating DAG
+- hotel 2: the Randtz
+- identifyability: more SCMs with same marginals
+- another hidden variable: are the guests brittish
+
+
 # Structural Causal Models: definitions
 
 ## The world as a computer program
