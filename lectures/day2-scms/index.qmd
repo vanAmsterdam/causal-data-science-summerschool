@@ -33,6 +33,7 @@ suppressMessages({
   library(purrr)
   library(data.table)
   library(ggplot2); theme_set(theme_bw())
+  library(knitr)
 })
 ```
 
@@ -69,6 +70,8 @@ Qs:
 
 ## lecture 1 topics
 
+- why are DAGs useful
+- what are DAGs and where do come from 
 - SCMs as computer programs
   - intervention as change in program
 - causal identifyability with DAGs
@@ -102,6 +105,8 @@ Qs:
     - probability of necessity, probability of sufficiency
     - actual causality (Joe Halpern)
   - Pearl Causal Hierarchy
+  - other uses of DAGs: missing data, selection
+  - reflections on DAGs, limitations
 
 ## practical 2
 
@@ -109,29 +114,197 @@ Qs:
   - give data of hierarchy and answer the Q
   - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
 
+# Why are DAGs useful
+
+## Example task: are hospital deliveries good for babies?
+
+- You're a data scientist in the Wilhelmina Kinderziekenhuis (WKZ)
+- Have data on
+  - delivery location (home or hospital)
+  - neonatal outcomes (good or bad)
+  - pregnancy risk (high or low)
+- Question: are hospital deliveries better than home deliveries?
+
+. . .
+
+```{r}
+#| label: simdeliveries
+
+# t=0: home, t=1: hospital
+# z=0: low risk, z=1: high risk
+# y=1: good outcome
+dnames = list(location=c('home', 'hospital'), risk=c('low', 'high'))
+pos_tz <- matrix(c(
+  c(0.9,  0.5), # y|t=0,z=0,1
+  c(0.95, 0.8)  # y|t=1,z=0,1
+), nrow=2, byrow=T,
+dimnames=dnames)
+
+ps_tz <- matrix(c(
+  c(0.72, 0.08), # p(t=0,z=0,1)
+  c(0.02, 0.18)  # p(t=1,z=0,1)
+), nrow=2, byrow=T, dimnames=dnames)
+
+# p(t,z) under do(t)
+ps_do0 <- matrix(c( 
+  c(0.8, 0.2), 
+  c(0.0, 0.0)  
+), nrow=2, byrow=T)
+
+ps_do1 <- matrix(c( 
+  c(0.0, 0.0), 
+  c(0.8, 0.2) 
+), nrow=2, byrow=T)
+
+
+eys  <- rowSums(pos_tz * ps_tz) / rowSums(ps_tz) # E y|t
+dots <- c(sum(pos_tz * ps_do0), sum(pos_tz*ps_do1))
+
+n = 1000
+
+ts  <- vector(mode="logical", length=0)
+zs  <- vector(mode="logical", length=0)
+py0s <- vector(mode="numeric", length=0)
+py1s <- vector(mode="numeric", length=0)
+ys  <- vector(mode="logical", length=0)
+
+ntots <- n * ps_tz
+
+for (t in c(0,1)) {
+  for (z in c(0,1)) {
+    ntz <- n *ps_tz[t+1,z+1]
+    ts  <- c(ts, rep(t, ntz))
+    zs  <- c(zs, rep(z, ntz))
+    py <- pos_tz[t+1,z+1]
+    y <- c(rep(0,
+               round(ntz * (1-py))), # <- round should not be needed here but found a bug
+           rep(1,
+               round(ntz*py))) 
+    ys <- c(ys, y)
+    py0s <- c(py0s, rep(pos_tz[1, z+1], ntz))
+    py1s <- c(py1s, rep(pos_tz[2, z+1], ntz))
+  }
+}
+# ys <- ifelse(ts, y1s, y0s)
+df <- data.table(
+  location=ts,
+  risk=zs,
+  outcome=ys,
+  py0=py0s,
+  py1=py1s)
+
+# head(df)
+
+ # kable(eys, col.names="tips")
+# kable(eys, col.names="tips")
+#pander::pander(ftable(eys))
+
+# pander::pander(ftable(pos_tz), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+ntots <- n * ps_tz
+nys <- ntots * pos_tz
+
+ntotsm <- colSums(ntots)
+nysm <- colSums(nys)
+
+tab_tots <- rbind(ntots, ntotsm)
+
+strs <- paste0(nys, " / ", ntots, " = ", 100*pos_tz, "%")
+str_mat <- matrix(strs, ncol=2, dimnames=dnames)
+# kable(t(str_mat))
+pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+# tab <- df[, list(good=sum(outcome==1), bad=sum(outcome==0), frac_good=mean(outcome)), by=c("risk", "location")]
+
+
+```
+
+. . . 
+
+```{r}
+#| label: tab2
+
+```
+
+
 # Games and Graphs
 
-## Hotelmanager tycoon
+## Hotel manager tycoon
 
-you run a hotel (Backdoor Bay Resort) and want to optimize tips by offering the best drink
+you run a hotel (Backdoor Bay Resort) and want to optimize tips by offering complementary drinks
 
-treatment: drink: (soda / tea)
+- treatment: offer complementary drink: (no / yes)
+- it costs 1eu to offer a drink
+- hotel policy: offer drinks on bad weather days (as a consolation)
 
-turns out, staff give soda on good weather days, tea on bad weather days
+<!-- drink on good weather day = happy customer, tip=5 -->
+<!-- tea on bad weather day = grumpy customer with consolation, tip = 4 -->
+<!-- soda on bad weather day = grumpy customer, tip = 0 -->
+<!-- tea on good weather day = happy customer though puzzeled by drink, tip=3 -->
 
-soda on good weather day = happy customer, tip=5
-tea on bad weather day = grumpy customer with consolation, tip = 4
-soda on bad weather day = grumpy customer, tip = 0
-tea on good weather day = happy customer though puzzeled by drink, tip=3
+<!-- confounder: weather (good / bad) -->
 
-confounder: weather (good / bad)
+<!-- You have information on total tips and given drinks, and find -->
+<!-- - soda: tip=5 -->
+<!-- - tea: tip=4 -->
 
-You have information on total tips and given drinks, and find
-- soda: tip=5
-- tea: tip=4
+<!-- conclude: always give soda;  -->
+<!-- result: 2.5 tip (only half of expected) -->
 
-conclude: always give soda; 
-result: 2.5 tip (only half of expected)
+```{r}
+#| label: simsetup
+#| output: fragment
+
+# t=0: tea, t=1: soda
+# z=0: bad weather, z=1: good weather
+dnames <- list(drink=c('no', 'yes'), weather=c('bad', 'good'))
+pos_tz <- matrix(c(
+  c(0, 3), # y|t=0,z=0,1
+  c(2, 5)  # y|t=1,z=0,1
+), nrow=2, byrow=T,
+dimnames=dnames)
+
+ps_tz <- matrix(c(
+  c(0.0, 0.5), # p(t=0,z=0,1)
+  c(0.5, 0.0)  # p(t=1,z=0,1)
+), nrow=2, byrow=T)
+
+# p(t,z) under do(t)
+ps_do0 <- matrix(c( 
+  c(0.5, 0.5), 
+  c(0.0, 0.0)  
+), nrow=2, byrow=T)
+
+ps_do1 <- matrix(c( 
+  c(0.0, 0.0), 
+  c(0.5, 0.5) 
+), nrow=2, byrow=T)
+
+
+eys  <- rowSums(pos_tz * ps_tz) / rowSums(ps_tz) # E y|t
+dots <- c(sum(pos_tz * ps_do0), sum(pos_tz*ps_do1))
+
+# kable(eys, col.names="tips")
+# kable(eys, col.names="tips")
+pander::pander(ftable(eys))
+
+# pander::pander(ftable(pos_tz), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+```
+
+
+```{r}
+#| label: deliveryplot
+#| output: fragment
+
+df[, ni:=1.]
+
+ggplot(df, aes(x=1, fill=factor(outcome))) +
+  geom_bar(stat="count", position="stack") + 
+  # geom_bar(aes(y=..count../sum(..count..))) + 
+  facet_grid(risk~location)
+```
+
 
 *conclusion 1*: seeing is not doing
 
@@ -142,7 +315,9 @@ result: 2.5 tip (only half of expected)
 - hotel 2: the Randtz
 - identifyability: more SCMs with same marginals
 - another hidden variable: are the guests brittish
-
+- SCM = know rules of the game
+- DAG = know who listens to what
+- why are DAGs useful? know what you can compute
 
 # Structural Causal Models: definitions
 
@@ -487,6 +662,7 @@ adf[n_nodes>1, list(n_nodes, n_dags=seconds, an_hour, a_day, a_year, human_speci
 # SCM vs potential outcomes
 
 - definition of causal effect (PO: unobserved counterfactuals, SCM: DAG)
+- anchor exchaneability $Y^x || X$ for all $x$ in DAGs
 
 ## References
 
