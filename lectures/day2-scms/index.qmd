@@ -4,6 +4,10 @@ subtitle: introduction
 author: Wouter van Amsterdam
 date: 2024-08-06
 format: 
+    #latex:
+        #documentclass: beamer
+        #lof: true
+        #lot: true
     #html:
         #toc: true
         #toc-depth: 2
@@ -22,6 +26,17 @@ categories:
     - SCM
     - day2
 bibliography: bibliography.bib
+filters:
+    - diagram
+diagram:
+  cache: true
+  engine:
+    tikz:
+      execpath: lualatex
+      header-includes:
+        - '\usepackage{adjustbox}'
+        - '\usetikzlibrary{arrows, shapes}'
+---
 ---
 
 ```{r}
@@ -36,6 +51,7 @@ suppressMessages({
   library(knitr)
 })
 ```
+
 
 <!--
 
@@ -118,12 +134,24 @@ Qs:
 
 ## Example task: are hospital deliveries good for babies?
 
+::: {.r-stack}
+
+![](figs/delivery1.png){.fragment}
+
+![](figs/delivery2.png){.fragment}
+
+![](figs/delivery.png){.fragment}
+
+:::
+
+## Example task: are hospital deliveries good for babies?
+
 - You're a data scientist in the Wilhelmina Kinderziekenhuis (WKZ)
 - Have data on
   - delivery location (home or hospital)
   - neonatal outcomes (good or bad)
   - pregnancy risk (high or low)
-- Question: are hospital deliveries better than home deliveries?
+- Question: do hospital deliveries result in better outcomes for babies?
 
 . . .
 
@@ -195,7 +223,6 @@ df <- data.table(
 
 # head(df)
 
- # kable(eys, col.names="tips")
 # kable(eys, col.names="tips")
 #pander::pander(ftable(eys))
 
@@ -204,15 +231,17 @@ df <- data.table(
 ntots <- n * ps_tz
 nys <- ntots * pos_tz
 
-ntotsm <- colSums(ntots)
-nysm <- colSums(nys)
-
-tab_tots <- rbind(ntots, ntotsm)
-
 strs <- paste0(nys, " / ", ntots, " = ", 100*pos_tz, "%")
 str_mat <- matrix(strs, ncol=2, dimnames=dnames)
 # kable(t(str_mat))
-pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+# pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+ntotsm <- rowSums(ntots)
+nysm <- rowSums(nys)
+strsm <- paste0(nysm, " / ", ntotsm, " = ", 100*eys, "%")
+
+tab_tots <- rbind(ntots, ntotsm)
+
 
 # tab <- df[, list(good=sum(outcome==1), bad=sum(outcome==0), frac_good=mean(outcome)), by=c("risk", "location")]
 
@@ -225,6 +254,7 @@ pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.
 ```{r}
 #| label: deliveryplot
 #| output: fragment
+#| include: false
 
 df[, ni:=1.]
 
@@ -233,6 +263,148 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
   # geom_bar(aes(y=..count../sum(..count..))) + 
   facet_grid(risk~location)
 ```
+
+
+## Observed data {auto-animate=true}
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+
+
+## Observed data {auto-animate=true}
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+- better outcomes for babies delivered in the hospital for *both risk groups*
+- but not better *overall*
+- how is this possible? (a.k.a. *simpsons paradox*)
+- what is the correct way to estimate the effect of delivery location?
+
+## New question: can a patient walk 1 week after getting a hernia?
+
+::: {.r-stack}
+
+![](figs/delivery-locations.png){.fragment}
+
+![](figs/delivery-backpain.png){.fragment}
+
+:::
+
+## Observed data 2
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| bedrest | no | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | yes | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+- more bed rest in hospital
+- what is the correct way to estimate the effect of location?
+
+## How to unravel this?
+
+- we got two questions with exactly the same data
+- in one example, 'stratified analysis' seemed best
+- in the other example, 'marginal analysis' seemed best
+- with *Directed Acyclic Graphs* we can make our decision
+
+## DAGs
+
+1. nodes are variables
+2. arrows point from cause to effect
+
+::: {layout-ncol=2}
+
+:::: {#fig-dag-delivery .fragment}
+
+``` {.tikz}
+%%| filename: dag-delivery.pdf
+
+\begin{tikzpicture}
+  % Nodes
+  \node[draw] (z) at (0, 3) {$Z=$ pregnancy risk};
+  \node[draw] (t) at (-3, 0) {$T=$ hospital delivery};
+  \node[draw] (y) at (3, 0) {$Y=$ neonatal outcome};
+
+  % Edges
+  \draw[->] (z) -- (t);
+  \draw[->] (z) -- (y);
+  \draw[->] (t) -- (y);
+
+\end{tikzpicture}
+```
+
+::::
+
+:::: {#fig-dag-hernia .fragment}
+
+``` {.tikz}
+%%| filename: dag-hernia.pdf
+
+\begin{tikzpicture}
+  % Nodes
+  \node[draw] (z) at (0, 3) {$Z=$ bed rest};
+  \node[draw] (t) at (-3, 0) {$T=$ hospitalized};
+  \node[draw] (y) at (3, 0) {$Y=$ walks after 1 week};
+
+  % Edges
+  \draw[->] (z) -- (t);
+  \draw[->] (z) -- (y);
+  \draw[->] (t) -- (y);
+
+\end{tikzpicture}
+```
+
+::::
+
+:::
+
+## tikz example
+
+::: {#fig-dag}
+
+
+``` {.tikz}
+%%| label: dag1
+%%| fig-align: "center"
+%%| filename: dag1.pdf
+%%| alt: DAG 1
+
+\resizebox{16cm}{!}{%
+\begin{tikzpicture}
+		  % Nodes
+		\node[draw] (z) at (0, 3) {$U=$ fitness};
+		  \node[draw] (t) at (-3, 0) {$T=$ surgery vs radiotherapy};
+		  \node[draw] (y) at (3, 0) {$Y=$ 1-year survival};
+          \node[draw] (x) at (-7.5,0) {$X=$ hospital};
+		  \node[draw] (w) at (4.5,3) {$W=$ performance score};
+
+		  % Edges
+		  \draw[->] (z) -- (t);
+		  \draw[->] (z) -- (y);
+		  \draw[->] (t) -- (y);
+          \draw[->] (z) -- (w);
+          \draw[->] (x) -- (t);
+\end{tikzpicture}
+}
+
+```
+
+:::
+
+
+## next steps
 
 
 *conclusion 1*: seeing is not doing
@@ -247,6 +419,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 - SCM = know rules of the game
 - DAG = know who listens to what
 - why are DAGs useful? know what you can compute
+
 
 # Structural Causal Models: definitions
 
