@@ -1,0 +1,770 @@
+---
+title: DAGs 2
+subtitle: introduction
+author: Wouter van Amsterdam
+date: 2024-08-06
+format: 
+    #latex:
+        #documentclass: beamer
+        #lof: true
+        #lot: true
+    #html:
+        #toc: true
+        #toc-depth: 2
+        #number-sections: true
+    revealjs:
+        theme: umcu.scss
+        incremental: true
+        width: 1600
+        height: 900
+        logo: umcu_blue.png
+        center: true
+execute:
+    warning: false
+    message: false
+categories:
+    - DAG
+    - day2
+bibliography: bibliography.bib
+filters:
+    - diagram
+diagram:
+  cache: true
+  engine:
+    tikz:
+      execpath: lualatex
+      header-includes:
+        - '\usepackage{adjustbox}'
+        - '\usetikzlibrary{arrows, shapes}'
+---
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| execute: true
+
+suppressMessages({
+  library(purrr)
+  library(data.table)
+  library(ggplot2); theme_set(theme_bw())
+  library(knitr)
+})
+```
+
+
+<!--
+
+Qs:
+
+1. what knowledge of probability to expect? e.g. conditioning
+
+--->
+
+## Causal inference frameworks
+
+### What are they for?
+
+#### Mathematical language to
+  - define *causal* quantities
+  - express *assumptions*
+  - derive how to *estimate* causal effects
+
+## Causal inference frameworks
+
+### Why learn more than one?
+
+<!--todo: add hyperlink to day 1 materials-->
+
+- On day 1 we learned about the Potential Outcomes framework
+    - Defines causal effects in terms of (averages of) *individual potential outcomes*
+    - Estimation requires assumptions of (conditional) exchangeability and positivity / overlap and consistency
+- There isn't only 1 way to think about causality, find one that '*clicks*'
+- Now we will learn another framework: *structural causal models* (SCMs)
+    - SCM approach is broader in that it can define more different types of causal questions
+- Equivalence: given the same data and assumptions, get the same estimates
+
+## lecture 1 topics
+
+- why are DAGs useful
+- what are DAGs and where do come from 
+- SCMs as computer programs
+  - intervention as change in program
+- causal identifyability with DAGs
+  - variable types: confounders, mediators, colliders (tinder: hot and intelligent / single ;on tinder)
+    - confounders; storks; randomized, breaking arrows
+  - d-separation
+  - back-door criterion
+  - follow rules of do calculus
+
+
+-  DAG
+  1. what is the world
+  2. what can we estimate and how?
+  3. confounders / colliders
+  4. backdoor
+ 
+## lecture 2 topics
+
+  - perfect versus soft intervention
+  - critique of scm / cross-world assumptions
+
+## practical 1
+
+  - drawing and using dags (what to condition on); daggity
+  - same data, different dags, different answers
+
+## lecture 3 topics
+
+  - bonus queries:
+    - counterfactuals
+    - probability of necessity, probability of sufficiency
+    - actual causality (Joe Halpern)
+  - Pearl Causal Hierarchy
+  - other uses of DAGs: missing data, selection
+  - reflections on DAGs, limitations
+
+## practical 2
+
+  - causal ladder: what Q is this?
+  - give data of hierarchy and answer the Q
+  - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
+
+# Why are DAGs useful
+
+## Example task: are hospital deliveries good for babies?
+
+::: {.r-stack}
+
+![](figs/delivery1.png)
+
+![](figs/delivery2.png){.fragment}
+
+![](figs/delivery.png){.fragment}
+
+:::
+
+## Example task: are hospital deliveries good for babies?
+
+- You're a data scientist in the Wilhelmina Kinderziekenhuis (WKZ)
+- Have data on
+  - delivery location (home or hospital)
+  - neonatal outcomes (good or bad)
+  - pregnancy risk (high or low)
+- Question: do hospital deliveries result in better outcomes for babies?
+
+. . .
+
+```{r}
+#| label: simdeliveries
+
+# t=0: home, t=1: hospital
+# z=0: low risk, z=1: high risk
+# y=1: good outcome
+dnames = list(location=c('home', 'hospital'), risk=c('low', 'high'))
+pos_tz <- matrix(c(
+  c(0.9,  0.5), # y|t=0,z=0,1
+  c(0.95, 0.8)  # y|t=1,z=0,1
+), nrow=2, byrow=T,
+dimnames=dnames)
+
+ps_tz <- matrix(c(
+  c(0.72, 0.08), # p(t=0,z=0,1)
+  c(0.02, 0.18)  # p(t=1,z=0,1)
+), nrow=2, byrow=T, dimnames=dnames)
+
+# p(t,z) under do(t)
+ps_do0 <- matrix(c( 
+  c(0.8, 0.2), 
+  c(0.0, 0.0)  
+), nrow=2, byrow=T)
+
+ps_do1 <- matrix(c( 
+  c(0.0, 0.0), 
+  c(0.8, 0.2) 
+), nrow=2, byrow=T)
+
+
+eys  <- rowSums(pos_tz * ps_tz) / rowSums(ps_tz) # E y|t
+dots <- c(sum(pos_tz * ps_do0), sum(pos_tz*ps_do1))
+
+n = 1000
+
+ts  <- vector(mode="logical", length=0)
+zs  <- vector(mode="logical", length=0)
+py0s <- vector(mode="numeric", length=0)
+py1s <- vector(mode="numeric", length=0)
+ys  <- vector(mode="logical", length=0)
+
+ntots <- n * ps_tz
+
+for (t in c(0,1)) {
+  for (z in c(0,1)) {
+    ntz <- n *ps_tz[t+1,z+1]
+    ts  <- c(ts, rep(t, ntz))
+    zs  <- c(zs, rep(z, ntz))
+    py <- pos_tz[t+1,z+1]
+    y <- c(rep(0,
+               round(ntz * (1-py))), # <- round should not be needed here but found a bug
+           rep(1,
+               round(ntz*py))) 
+    ys <- c(ys, y)
+    py0s <- c(py0s, rep(pos_tz[1, z+1], ntz))
+    py1s <- c(py1s, rep(pos_tz[2, z+1], ntz))
+  }
+}
+# ys <- ifelse(ts, y1s, y0s)
+df <- data.table(
+  location=ts,
+  risk=zs,
+  outcome=ys,
+  py0=py0s,
+  py1=py1s)
+
+# head(df)
+
+# kable(eys, col.names="tips")
+#pander::pander(ftable(eys))
+
+# pander::pander(ftable(pos_tz), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+ntots <- n * ps_tz
+nys <- ntots * pos_tz
+
+strs <- paste0(nys, " / ", ntots, " = ", 100*pos_tz, "%")
+str_mat <- matrix(strs, ncol=2, dimnames=dnames)
+# kable(t(str_mat))
+# pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
+
+ntotsm <- rowSums(ntots)
+nysm <- rowSums(nys)
+strsm <- paste0(nysm, " / ", ntotsm, " = ", 100*eys, "%")
+
+tab_tots <- rbind(ntots, ntotsm)
+
+
+# tab <- df[, list(good=sum(outcome==1), bad=sum(outcome==0), frac_good=mean(outcome)), by=c("risk", "location")]
+
+
+```
+
+. . . 
+
+
+```{r}
+#| label: deliveryplot
+#| output: fragment
+#| include: false
+
+df[, ni:=1.]
+
+ggplot(df, aes(x=1, fill=factor(outcome))) +
+  geom_bar(stat="count", position="stack") + 
+  # geom_bar(aes(y=..count../sum(..count..))) + 
+  facet_grid(risk~location)
+```
+
+
+## Observed data {auto-animate=true}
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+
+
+## Observed data {auto-animate=true}
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+- better outcomes for babies delivered in the hospital for *both risk groups*
+- but not better *overall*
+- how is this possible? (a.k.a. *simpsons paradox*)
+- what is the correct way to estimate the effect of delivery location?
+
+## New question: can a patient walk 1 week after getting a hernia?
+
+::: {.r-stack}
+
+![](figs/delivery-locations.png){.fragment}
+
+![](figs/delivery-backpain.png){.fragment}
+
+:::
+
+## Observed data 2
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| bedrest | no | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | yes | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+- more bed rest in hospital
+- what is the correct way to estimate the effect of location?
+
+## How to unravel this?
+
+- we got two questions with exactly the same data
+- in one example, 'stratified analysis' seemed best
+- in the other example, 'marginal analysis' seemed best
+- with *Directed Acyclic Graphs* we can make our decision
+
+## DAGs
+
+1. nodes are variables
+2. arrows point from cause to effect
+
+::: {layout-ncol=2}
+
+:::: {#fig-dag-delivery .fragment}
+
+``` {.tikz}
+%%| filename: dag-delivery.pdf
+
+\begin{tikzpicture}
+  % Nodes
+  \node[draw] (z) at (0, 3) {$Z=$ pregnancy risk};
+  \node[draw] (t) at (-3, 0) {$T=$ hospital delivery};
+  \node[draw] (y) at (3, 0) {$Y=$ neonatal outcome};
+
+  % Edges
+  \draw[->] (z) -- (t);
+  \draw[->] (z) -- (y);
+  \draw[->] (t) -- (y);
+
+\end{tikzpicture}
+```
+
+::::
+
+:::: {#fig-dag-hernia .fragment}
+
+``` {.tikz}
+%%| filename: dag-hernia.pdf
+
+\begin{tikzpicture}
+  % Nodes
+  \node[draw] (z) at (0, 3) {$Z=$ bed rest};
+  \node[draw] (t) at (-3, 0) {$T=$ hospitalized};
+  \node[draw] (y) at (3, 0) {$Y=$ walks after 1 week};
+
+  % Edges
+  \draw[->] (z) -- (t);
+  \draw[->] (z) -- (y);
+  \draw[->] (t) -- (y);
+
+\end{tikzpicture}
+```
+
+::::
+
+:::
+
+## tikz example
+
+::: {#fig-dag}
+
+
+``` {.tikz}
+%%| label: dag1
+%%| fig-align: "center"
+%%| filename: dag1.pdf
+%%| alt: DAG 1
+
+\resizebox{16cm}{!}{%
+\begin{tikzpicture}
+		  % Nodes
+		\node[draw] (z) at (0, 3) {$U=$ fitness};
+		  \node[draw] (t) at (-3, 0) {$T=$ surgery vs radiotherapy};
+		  \node[draw] (y) at (3, 0) {$Y=$ 1-year survival};
+          \node[draw] (x) at (-7.5,0) {$X=$ hospital};
+		  \node[draw] (w) at (4.5,3) {$W=$ performance score};
+
+		  % Edges
+		  \draw[->] (z) -- (t);
+		  \draw[->] (z) -- (y);
+		  \draw[->] (t) -- (y);
+          \draw[->] (z) -- (w);
+          \draw[->] (x) -- (t);
+\end{tikzpicture}
+}
+
+```
+
+:::
+
+
+## next steps
+
+
+*conclusion 1*: seeing is not doing
+
+**to follow-up**
+
+- DAG to picture the game
+- doing = mutilating DAG
+- hotel 2: the Randtz
+- identifyability: more SCMs with same marginals
+- another hidden variable: are the guests brittish
+- SCM = know rules of the game
+- DAG = know who listens to what
+- why are DAGs useful? know what you can compute
+
+
+# Structural Causal Models: definitions
+
+## The world as a computer program
+
+### Think of the world as a computer program with a set of 
+
+- (endogenous) *variables*:
+  - `surgery` = duration of surgery (hours)
+  - `los` = length of stay in hospital post surgery (days)
+  - `survival` = survival time (years)
+- *background variables* (exogenous):
+  - `u_surgery`
+  - `u_los`
+  - `u_survival`
+- *functions* `f_` for each *variable* which depend on its *parents* `pa_` and its own *background* `u_`:
+  - `surgery = f_surgery(pa_surgery,u_surgery)`
+  - `los = f_los(pa_los, u_los)`
+  - `survival = f_survival(pa_survival, u_survival)`
+  
+:::{.fragment}
+
+<!-- The variables $\mathbb{V}$, background $\mathbb{U}$ and functions $\mathbb{F}$  -->
+Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009, and further]
+
+:::
+
+## Structural Causal Model 1
+
+```{r}
+#| label: scm1
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1-3|5-7|9-11|13-18|20"
+#| output-location: fragment
+
+f_surgery <- function(u_surgery) { # pa_surgery = {}
+  u_surgery
+}
+
+f_los <- function(surgery, u_los) { # pa_los = {surgery}
+  surgery + u_los
+}
+
+f_survival <- function(surgery, los, u_survival) { # pa_survival = {sugery, los}
+  survival = los - 2 * surgery + u_survival
+}
+
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+scm1(2, 1, 5)
+```
+
+## Submodel and Effect of Action
+
+In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
+
+<!-- todo: make this side-by-side -->
+
+```{r}
+#| label: submodel1
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|3|8"
+#| output-location: fragment
+
+submodel7 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 7
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+submodel7(2, 1, 5)
+```
+
+## Specifying a distribution for exogenous variables U 
+
+```{r}
+#| label: pu
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|2|3|4|7"
+#| output-location: "fragment"
+sample_u <- function() {
+    u_surgery  = runif(1,  2,  8)
+    u_los      = runif(1, -1,  7)
+    u_survival = runif(1,  8, 13)
+    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
+}
+sample_u()
+```
+
+. . .
+
+```{r}
+#| label: fig-u_samples
+#| execute: true
+#| echo: false
+#| fig-align: "center"
+#| fig-cap: "1000 random samples of U"
+N = 1e3
+us <- map(1:N, ~sample_u())
+udf <- us |> map(~data.table(t(.x))) |> rbindlist()
+udfm <- melt(udf, measure.vars=names(us[[1]]))
+ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## A Probabilistic Causal Model is a SCM with a distribution over U
+
+```{r}
+#| label: pcm1
+#| echo: true
+#| execute: true
+#| output-location: "fragment"
+#| code-line-numbers: "1|2|3|7"
+sample_pcm <- function() {
+  U <- sample_u()
+  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
+  c(U, V)
+}
+  
+sample_pcm()
+```
+
+. . .
+
+```{r}
+#| label: fig-pcm1-samples
+#| echo: false
+#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
+vs <- map(us, ~do.call(scm1, as.list(.x)))
+vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
+vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
+ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## Identification
+
+
+
+# From SCMs to real data with Directed Acyclic Graphs
+
+## Recap of definitions
+
+- *Structural Causal model*:
+  - exogenous variables U
+  - endogenous variables
+  - deterministic functions `f_i(pa_i,u_i)`
+- *Effect of Action* do$(T=t)$: *submodel* where `f_T` replaced with fixed value `t`
+- *Probabilistic Causal Model*: SCM + distribution over U
+
+## In the real world
+
+- we do not observe U
+- we typically do not know `f_`
+  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
+- we are presented with realizations $V_i$ of this SCM over a random sample of U
+  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
+- we may be interest in knowing:
+  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
+
+. . .
+
+When and how might we learn the answer to such questions?
+
+## Needed steps
+
+1. what is a directed acyclic graph
+2. define identifyability
+3. rules for identifyability based on DAGs
+   a. the backdoor rule (+ backdoor adjustment)
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag
+#| execute: false
+#| echo: true
+#| code-line-numbers: "|2"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![](scm1_01.png){.fragment}
+::::
+:::
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag2
+#| execute: false
+#| echo: true
+#| code-line-numbers: "3"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![](scm1_02.png)
+::::
+:::
+
+## Recursive Structural Causal Models imply a Directed Acyclic Graph
+
+An SCM is *recursive*, i.e. *acyclic* when following the chain of parents, you never end up at the same variable twice
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: scm1-dag3
+#| execute: false
+#| echo: true
+#| code-line-numbers: "4"
+scm1 <- function(u_surgery, u_los, u_survival) {
+  surgery  = f_surgery(u_surgery)
+  los      = f_los(surgery, u_los)
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+```
+::::
+::::{.column width="50%"}
+![](scm1_03.png)
+::::
+:::
+
+. . .
+
+`scm1` and the DAG are equivalent (they describe the same knowledge of the world)
+
+for the remainder, we assume recursiveness
+
+## Submodel and Effect of Action as a mutilated DAG
+
+In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: submodel-dag
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|3|8"
+#| output-location: fragment
+
+submodel7 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 7
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+submodel7(2, 1, 5)
+```
+
+. . .
+
+::::
+::::{.column width="50%"}
+::::: {.r-stack}
+
+![](scm1_03.png){.fragment}
+
+![](scm1_04.png){.fragment}
+
+:::::
+::::
+:::
+
+The DAG describes a submodel where $T$ no longer 'listens' to any variables but is controlled to be equal to a specific value (7)
+
+## Limitations of DAGs
+
+- the number of possible dags grows super-exponentially in the number of nodes
+- 8: >700 billion
+- 9: >1000 trillion
+- DAGs are great thinking tools but maybe not suitable as a formal identification approach?
+
+![A003024, https://oeis.org/A003024/list](figs/A003024.png)
+
+## The death of DAGs?
+
+```{r}
+#| eval: false
+#| label: a003024
+a003024 <- c(1,1,3,25,543,29281,3781503,1138779265,
+783702329343,1213442454842881,4175098976430598143,
+31603459396418917607425,
+521939651343829405020504063,
+18676600744432035186664816926721,
+1439428141044398334941790719839535103)
+a_years <- a003024 / 31556952 # n seconds in gregorian calendar year
+a_days <- a_years * 365.2425 # n seconds in gregorian calendar year
+adf <- data.table(days=a_days, years=a_years, seconds=a003024)
+adf[, hours:=days*24]
+adf[, n_nodes:=.I-1]
+adf[, an_hour:=hours > 1.]
+adf[, a_day:=days > 1.]
+adf[, a_year:=years > 1.]
+adf[, human_species:=years > 3e5]
+adf[, age_universe:=years > 13.787e9]
+adf[n_nodes>1, list(n_nodes, n_dags=seconds, an_hour, a_day, a_year, human_species, age_universe)]
+```
+
+| n_nodes | n_dags              | time at 1 sec / DAG |
+|---------|---------------------|---------------------|
+| 1       | 1                   |                     |
+| 2       | 3                   |                     |
+| 3       | 25                  |                     |
+| 4       | 543                 |                     |
+| 5       | 29281               | > an hour           |
+| 6       | 3781503             | > a day             |
+| 7       | 1138779265          | > a year            |
+| 8       | 783702329343        |                     |
+| 9       | 1213442454842881    | > human species     |
+| 10      | 4175098976430598143 | > age of universe   |
+
+
+# SCM vs potential outcomes
+
+- definition of causal effect (PO: unobserved counterfactuals, SCM: DAG)
+- anchor exchaneability $Y^x || X$ for all $x$ in DAGs
+
+## References
+
