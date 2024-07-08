@@ -79,12 +79,18 @@ Qs:
 
 ## In this lecture: structural causal models (SCMs)
 
+::: {layout-ncol=2}
+
 \begin{align}
   U_Z, U_T, U_Y &\sim p(U) \\
   Z &= f_Z(U_Z) \\
   T &= f_T(Z,U_T) \\
   Y &= f_Y(T,Z,U_Y)
 \end{align}
+
+![](figs/scmart.png)
+
+:::
 
 ## Why SCMs?
 
@@ -97,7 +103,7 @@ With DAGs we can:
 - DAGs and RCTs do not cover all causal questions
 - SCMs go a level deeper than DAGs
 - DAGs naturally 'arise' from SCMs
-- some questions are not identified when only specifying a DAG, but may have additional information
+- some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification
 - understand 'identifyability'
 - SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality
 
@@ -145,7 +151,7 @@ With DAGs we can:
 :::{.fragment}
 
 <!-- The variables $\mathbb{V}$, background $\mathbb{U}$ and functions $\mathbb{F}$  -->
-Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009, and further]
+Together these define a *Structural Causal Model* [see definition 7.1.1 in @pearlLogicStructureBasedCounterfactuals2009, and further] (notation: $M=<U,V,F>$)
 
 :::
 
@@ -178,126 +184,6 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 }
 scm1(2, 1, 5)
 ```
-
-## Submodel and Effect of Action
-
-In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
-
-<!-- todo: make this side-by-side -->
-
-```{r}
-#| label: submodel1
-#| execute: false
-#| echo: true
-#| code-line-numbers: "1|3|8"
-#| output-location: fragment
-
-submodel7 <- function(u_surgery, u_los, u_survival) {
-  surgery = f_surgery(u_surgery)
-  los = 7
-  survival = f_survival(surgery, los, u_survival)
-  c(surgery=surgery, los=los, survival=survival)
-}
-
-submodel7(2, 1, 5)
-```
-
-## Specifying a distribution for exogenous variables U 
-
-```{r}
-#| label: pu
-#| execute: false
-#| echo: true
-#| code-line-numbers: "1|2|3|4|7"
-#| output-location: "fragment"
-sample_u <- function() {
-    u_surgery  = runif(1,  2,  8)
-    u_los      = runif(1, -1,  7)
-    u_survival = runif(1,  8, 13)
-    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
-}
-sample_u()
-```
-
-. . .
-
-```{r}
-#| label: fig-u_samples
-#| execute: true
-#| echo: false
-#| fig-align: "center"
-#| fig-cap: "1000 random samples of U"
-N = 1e3
-us <- map(1:N, ~sample_u())
-udf <- us |> map(~data.table(t(.x))) |> rbindlist()
-udfm <- melt(udf, measure.vars=names(us[[1]]))
-ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
-```
-
-## A Probabilistic Causal Model is a SCM with a distribution over U
-
-```{r}
-#| label: pcm1
-#| echo: true
-#| execute: true
-#| output-location: "fragment"
-#| code-line-numbers: "1|2|3|7"
-sample_pcm <- function() {
-  U <- sample_u()
-  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
-  c(U, V)
-}
-  
-sample_pcm()
-```
-
-. . .
-
-```{r}
-#| label: fig-pcm1-samples
-#| echo: false
-#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
-vs <- map(us, ~do.call(scm1, as.list(.x)))
-vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
-vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
-ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
-```
-
-## Identification
-
-
-
-# From SCMs to real data with Directed Acyclic Graphs
-
-## Recap of definitions
-
-- *Structural Causal model*:
-  - exogenous variables U
-  - endogenous variables
-  - deterministic functions `f_i(pa_i,u_i)`
-- *Effect of Action* do$(T=t)$: *submodel* where `f_T` replaced with fixed value `t`
-- *Probabilistic Causal Model*: SCM + distribution over U
-
-## In the real world
-
-- we do not observe U
-- we typically do not know `f_`
-  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
-- we are presented with realizations $V_i$ of this SCM over a random sample of U
-  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
-- we may be interest in knowing:
-  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
-
-. . .
-
-When and how might we learn the answer to such questions?
-
-## Needed steps
-
-1. what is a directed acyclic graph
-2. define identifyability
-3. rules for identifyability based on DAGs
-   a. the backdoor rule (+ backdoor adjustment)
 
 ## Recursive Structural Causal Models imply a Directed Acyclic Graph
 
@@ -377,14 +263,15 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 
 for the remainder, we assume recursiveness
 
-## Submodel and Effect of Action as a mutilated DAG
 
-In `scm1` replace `f_los` with a specific *value* (e.g. `7` days):
+## Submodel and Effect of Action
 
-:::{.columns}
-::::{.column width="50%"}
+In `scm1` replace `f_los` with a specific *value*, e.g. `7` days (notation: $M_x=<U,V,F_x>$)
+
+<!-- todo: make this side-by-side -->
+
 ```{r}
-#| label: submodel-dag
+#| label: submodel1
 #| execute: false
 #| echo: true
 #| code-line-numbers: "1|3|8"
@@ -400,7 +287,26 @@ submodel7 <- function(u_surgery, u_los, u_survival) {
 submodel7(2, 1, 5)
 ```
 
-. . .
+## Submodel and Effect of Action as a mutilated DAG
+
+In `scm1` replace `f_los` with a specific *value*, e.g. `7` days (notation: $M_x$)
+
+:::{.columns}
+::::{.column width="50%"}
+```{r}
+#| label: submodel-dag
+#| execute: false
+#| echo: true
+
+submodel7 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 7
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+submodel7(2, 1, 5)
+```
 
 ::::
 ::::{.column width="50%"}
@@ -414,7 +320,231 @@ submodel7(2, 1, 5)
 ::::
 :::
 
-The DAG describes a submodel where $T$ no longer 'listens' to any variables but is controlled to be equal to a specific value (7)
+. . .
+
+The DAG describes a submodel where $T$ no longer 'listens' to any variables but is controlled to be equal to a specific value (e.g. 7)
+
+The *Effect of Action* $do(X=x)$ is defined as the submodel $M_x$.
+
+
+## Specifying a distribution for exogenous variables U 
+
+```{r}
+#| label: pu
+#| execute: false
+#| echo: true
+#| code-line-numbers: "1|2|3|4|7"
+#| output-location: "fragment"
+sample_u <- function() {
+    u_surgery  = runif(1,  2,  8)
+    u_los      = runif(1, -1,  7)
+    u_survival = runif(1,  8, 13)
+    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)
+}
+sample_u()
+```
+
+. . .
+
+```{r}
+#| label: fig-u_samples
+#| execute: true
+#| echo: false
+#| fig-align: "center"
+#| fig-cap: "1000 random samples of U"
+N = 1e3
+us <- map(1:N, ~sample_u())
+udf <- us |> map(~data.table(t(.x))) |> rbindlist()
+udfm <- melt(udf, measure.vars=names(us[[1]]))
+ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+## A Probabilistic Causal Model is a SCM with a distribution over U
+
+```{r}
+#| label: pcm1
+#| echo: true
+#| execute: true
+#| output-location: "fragment"
+#| code-line-numbers: "1|2|3|7"
+sample_pcm <- function() {
+  U <- sample_u()
+  V <- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])
+  c(U, V)
+}
+  
+sample_pcm()
+```
+
+. . .
+
+```{r}
+#| label: fig-pcm1-samples
+#| echo: false
+#| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
+vs <- map(us, ~do.call(scm1, as.list(.x)))
+vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
+vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
+ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
+```
+
+# From SCMs to real data with Directed Acyclic Graphs
+
+## Recap of definitions
+
+- *Structural Causal model*:
+  - exogenous variables U
+  - endogenous variables
+  - deterministic functions `f_i(pa_i,u_i)`
+- *Effect of Action* do$(T=t)$: *submodel* where `f_T` replaced with fixed value `t`
+- *Probabilistic Causal Model*: SCM + distribution over U
+
+## In the real world
+
+- knowing the SCM is a super-power: you basically know everything revelant about the system, but in the real world:
+- we do not observe $U$
+- we typically do not know `f_`
+  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
+- we are presented with realizations $V_i$ of this SCM over a random sample of U
+  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
+- we may be interest in knowing:
+  1. what is the expected survival time if we *always* admit patients for exactly 7 days?
+
+. . .
+
+When and how might we learn the answer to such questions?
+
+## Identification
+
+Causal effect identification:
+
+## Definition 3.2.3 (Identifiability)
+
+Let $Q(M)$ be any computable quantity of a model $M$.
+
+. . .
+
+We say that $Q$ is **identifiable** in a class $M$ of models if, for any pairs of models $M_1$ and $M_2$ from $M$,
+
+. . . 
+
+$Q(M_1) = Q(M_2)$ whenever $P_{M_1} (y) = P_{M_2} (y)$.
+
+. . .
+
+If our observations are limited and permit only a partial set $F_M$ of features (of $P_M(y)$) to be estimated,
+
+. . .
+
+we define $Q$ to be identifiable from $F_M$ if $Q(M_1) = Q(M_2)$ whenever $F_{M_1} = F_{M_2}$.
+
+## Idenfitication in pictures
+
+Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)
+
+. . . 
+
+Based on prior knowledge on *5 suspects* (all the SCMs compatible with our DAG)
+
+. . .
+
+![](figs/whodunnit-col.png)
+
+. . .
+
+If we had full data, we would have know it was $M_3$
+
+
+## Idenfitication in pictures
+
+Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)
+
+Based on prior knowledge on *5 suspects* (all the SCMs compatible with our DAG)
+
+![](figs/whodunnit-gray.png)
+
+If we had full data, we would have know it was $M_3$
+
+Unfortunately, it was dark an we only got a gray-scale image of the perpetrator
+
+. . .
+
+All our suspects (models) lead to the same partial observations
+
+. . . 
+
+Based on *observed data* and *assumptions* we cannot *identify* our question $Q$,
+
+. . .
+
+i.e. multiple models with different answers for $Q$ fit the observed data equally well
+
+## Not identified means we cannot compute the estimand
+
+![](scm1_03.png){fig-align="center"}
+
+The backdoor adjustment in this DAG means the correct estimand is:
+
+\begin{align}
+  P(Y|\text{do}(T)) &= \sum_{z} P(Y|T,z)P(Z=z)
+\end{align}
+
+- If we did not observe $Z$, we could still come up with a latent-variable model for $Z$ and a model for $Y|T,Z$ and get a value.
+- However, we can formulate multiple distinct latent variable models that each yield a different treatment effect (i.e. the output of the estimand)
+- But these latent variable models all fit the *observed* data equally well
+- So we cannot identify the treatment effect
+
+## Seeing is not doing
+
+::: {layout-ncol=2}
+
+:::: {#fig-seeing}
+
+![](scm1_03.png)
+
+\begin{align}
+  P(Y|T) = \sum_{z} P(Y|T,z)P(Z=z|T)
+\end{align}
+
+::::
+
+:::: {#fig-doing}
+
+![](scm1_04.png)
+
+\begin{align}
+  P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
+         &=^2 \sum_{z} P(Y|T,z)P(Z=z)
+\end{align}
+
+$^2$ because in the intervened DAG, $Z$ is independent of $T$
+
+::::
+
+:::
+
+. . .
+
+$$P(Y|\text{do}(T)) \neq P(Y|T)$$
+
+is Pearl's definition of confounding
+
+## Definition 3.2.4 (Causal Effect Identifiability)
+
+The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity $P(y | \hat{x})$ can be computed uniquely from any positive probability of the observed variables – that is, if $P_{M_1}(y|\hat{x}) = P_{M_2}(y|\hat{x})$ for every pair of models $M_1$ and $M_2$ with $P_{M_1}(v) = P_{M_2}(v) > 0$ and $G(M_1) = G(M_2) = G$.
+
+
+## Needed steps
+
+1. what is a directed acyclic graph
+2. define identifyability
+3. rules for identifyability based on DAGs
+   a. the backdoor rule (+ backdoor adjustment)
+
+## Defining counterfactuals
+
+
+
 
 
 ## References
