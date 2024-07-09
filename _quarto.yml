@@ -3,18 +3,10 @@ project:
 
 website:
   title: "Causal Inference and Causal Data Science Summerschool"
-  navbar:
-    left:
-      - href: index.qmd
-        text: Home
-      - lectures.qmd
-      - practicals.qmd
 
 format:
   html:
     theme: cosmo
     css: styles.css
     toc: true
-
-
 
