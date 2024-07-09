@@ -1,8 +1,0 @@
----
-title: "Practicals"
-listing:
-  contents: practicals
-  sort: "title desc"
-  type: default
-  categories: true
----
