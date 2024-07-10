@@ -62,6 +62,8 @@ Qs:
 
 --->
 
+# DAG-recap
+
 ## In past lectures on DAGs
 
 1. causal directed acyclic graphs (DAGs) encode assumptions on what variables cause what
@@ -74,6 +76,7 @@ Qs:
 
 5. typically: 
   - condition on confounders, don't condition on mediators or colliders
+
 6. in more complex DAGs, use d-separation to check identifyability
 7. backdoor criterion
 
@@ -119,15 +122,6 @@ With DAGs we can:
 - interventions are submodels
 
 
-
-## SCMs vs DAGs
-
-- DAG to picture the game
-- doing = mutilating DAG
-- identifyability: more SCMs with same marginals
-- SCM = know rules of the game
-- DAG = know who listens to what
-- why are DAGs useful? know what you can compute
 
 # Structural Causal Models: definitions
 
@@ -266,8 +260,7 @@ for the remainder, we assume recursiveness
 
 ## Submodel and Effect of Action
 
-In `scm1` replace `f_los` with a specific *value*, e.g. `7` days (notation: $M_x=<U,V,F_x>$)
-
+- **submodel**: in `scm1` replace `f_los` with a specific *value*, e.g. `7` days
 <!-- todo: make this side-by-side -->
 
 ```{r}
@@ -286,6 +279,9 @@ submodel7 <- function(u_surgery, u_los, u_survival) {
 
 submodel7(2, 1, 5)
 ```
+
+- **effect of action**: resulting SCM of submodel (notation: $M_x=<U,V,F_x>$)
+
 
 ## Submodel and Effect of Action as a mutilated DAG
 
@@ -328,6 +324,11 @@ The *Effect of Action* $do(X=x)$ is defined as the submodel $M_x$.
 
 
 ## Specifying a distribution for exogenous variables U 
+
+- Exogenous variables `U` represent random variation in the world.
+- We can specify a *distribution* for them (e.g. Gaussian, Uniform)
+
+. . .
 
 ```{r}
 #| label: pu
@@ -388,7 +389,29 @@ vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
 ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
 ```
 
-# From SCMs to real data with Directed Acyclic Graphs
+## Calculating a treatment effect in a fully specified probabilisitc causal model
+
+- take `U` distributions as above and set `los=7`
+- calculate expected survival, taking expectation correctly
+- estimand:
+
+\begin{align}
+  E[Y|\text{do}(T=7)] &= E_{Z|\text{do}(T=7)}[E[Y|\text{do}(T=7),Z]] \\
+                      &= E_{Z|\text{do}(T=7)}[E[Y|\text{do}(T=7),Z]]
+\end{align}
+
+```{r}
+#| label: do7
+#| echo: true
+
+N = 1e3
+us <- map(1:N, ~sample_u())
+
+
+
+```
+
+# Identification
 
 ## Recap of definitions
 
@@ -424,7 +447,7 @@ Let $Q(M)$ be any computable quantity of a model $M$.
 
 . . .
 
-We say that $Q$ is **identifiable** in a class $M$ of models if, for any pairs of models $M_1$ and $M_2$ from $M$,
+We say that $Q$ is **identifiable** in a class $\mathbb{M}$ of models if, for any pairs of models $M_1$ and $M_2$ from $\mathbb{M}$,
 
 . . . 
 
@@ -473,13 +496,13 @@ All our suspects (models) lead to the same partial observations
 
 . . . 
 
-Based on *observed data* and *assumptions* we cannot *identify* our question $Q$,
+Based on *observed data* and *assumptions* we cannot *identify* the answer to our question $Q$,
 
 . . .
 
 i.e. multiple models with different answers for $Q$ fit the observed data equally well
 
-## Not identified means we cannot compute the estimand
+## Not identified vs estimand
 
 ![](scm1_03.png){fig-align="center"}
 
@@ -503,7 +526,8 @@ The backdoor adjustment in this DAG means the correct estimand is:
 ![](scm1_03.png)
 
 \begin{align}
-  P(Y|T) = \sum_{z} P(Y|T,z)P(Z=z|T)
+  P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
+         &\neq P(Y|\text{do}(T))
 \end{align}
 
 ::::
@@ -514,7 +538,8 @@ The backdoor adjustment in this DAG means the correct estimand is:
 
 \begin{align}
   P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
-         &=^2 \sum_{z} P(Y|T,z)P(Z=z)
+         &=^2 \sum_{z} P(Y|T,z)P(Z=z) \\
+         &= P(Y|\text{do}(T))
 \end{align}
 
 $^2$ because in the intervened DAG, $Z$ is independent of $T$
@@ -525,9 +550,8 @@ $^2$ because in the intervened DAG, $Z$ is independent of $T$
 
 . . .
 
-$$P(Y|\text{do}(T)) \neq P(Y|T)$$
-
-is Pearl's definition of confounding
+- $P(Y|\text{do}(T)) \neq P(Y|T)$ is Pearl's definition of confounding
+- this shows why RCTs are special (i.e. no backdoor paths into $T$)
 
 ## Definition 3.2.4 (Causal Effect Identifiability)
 
@@ -541,10 +565,27 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 3. rules for identifyability based on DAGs
    a. the backdoor rule (+ backdoor adjustment)
 
-## Defining counterfactuals
+# Defining counterfactuals and the causal Hierarchy (of questions)
+
+## Counterfactuals
+
+- all of the above can be achieved with DAGs, but we haven't used SCMs *super-power* yet: counterfactuals
+- e.g. *What is the expected survival if we keep all patients in the hospital for 7 days?
 
 
+- Q:
 
+. . . 
+
+For patient Adam we had this data:
+- surgery duration: 2 hours
+- length of stay: 3 days
+- survival: 4 years
+- (i.e. we do not observe Adams `U`)
+
+. . . 
+
+What is the expected survival if Adam had been kept in the hospital for 5 days?
 
 
 ## References

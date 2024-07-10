@@ -24,8 +24,9 @@ Learn causal inference and causal data science
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |  |
-| 09:45 - 10:45 | Lecture   | Intro to DAGs II                                         | |
+| 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |[html](lectures/day2-scms/week3_DAGS_lecture/dags.html)|
+| 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |[html](lectures/day2-scms/lec1.html)|
+| 09:45 - 10:45 | Lecture   | Intro to DAGs II                                         |[html](lectures/day2-scms/lec2.html) |
 | 11:00 - 12:00 | practical | Drawing and Using DAGs I                                 | |
 | 12:00 - 13:00 | LUNCH     |                                                          | |
 | 13:00 - 14:00 | Lecture   | Structural Causal Models                                 | [html](lectures/day2-scms/lec4.html) |
