@@ -1,0 +1,102 @@
+---
+title: "Practical on DAGs"
+subtitle: ""
+author: "Wouter van Amsterdam"
+eval: false
+format: 
+  html:
+    toc: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+    number-sections: true
+---
+
+In this practical, ...
+
+
+::: {.callout-tip appearance="default" icon=true}
+The answers to each exercise are available as a collapsed `code` block. Try to work out the answer yourself before looking at this code block!
+:::
+
+First we load a package
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+#| code-fold: false
+#| eval: true
+
+library(survival)
+```
+
+In this practical, we will also use the following two packages:
+
+::: {.callout-note}
+## Exercise 1
+Grab a coffee
+:::
+
+
+::: {.callout-note}
+## Exercise 2
+Load the `mtcars` dataset in R 
+
+```{r}
+#| label: data-true
+#| eval: true
+
+data(mtcars)
+```
+
+:::
+
+## Non-coding questions
+
+### Strength of Assumptions
+
+::: {#fig-3dags layout-ncol=3}
+
+![DAG](_tikzs/daga.png){#fig-daga}
+
+![DAG](_tikzs/dagb.png){#fig-dagb}
+
+![DAG](_tikzs/dagc.png){#fig-dagc}
+
+:::
+
+::: {.callout-tip collapse="true"}
+## What is the correct ordering of strength of assumptions in the above DAGs, starting with the strongest assumption
+
+answer: @fig-dagb > @fig-dagc > @fig-daga
+
+@fig-dagb is stronger than @fig-dagc as in the latter, it could be that the effects through $W$ are all absent (remember that the presence of an arrow from A to B implies a **possible** effect of A on B)
+
+@fig-dagc is stronger than @fig-daga as in the first, Z can **only** affect Y through T and W, whereas in @fig-daga Z *can* effect Y through T and *can* effect Y through other paths (e.g. W)
+
+see also the [lecture on DAGs](../../lectures/day2-scms/lec1.qmd#sec-assumptions)
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Question Foo
+
+answer: bar
+
+:::
+
+::: {.callout-goals}
+## my goals
+:::
+
+
+## Conclusion
+
+You learned ABC
+
+## Further reading
+
+Read Chapter 9 of Pearls Causality [@pearlCausalDiagramsIdentification2009]
+

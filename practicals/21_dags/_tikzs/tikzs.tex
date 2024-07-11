@@ -1,0 +1,56 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{arrows, shapes, positioning}
+\tikzstyle{nodeobserved} = [circle, minimum size = 10mm, thick, draw =black!80]
+\usetikzlibrary{external}
+\tikzexternalize
+
+\begin{document}
+
+\begin{figure}
+    \centering
+    \tikzsetnextfilename{daga}
+    \begin{tikzpicture}
+          \node (z) at (-1, 1) {$Z$};
+          \node (t) at (-1, 0) {$T$};
+          \node (y) at (0, 0) {$Y$};
+
+          % Edges
+          \draw[->] (z) -- (y);
+          \draw[->] (z) -- (t);
+          \draw[->] (t) -- (y);
+    \end{tikzpicture}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \tikzsetnextfilename{dagb}
+    \begin{tikzpicture}
+          \node (z) at (-1, 1) {$Z$};
+          \node (t) at (-1, 0) {$T$};
+          \node (y) at (0, 0) {$Y$};
+
+          % Edges
+          \draw[->] (z) -- (t);
+          \draw[->] (t) -- (y);
+    \end{tikzpicture}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \tikzsetnextfilename{dagc}
+    \begin{tikzpicture}
+          \node (z) at (-1, 1) {$Z$};
+          \node (w) at (0, 1) {$W$};
+          \node (t) at (-1, 0) {$T$};
+          \node (y) at (0, 0) {$Y$};
+
+          % Edges
+          \draw[->] (z) -- (w);
+          \draw[->] (z) -- (t);
+          \draw[->] (t) -- (y);
+          \draw[->] (w) -- (y);
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}
