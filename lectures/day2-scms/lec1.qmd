@@ -372,9 +372,24 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 # Some math background: probabilites and assumptions
 
+## Why math???
+
+:::{layout="[40,60]"}
+
+- why not?
+- need probability for estimation
+- need conditional independence for causal inference
+- need to understand 'strength' of assumptions
+
+
+![oh no math](figs/why math.png)
+
+:::
+
+
 ## Marginal, Joint and Conditional probabilites
 
-Probability statements about *random events* $A$ and $B$:
+Probability statements about *random events* $A$ ($A=1\to$ patient dies) and $B$ ($B=1\to$ has cancer):
 
 ::: {layout="[60,40]" layout-valign="center"}
 
@@ -562,7 +577,7 @@ Probability statements about *random events* $A$ and $B$:
 |----------|-----------------------------------|
 | $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
 | $P(A,B) = P(A|B)P(B)$ | product rule | 
-| $P(A) = \sum_{b} P(A|B=b)P(B=b)$ | total expectation (consequence of marginal vs joint and product rule) |
+| $P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)$ | total expectation (consequence of marginal vs joint and product rule) |
 | $P(A|B) = \frac{P(A,B)}{P(B)}$ | conditional is joint over marginal (follows from product rule)| 
 
 ## Marginal and conditional independence:
@@ -712,7 +727,7 @@ ggplot(dfm, aes(x=x, y=y, col=factor(t))) +
 :::
 
 
-## The DAG definition of an intervention
+## The DAG definition of an intervention {#sec-def-intervention}
 
 assume this is our DAG for a situation:
 
@@ -728,15 +743,114 @@ assume this is our DAG for a situation:
 
 - which means $T$ does not *listen* to other variables anymore, but is set at a particular value, like in an experiment
 
-## Basic DAG types
+## The gist of observational causal inference
+
+is to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)
+
+::: {#fig-intervention layout="[20, 20, 60]"}
+
+![observational data: data we have](_tikzs/dag-obs.png){#fig-obs}
+
+![intervened DAG: what we want to know](_tikzs/dag-intervened.png){#fig-intervened}
+
+- causal inference frameworks provide a language to express assumptions
+- based on these assumptions, the framework tell us whether such an inference is possible
+    - this is often referred to as *is the effect identified*
+- and provide formulas for how to do so based on the observed data distribution (*estimands*)
+- (one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)
+- often left on the table: *how* to do statistical inference (much can still go wrong here)
+  - can also be part of identification, see [the following lecture on SCMs](./lec3-scms.html)
+:::
+
+# DAG rules
+
+## Basic DAG patterns: chain
+
+:::{layout="[30,70]"}
+
+![chain / mediation](_tikzs/dag-chain.png){#fig-chain width="100%"}
+
+- $M$ *mediates* effect of $X$ on $Y$
+- $X \perp Y | M$
+
+:::
+
+## Basic DAG patterns: chain
+
+:::{layout="[30,70]"}
+
+![fork / confounder](_tikzs/dag-fork.png){#fig-fork width="100%"}
+
+- $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
+- $X \perp Y | Z$
+
+:::
+
+## Basic DAG patterns: collider
+
+:::{layout="[30,70]"}
+
+![collider](_tikzs/dag-collider){#fig-collider width="100%"}
+
+- $X$ and $Y$ *both cause* $Z$
+- $X \perp Y$ (but *NOT* when conditioning on $Z$)
+
+:::
+
+## Collider bias - Tinder
+
+:::{layout="[30,70]"}
+
+![collider](_tikzs/dag-collider){#fig-collider width="100%"}
+
+```{r}
+#| label: fig-tinder
+#| output: fragment
+
+intelligent = runif(n)
+attractive = runif(n)
+s = intelligent + attractive > 1.
+df <- data.frame(intelligent, attractive, s)
+df$s <- factor(df$s)
+
+ggplot(df, aes(x=intelligent, y=attractive)) +
+  geom_point(aes(alpha=s, col=s)) + 
+  # stat_smooth(method='lm', col='black', se=F, formula=y~x) +
+  # stat_smooth(method='lm', se=F, formula=y~x, col='black') +
+  stat_smooth(data=df[df$s==T,], method='lm', col='darkred', formula=y~x, se=F) + 
+  scale_color_manual(
+    breaks=c(F,T), values=c('gray', 'darkgreen'),
+    labels=c('on tinder', 'not on tinder'),
+    guide=guide_legend(
+      title=''
+      )
+    ) + 
+  scale_alpha_manual(breaks=c(F,T), values=c(0.15, 0.2), guide=NULL) + 
+  theme(axis.ticks=element_blank(), axis.text=element_blank()) + 
+  coord_equal()
+```
+
+:::
+
+## Collider bias happens in the wild
+
+- collider bias happens when conditioning on a collider opens a new path
+- may not be too visible: doing an analysis in a selected subgroup is a form of ('invisible') conditioning)
+- collider bias may happen e.g. when selecting only patients in the hospital
+    - being admitted to the hospital is a collider (has many different causes, e.g. traffic accident or fever)
+    - usually only one of these is the reason for hospital admission
+    - the causes for hospital admission now seem anti-correlated
+- collider bias *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
+
+## Basic DAG patterns
 
 ::: {#fig-dag-types layout-ncol=3}
 
-![chain](_tikzs/dag-chain.png){#fig-chain width="100%"}
+![chain / mediation](_tikzs/dag-chain.png)
 
-![fork](_tikzs/dag-fork.png){#fig-fork width="100%" .fragment}
+![fork / confounder](_tikzs/dag-fork.png)
 
-![collider](_tikzs/dag-collider){#fig-collider width="100%" .fragment}
+![collider](_tikzs/dag-collider)
 
 :::
 

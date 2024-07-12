@@ -80,10 +80,20 @@ see also the [lecture on DAGs](../../lectures/day2-scms/lec1.qmd#sec-assumptions
 
 :::
 
-::: {.callout-tip collapse="true"}
-## Question Foo
+### RCTs
 
-answer: bar
+Why are RCT special for causal questions?
+
+1. they are often infeasible and unethical
+2. they sample data from the target distribution
+3. they have better external validity
+
+::: {.callout-tip collapse="true"}
+## Which answers are true?
+
+answer: 2.
+
+See also [the DAG lecture](../../lectures/day2-scms/lec1.qmd#sec-def-intervention)
 
 :::
 
