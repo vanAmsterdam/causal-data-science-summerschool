@@ -4,16 +4,15 @@ subtitle: introduction
 author: Wouter van Amsterdam
 date: 2024-08-06
 format: 
-    #latex:
-        #documentclass: beamer
-        #lof: true
-        #lot: true
+    #beamer:
+        #aspectratio: 169
+        #logo: umcu_blue.png
     #html:
         #toc: true
         #toc-depth: 2
         #number-sections: true
     revealjs:
-        theme: umcu.scss
+        #theme: umcu.scss
         incremental: true
         width: 1920
         height: 1080
@@ -58,6 +57,8 @@ Qs:
 1. what knowledge of probability to expect? e.g. conditioning
 
 --->
+
+# Why another framework
 
 ## Causal inference frameworks
 
@@ -134,7 +135,7 @@ Qs:
   - give data of hierarchy and answer the Q
   - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
 
-# Why are DAGs useful
+# Motivating examples
 
 ## Example task: are hospital deliveries good for babies?
 
@@ -326,6 +327,275 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 - in the other example, 'marginal analysis' seemed best
 - with *Directed Acyclic Graphs* we can make our decision
 
+## Causal Directed Acyclic Graphs
+
+### diagram that represents our assumptions on causal relations
+
+1. nodes are variables
+2. arrows (directed edges) point from cause to effect
+
+![Directed Acyclic Graph](_tikzs/dag-fire0.png){#fig-dag-fire0 .fragment}
+
+- when used to convey causal assumptions, DAGs are 'causal' DAGs
+- this is not the only use of DAGs
+
+## Making DAGs for our examples:
+
+### The pregnancy DAG
+
+![](_tikzs/dag-delivery.png){#fig-dag-delivery1 height="40%"}
+
+- assumptions:
+    - women with high risk of bad neonatal outcomes (`pregnancy risk`) are referred to the hospital for delivery
+    - hospital deliveries lead to better outcomes for babies as more emergency treatments possible
+    - both `pregnancy risk` and `hospital delivery` cause `neonatal outcome`
+- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is what's called a confounder)
+
+## Making DAGs for our examples:
+
+### The hernia DAG
+
+![](_tikzs/dag-hernia.png){#fig-dag-hernia height="40%"}
+
+- assumptions:
+    - patients admitted to the hospital keep more `bed rest` than those who remain at home
+    - `bed rest` leads to lower recovery times thus less walking patients after 1 week
+- the *other variable* `bed rest` is a *mediator* between the treatment (`hospitalized`) and the outcome
+
+## Causal DAGs to the rescue
+
+- the *other variable* was:
+    - a **common cause** of the treatment and outcome in the pregnancy example
+    - a **mediator** between the treatment and the outcome in the hernia example, 
+- using our background knowledge we could see *something* is different about these examples
+- next: ground this in causal theory and see implications
+
+# Some math background: probabilites and assumptions
+
+## Marginal, Joint and Conditional probabilites
+
+Probability statements about *random events* $A$ and $B$:
+
+::: {layout="[60,40]" layout-valign="center"}
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A)$   | *marginal* probability that event $A$ occurs |
+| $P(B)$   | *marginal* probability that event $B$ occurs |
+
+::::{.r-stack}
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    | 5     | 10  |
+|   | has no cancer | 10   | 80    | 90  |
+|   |               | 15   | 85    | 100 |
+:::::
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | | | |
+|   | has no cancer | | | |
+|   |               | 15   | 85    | 100 |
+$P(A=1) = 15 / 100$
+:::::
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    |     |      | 10  |
+|   | has no cancer |    |     | 90  |
+|   |               |    |     | 100 |
+$P(B=1) = 10 / 100$
+:::::
+
+::::
+
+:::
+
+## Marginal, Joint and Conditional probabilites
+
+Probability statements about *random events* $A$ and $B$:
+
+::: {layout="[60,40]" layout-valign="center"}
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A)$   | *marginal* probability that event $A$ occurs |
+| $P(A,B)$ | *joint* probability of $A$ and $B$  |
+
+::::{.r-stack}
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    | 5     | 10  |
+|   | has no cancer | 10   | 80    | 90  |
+|   |               | 15   | 85    | 100 |
+:::::
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    | | |
+|   | has no cancer | | | |
+|   |               | | | 100 |
+
+$P(B=1,A=1) = 5 / 100$
+:::::
+
+
+::::
+
+:::
+
+## Marginal, Joint and Conditional probabilites
+
+Probability statements about *random events* $A$ and $B$:
+
+::: {layout="[60,40]" layout-valign="center"}
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A)$   | *marginal* probability that event $A$ occurs |
+| $P(A,B)$ | *joint* probability of $A$ and $B$  |
+| $P(A|B)$ | *conditional* probability of $A$ given $B$  |
+
+::::{.r-stack}
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    | 5     | 10  |
+|   | has no cancer | 10   | 80    | 90  |
+|   |               | 15   | 85    | 100 |
+
+[- *marginal* $P(A=1) = 15/100$]{.non-incremental}
+
+:::::
+
+:::::{.fragment .fade-in-then-out}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    | 5     | 10  |
+|   | has no cancer |    |     |   |
+|   |               |    |     |  |
+
+[- *marginal* $P(A=1) = 15/100$]{.non-incremental}
+
+[- *conditional* $P(A=1|B=1) = 5 / 10$]{.non-incremental}
+
+:::::
+
+::::
+
+:::
+
+## Probability rules and identities
+
+:::{layout="[60,40]"}
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
+
+:::::{.fragment}
+
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    |     |   |
+|   | has no cancer | 10   |     |   |
+|   |               | 15   |     | 100 |
+
+\begin{align}
+    P(A=1) &= P(A=1,B=0) + P(A=1,B=1) \\
+           &= 5/100 + 10/100 \\
+           & = 15/100
+\end{align}
+
+
+:::::
+
+:::
+
+## Probability rules and identities
+
+:::{layout="[60,40]"}
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
+| $P(A,B) = P(A|B)P(B)$ | product rule | 
+
+:::::{.fragment}
+|   |               | A    |       |     |
+|---|---------------|------|-------|-----|
+|   |               | dies | lives |     |
+| B | has cancer    | 5    |     | 10 |
+|   | has no cancer |    |     |   |
+|   |               |    |     | 100 |
+
+\begin{align}
+    P(A=1,B=1) &= P(A=1|B=1)P(B=1) \\
+               &= 5/10 * 10/100 \\
+               & = 5/100
+\end{align}
+
+
+:::::
+
+:::
+
+## Probability rules and identities
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
+| $P(A,B) = P(A|B)P(B)$ | product rule | 
+| $P(A) = \sum_{b} P(A|B=b)P(B=b)$ | total expectation (consequence of marginal vs joint and product rule) |
+| $P(A|B) = \frac{P(A,B)}{P(B)}$ | conditional is joint over marginal (follows from product rule)| 
+
+## Marginal and conditional independence:
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A,B) = P(A)P(B)$ | (marginal) independence of $A$ and $B$| 
+
+- knowing $A$ has no information on what to expect of $B$
+- If I roll a die, the result of that die ($A$) has no information on the weather in the Netherlands ($B$)
+
+## Marginal and conditional independence:
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A,B) = P(A)P(B)$ | (marginal) independence of $A$ and $B$| 
+| $P(A,B|C) = P(A|C)P(B|C)$ | conditional independence of $A$ and $B$ given $C$| 
+
+- $C$ has all the information that is shared between $A$ and $B$
+
+## Conditional Independence
+
+- Charlie calls Alice and reads her script $C$, then she calls Bob and reads him the same
+- A week later we ask Alice to repeat the story Charlie told her, she remembered $A$, a noisy version of $C$
+- We ask Bob the same, he recounts $B$, a different noisy version of $C$
+- Are $A$ and $B$ independent? No! $P(A,B) \neq P(A)P(B)$
+  - If we learn $A$ from Alice, we can get a good guess about $B$ from Bob
+- If we knew the $C$, would hearing $A$ give use more information about $B$?
+  - No, because all the shared information between $A$ and $B$ is explained by $C$, so:
+  - $P(A,B|C) = P(A|C)P(B|C)$
+- Variables can be marginally dependent but conditionally independent
+
+
 ## Assumption parlance {#sec-assumptions}
 
 - necessary assumption:
@@ -339,17 +609,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 - strong vs weak assumption are judged on relative terms
   - if assumption A is sufficient for B, B cannot be a stronger assumption that A
 
-## Causal Directed Acyclic Graphs
-
-### diagram that represents our assumptions on causal relations
-
-1. nodes are variables
-2. arrows (directed edges) point from cause to effect
-
-![Directed Acyclic Graph](_tikzs/dag-fire0.png){#fig-dag-fire0 .fragment}
-
-- when used to convey causal assumptions, DAGs are 'causal' DAGs
-- this is not the only use of DAGs
+# DAG definitions
 
 ## DAGs convey two types of assumptions:
 
@@ -451,31 +711,6 @@ ggplot(dfm, aes(x=x, y=y, col=factor(t))) +
 
 :::
 
-
-## Making DAGs for our examples:
-
-### The pregnancy DAG
-
-![](_tikzs/dag-delivery.png){#fig-dag-delivery1 height="40%"}
-
-- assumptions:
-    - women with high risk of bad neonatal outcomes (`pregnancy risk`) are referred to the hospital for delivery
-    - hospital deliveries lead to better outcomes for babies as more emergency treatments possible
-    - both `pregnancy risk` and `hospital delivery` cause `neonatal outcome`
-- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is what's called a confounder)
-
-## Making DAGs for our examples:
-
-### The hernia DAG
-
-![](_tikzs/dag-hernia.png){#fig-dag-hernia height="40%"}
-
-- assumptions:
-    - patients admitted to the hospital keep more `bed rest` than those who remain at home
-    - `bed rest` leads to lower recovery times thus less walking patients after 1 week
-- the *other variable* `bed rest` is a *mediator* between the treatment (`hospitalized`) and the outcome
-
-# DAG definitions
 
 ## The DAG definition of an intervention
 
