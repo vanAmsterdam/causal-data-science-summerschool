@@ -18,6 +18,7 @@ format:
         height: 1080
         logo: umcu_blue.png
         center: true
+        include-before: [ '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>']
 execute:
     warning: false
     message: false
@@ -151,7 +152,7 @@ Qs:
 
 ## Example task: are hospital deliveries good for babies?
 
-- You're a data scientist in the Wilhelmina Kinderziekenhuis (WKZ)
+- You're a data scientist in a children's hospital
 - Have data on
   - delivery location (home or hospital)
   - neonatal outcomes (good or bad)
@@ -368,7 +369,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
     - a **common cause** of the treatment and outcome in the pregnancy example
     - a **mediator** between the treatment and the outcome in the hernia example, 
 - using our background knowledge we could see *something* is different about these examples
-- next: ground this in causal theory and see implications
+- next: ground this in causal theory and see implications for analysis
 
 # Some math background: probabilites and assumptions
 
@@ -598,7 +599,9 @@ Probability statements about *random events* $A$ and $B$:
 
 - $C$ has all the information that is shared between $A$ and $B$
 
-## Conditional Independence
+## Conditional Independence in an example
+
+::: {layout="[70,30]" layout-valign="center"}
 
 - Charlie calls Alice and reads her script $C$, then she calls Bob and reads him the same
 - A week later we ask Alice to repeat the story Charlie told her, she remembered $A$, a noisy version of $C$
@@ -610,6 +613,9 @@ Probability statements about *random events* $A$ and $B$:
   - $P(A,B|C) = P(A|C)P(B|C)$
 - Variables can be marginally dependent but conditionally independent
 
+![ABC](figs/ABC.png){width="100%"}
+
+:::
 
 ## Assumption parlance {#sec-assumptions}
 
@@ -618,7 +624,7 @@ Probability statements about *random events* $A$ and $B$:
 - sufficient assumption:
   - B is always true when A holds
 - strong assumption:
-  - requires *strong* evidence, we rather not make these
+  - requires *strong* evidence, we'd rather not make these
 - weak assumption:
   - requires *weak* evidence
 - strong vs weak assumption are judged on relative terms
@@ -665,6 +671,7 @@ Probability statements about *random events* $A$ and $B$:
 - @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
   - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
 - @fig-dag-fire3 is also compatible with @fig-dag-fire2
+
 
 ## DAGs are 'non-parametric'
 
@@ -720,24 +727,47 @@ ggplot(dfm, aes(x=x, y=y, col=factor(t))) +
 
 ![DAG](_tikzs/dag-nonparametric.png)
 
-- this DAG says $Y$ is a function of $X,T$, or:
-- $Y = f_Y(X,T)$
-- in the next lecture we'll talk more about these 'structural equations'
+- this DAG says $Y$ is a function of $X,T$ and external noise $U_Y$, or:
+- $Y = f_Y(X,T,U_Y)$
+- in the [next lecture](./lec3-scms.html) we'll talk more about these 'structural equations'
 
 :::
 
+## DAGs imply a causal factorization of the joint distribution
 
-## The DAG definition of an intervention {#sec-def-intervention}
-
-assume this is our DAG for a situation:
-
-- then [intervening]{.fg} on variable $T$ means removing all incoming arrows
-
-::: {#fig-intervention layout-ncol=2}
+::: {layout="[30,70]"}
 
 ![observational data](_tikzs/dag-obs.png){#fig-obs width=50%}
 
+\begin{align}
+    P(Y,T,Z,W) &= P(Y|T,Z,W)P(T,Z,W) \\
+               &\class{fragment}{= P(Y|T,Z)P(T,Z,W)} \\
+               &\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z,W)} \\
+               &\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z)P(W)}
+\end{align}
+
+:::
+
+If this looks complicated: just follow the arrows
+
+## The DAG definition of an intervention {#sec-def-intervention}
+
+assume this is our DAG for a situation and we want to learn the effect $T$ has on $Y$
+
+- this is denoted $P(Y|\text{do}(T))$
+- in the graph, [intervening]{.fg} on variable $T$ means removing all incoming arrows
+- this assumes such a *modular* intervention is possible: i.e. leave everything else unaltered
+
+::: {layout-ncol=2}
+
+::::{.fragment}
+![observational data](_tikzs/dag-obs.png){#fig-obs width=50%}
+
+::::
+
+::::{.fragment}
 ![intervened DAG](_tikzs/dag-intervened.png){#fig-intervened .fragment width=50%}
+::::
 
 :::
 
@@ -747,19 +777,28 @@ assume this is our DAG for a situation:
 
 is to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)
 
-::: {#fig-intervention layout="[20, 20, 60]"}
+:::{.columns}
+
+::::{.column width="20%"}
 
 ![observational data: data we have](_tikzs/dag-obs.png){#fig-obs}
 
 ![intervened DAG: what we want to know](_tikzs/dag-intervened.png){#fig-intervened}
+
+::::
+
+::::{.column width="80%"}
 
 - causal inference frameworks provide a language to express assumptions
 - based on these assumptions, the framework tell us whether such an inference is possible
     - this is often referred to as *is the effect identified*
 - and provide formulas for how to do so based on the observed data distribution (*estimands*)
 - (one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)
-- often left on the table: *how* to do statistical inference (much can still go wrong here)
+- not yet said: *how* to do statistical inference to estimate the estimand (much can still go wrong here)
   - can also be part of identification, see [the following lecture on SCMs](./lec3-scms.html)
+
+::::
+
 :::
 
 # DAG rules
@@ -806,6 +845,7 @@ is to take data we have to make inferences about data from a different distribut
 ```{r}
 #| label: fig-tinder
 #| output: fragment
+#| fig-width: 12
 
 intelligent = runif(n)
 attractive = runif(n)
@@ -832,15 +872,14 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
 
 :::
 
-## Collider bias happens in the wild
+## Conditioning on a collider creates dependence of its parents 
 
-- collider bias happens when conditioning on a collider opens a new path
 - may not be too visible: doing an analysis in a selected subgroup is a form of ('invisible') conditioning)
-- collider bias may happen e.g. when selecting only patients in the hospital
+- e.g. when selecting only patients in the hospital
     - being admitted to the hospital is a collider (has many different causes, e.g. traffic accident or fever)
     - usually only one of these is the reason for hospital admission
     - the causes for hospital admission now seem anti-correlated
-- collider bias *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
+- collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
 
 ## Basic DAG patterns
 

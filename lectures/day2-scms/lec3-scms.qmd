@@ -125,18 +125,14 @@ With DAGs we can:
 
 # Structural Causal Models: definitions
 
-## The world as a computer program
-
-### Think of the world as a computer program with a set of 
+## Think of the world as a computer program with a set of 
 
 - (endogenous) *variables*:
   - `surgery` = duration of surgery (hours)
   - `los` = length of stay in hospital post surgery (days)
   - `survival` = survival time (years)
 - *background variables* (exogenous):
-  - `u_surgery`
-  - `u_los`
-  - `u_survival`
+  - `u_surgery`, `u_los`, `u_survival`
 - *functions* `f_` for each *variable* which depend on its *parents* `pa_` and its own *background* `u_`:
   - `surgery = f_surgery(pa_surgery,u_surgery)`
   - `los = f_los(pa_los, u_los)`
@@ -161,11 +157,9 @@ Together these define a *Structural Causal Model* [see definition 7.1.1 in @pear
 f_surgery <- function(u_surgery) { # pa_surgery = {}
   u_surgery
 }
-
 f_los <- function(surgery, u_los) { # pa_los = {surgery}
   surgery + u_los
 }
-
 f_survival <- function(surgery, los, u_survival) { # pa_survival = {sugery, los}
   survival = los - 2 * surgery + u_survival
 }
@@ -416,8 +410,8 @@ us <- map(1:N, ~sample_u())
 ## Recap of definitions
 
 - *Structural Causal model*:
-  - exogenous variables U
-  - endogenous variables
+  - endogenous variables $V$
+  - exogenous (noise) variables $U$
   - deterministic functions `f_i(pa_i,u_i)`
 - *Effect of Action* do$(T=t)$: *submodel* where `f_T` replaced with fixed value `t`
 - *Probabilistic Causal Model*: SCM + distribution over U
