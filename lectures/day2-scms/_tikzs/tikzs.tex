@@ -259,6 +259,82 @@
     
 \end{figure}
 
+\begin{figure}[htpb]
+    \begin{center}
+    \tikzsetnextfilename{dag1-obs}
+        \begin{tikzpicture}
+            \node (z) at (0, 1) {$Z$};
+            \node (t) at (-1, 0) {$T$};
+            \node (y) at (1, 0) {$Y$};
+            
+            \draw[->] (z) -- (y);
+            \draw[->] (z) -- (t);
+            \draw[->] (t) -- (y);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
+\begin{figure}[htpb]
+    \begin{center}
+    \tikzsetnextfilename{dag1-intervened}
+        \begin{tikzpicture}
+            \node (z) at (0, 1) {$Z$};
+            \node (t) at (-1, 0) {$T$};
+            \node (y) at (1, 0) {$Y$};
+            
+            \draw[->] (z) -- (y);
+            \draw[->] (t) -- (y);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
+
+\begin{figure}[htpb]
+    \begin{center}
+    \tikzsetnextfilename{path1}
+        \begin{tikzpicture}
+            \node (x) at (-3, 0) {$x$};
+            \node (r) at (-2, 0) {$r$};
+            \node (s) at (-1, 0) {$s$};
+            \node (t) at (0, -1) {$t$};
+            \node (u) at (1, 0) {$u$};
+            \node (v) at (2, 1) {$v$};
+            \node (y) at (3, 0) {$y$};
+            
+            \draw[->] (x) -- (r);
+            \draw[->] (r) -- (s);
+            \draw[->] (s) -- (t);
+            \draw[->] (v) -- (u);
+            \draw[->] (u) -- (t);
+            \draw[->] (v) -- (y);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
+
+\begin{figure}[htpb]
+    \begin{center}
+    \tikzsetnextfilename{path1z}
+        \begin{tikzpicture}
+            \node (x) at (-3, 0) {$x$};
+            \node[draw,circle] (r) at (-2, 0) {$r$};
+            \node (s) at (-1, 0) {$s$};
+            \node[draw,circle] (t) at (0, -1) {$t$};
+            \node (u) at (1, 0) {$u$};
+            \node (v) at (2, 1) {$v$};
+            \node (y) at (3, 0) {$y$};
+            
+
+            \draw[->] (x) -- (r);
+            \draw[->] (r) -- (s);
+            \draw[->] (s) -- (t);
+            \draw[->] (v) -- (u);
+            \draw[->] (u) -- (t);
+            \draw[->] (v) -- (y);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
 
 
 \end{document}

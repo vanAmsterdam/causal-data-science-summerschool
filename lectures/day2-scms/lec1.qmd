@@ -12,7 +12,8 @@ format:
         #toc-depth: 2
         #number-sections: true
     revealjs:
-        #theme: umcu.scss
+        toc: false
+        theme: umcu.scss
         incremental: true
         width: 1920
         height: 1080
@@ -26,17 +27,6 @@ categories:
     - DAG
     - day2
 bibliography: bibliography.bib
-filters:
-    - diagram
-diagram:
-  cache: true
-  engine:
-    tikz:
-      execpath: lualatex
-      header-includes:
-        - '\usepackage{adjustbox}'
-        - '\usetikzlibrary{arrows, shapes, positioning}'
-        - '\tikzstyle{nodeobserved} = [circle, minimum size = 10mm, thick, draw =black!80, fill=gray!30]'
 ---
 
 ```{r}
@@ -59,7 +49,15 @@ Qs:
 
 --->
 
-# Why another framework
+# Day 2 intro: Causal Directed Acyclic Graphs and Structural Causal Models
+
+## Today's lectures
+
+- introduce new framework based on
+  - causal Directed Acyclic Graphs (DAGs)
+  - Structral Causal Models (SCMs)
+- counterfactuals and Pearl's Causal Hierarchy of questions
+- lectures will follow Pearl's book Causality @pearlCausality2009, specifically chapters 3 (DAGs) and 7 (SCMs)
 
 ## Causal inference frameworks
 
@@ -86,59 +84,24 @@ Qs:
     - SCM approach is broader in that it can define more different types of causal questions
 - Equivalence: given the same data and assumptions, get the same estimates
 
-## lecture 1 topics {background-image="1920_1080.png" background-size="contain"}
+## Lecture 1 & 2 topics {background-image="1920_1080.png" background-size="contain"}
 
-- why use DAGs
-- 
-
-
-
-- what are DAGs and where do come from 
-- SCMs as computer programs
-  - intervention as change in program
-- causal identifyability with DAGs
-  - variable types: confounders, mediators, colliders (tinder: hot and intelligent / single ;on tinder)
-    - confounders; storks; randomized, breaking arrows
+- motivating examples for DAGs
+- what are DAGs
+- causal inference with DAGs
+  - what is an intervention
+  - structures: confounding, mediation, colliders
   - d-separation
   - back-door criterion
-  - follow rules of do calculus
-
-
--  DAG
-  1. what is the world
-  2. what can we estimate and how?
-  3. confounders / colliders
-  4. backdoor
  
-## lecture 2 topics
-
-  - perfect versus soft intervention
-  - critique of scm / cross-world assumptions
-
 ## practical 1
 
   - drawing and using dags (what to condition on); daggity
   - same data, different dags, different answers
 
-## lecture 3 topics
-
-  - bonus queries:
-    - counterfactuals
-    - probability of necessity, probability of sufficiency
-    - actual causality (Joe Halpern)
-  - Pearl Causal Hierarchy
-  - other uses of DAGs: missing data, selection
-  - reflections on DAGs, limitations
-
-## practical 2
-
-  - causal ladder: what Q is this?
-  - give data of hierarchy and answer the Q
-  - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
-
 # Motivating examples
 
-## Example task: are hospital deliveries good for babies?
+## Example task: are hospital deliveries good for babies? {#sec-example-delivery}
 
 ::: {.r-stack}
 
@@ -271,7 +234,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ```
 
 
-## Observed data {auto-animate=true}
+## Observed data
 
 |      |      | location |          |
 |------|------|---------:|---------:|
@@ -281,7 +244,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 - better outcomes for babies delivered in the hospital for *both risk groups*
 
-## Observed data {auto-animate=true}
+## Observed data
 
 |      |      | location |          |
 |------|------|---------:|---------:|
@@ -338,7 +301,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ![Directed Acyclic Graph](_tikzs/dag-fire0.png){#fig-dag-fire0 .fragment}
 
 - when used to convey causal assumptions, DAGs are 'causal' DAGs
-- this is not the only use of DAGs
+- this is not the only use of DAGs (see [day 4](../day4-causal-predictions/lec1.html))
 
 ## Making DAGs for our examples:
 
@@ -375,7 +338,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 ## Why math???
 
-:::{layout="[40,60]"}
+:::{layout="[60,40]"}
 
 - why not?
 - need probability for estimation
@@ -390,7 +353,9 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 ## Marginal, Joint and Conditional probabilites
 
-Probability statements about *random events* $A$ ($A=1\to$ patient dies) and $B$ ($B=1\to$ has cancer):
+Probability statements about *random events* $A$ and $B$
+
+$A=1\to$ patient dies; $B=1\to$ has cancer
 
 ::: {layout="[60,40]" layout-valign="center"}
 
@@ -578,8 +543,8 @@ Probability statements about *random events* $A$ and $B$:
 |----------|-----------------------------------|
 | $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
 | $P(A,B) = P(A|B)P(B)$ | product rule | 
-| $P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)$ | total expectation (consequence of marginal vs joint and product rule) |
 | $P(A|B) = \frac{P(A,B)}{P(B)}$ | conditional is joint over marginal (follows from product rule)| 
+| $P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)$ | total expectation (consequence of marginal vs joint and product rule) |
 
 ## Marginal and conditional independence:
 
@@ -760,18 +725,111 @@ assume this is our DAG for a situation and we want to learn the effect $T$ has o
 
 ::: {layout-ncol=2}
 
-::::{.fragment}
 ![observational data](_tikzs/dag-obs.png){#fig-obs width=50%}
 
-::::
-
-::::{.fragment}
 ![intervened DAG](_tikzs/dag-intervened.png){#fig-intervened .fragment width=50%}
-::::
 
 :::
 
 - which means $T$ does not *listen* to other variables anymore, but is set at a particular value, like in an experiment
+
+## Intervention as graph surgery - changed distribution
+
+::: {layout-ncol=2}
+
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
+
+:::
+
+::: {layout-ncol=2}
+
+::::{.fragment}
+\begin{align}
+      P_{\text{obs}}(Y,T,Z) &= P(Y|T,Z)\color{red}{P(T|Z)}P(Z) \\
+        P_{\text{obs}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T)
+\end{align}
+
+::::
+
+::::{.fragment}
+\begin{align}
+      P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z) \\
+        P_{\text{int}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T) \\
+               &\class{fragment}{= \sum_{z} P(Y|T,Z=z)\color{green}{P(Z)}} \\
+               &\class{fragment}{= P(Y|\text{do}(T))}
+\end{align}
+::::
+
+:::
+
+## Intervention as graph surgery - changed distribution
+
+::: {layout-ncol=2}
+
+:::: {#int}
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+$$P_{\text{obs}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{red}{P(Z=z|T)}$$
+::::
+
+:::: {#int}
+![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
+
+$$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand}
+::::
+
+:::
+
+- in $P_{\text{obs}}$, $P(Z|T) \color{red}{\neq} P(Z)$
+- in $P_{\text{int}}$, $P(Z|T) \color{green}{\neq} P(Z)$
+- thereby $P_{\text{obs}}(Y|T) \neq P_{\text{int}}(P(Y|T)) = P(Y|\text{do}(T))$
+- **seeing is not doing**
+- **looking at @eq-estimand, we can compute these from $P_{\text{obs}}$!** (this is what is called an *estimand*)
+
+## Back to example 1
+
+::: {layout-ncol=2}
+
+![DAG](_tikzs/dag-delivery.png)
+
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+:::
+
+- estimand: $P(\text{outcome}|\text{do}(\text{location})) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk})$
+- $P(\text{risk}=\text{low})=74\%$
+
+::: {.fragment}
+\begin{align}
+ P(\text{outcome}|\text{do}(\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\% \\
+     P(\text{outcome}|\text{do}(\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\%
+\end{align}
+:::
+
+- **conclusion**: sending all deliveries to the hospital leads to better outcomes
+
+## Back to example 2
+
+::: {layout-ncol=2}
+
+![DAG](_tikzs/dag-hernia)
+
+- removing all arrows going in to $T$ results in the same DAG
+- so $P(Y|T) = P(Y|\text{do}(T))$
+- i.e. use the marginals
+
+:::
+
+
 
 ## The gist of observational causal inference
 
@@ -811,10 +869,11 @@ is to take data we have to make inferences about data from a different distribut
 
 - $M$ *mediates* effect of $X$ on $Y$
 - $X \perp Y | M$
+- do not want to adjust for $M$ when estimating total effect of $X$ on $Y$
 
 :::
 
-## Basic DAG patterns: chain
+## Basic DAG patterns: fork
 
 :::{layout="[30,70]"}
 
@@ -822,6 +881,8 @@ is to take data we have to make inferences about data from a different distribut
 
 - $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
 - $X \perp Y | Z$
+- $Z \to X$ is a *back-door*: a path between $X$ and $Y$ that starts with an arrow into $X$
+- typically want to adjust for $Z$ (see [later @sec-backdoor])
 
 :::
 
@@ -833,6 +894,7 @@ is to take data we have to make inferences about data from a different distribut
 
 - $X$ and $Y$ *both cause* $Z$
 - $X \perp Y$ (but *NOT* when conditioning on $Z$)
+- often do not want to condition on $Z$ as this induces a correlation between $X$ and $Y$
 
 :::
 
@@ -840,7 +902,18 @@ is to take data we have to make inferences about data from a different distribut
 
 :::{layout="[30,70]"}
 
+::: {#fig-collider}
+
 ![collider](_tikzs/dag-collider){#fig-collider width="100%"}
+
+\begin{align}
+    \text{intelligent} &\sim U[0,1] \\
+    \text{attractive}  &\sim U[0,1] \\
+    \text{on tinder}   &= I_{\text{intelligent} + \text{attractive} < 1}
+\end{align}
+
+
+:::
 
 ```{r}
 #| label: fig-tinder
@@ -881,34 +954,54 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
     - the causes for hospital admission now seem anti-correlated
 - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
 
-## Basic DAG patterns
+## When life gets complicated / real
 
-::: {#fig-dag-types layout-ncol=3}
+![Figure 4 in @debertinSynthesizingSubjectmatterExpertise2024](figs/dag-murray.jpg)
 
-![chain / mediation](_tikzs/dag-chain.png)
+## d-separation (directional-separation)
 
-![fork / confounder](_tikzs/dag-fork.png)
+![paths](_tikzs/path1.png)
 
-![collider](_tikzs/dag-collider)
+- a *path* is a set of nodes connected by edges ($x \ldots y$)
+- a *directed-path* is a path with a constant direction ($x \dots t$)
+- an *unblocked-path* is a path without a collider ($t \ldots y$)
+- a *blocked-path* is a path with a collider ($s,t, u$)
+- *d(irectional)-separation* of $x,y$ means there is no unblocked path between them
+
+## d-separation when conditioning
+
+![paths with conditioning variables $r$, $t$](_tikzs/path1z.png)
+
+- conditioning on variable: 
+  - when variable is a collider: *opens a path* ($t$ opens $s,t,u$ etc.)
+  - otherwise: *blocks a path* (e.g. $r$ blocks $x,r,s$)
+- conditioning *set* $Z=\{r,t\}$: set of conditioning variables
+
+## The back-door criterion and adjustment {#sec-backdoor}
+
+**Definition 3.3.1 (Back-Door) (for pairs of variables)**
+
+A set of variables $Z$ satisfies the *back-door* criterion relative to an ordered pair of variables $(X,Y)$ in a DAG if:
+
+1. no node in $Z$ is a descendant of $X$ *(e.g. mediatiors)*
+2. $Z$ blocks every path between $X$ and $Y$ that contains an arrow into $X$
+
+:::{.fragment}
+
+**Theorem 3.2.2 (Back-Door Adjustment)**
+
+If a set of variables $Z$ satisfies the back-door criterion relative to $(X,Y)$, then the causal effect of $X$ on $Y$ is identifiable and is given by the formula
+
+$$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$ {#eq-backdooradjustment}
 
 :::
 
-## next steps
+## Did we see this equation before?
 
-
-*conclusion 1*: seeing is not doing
-
-**to follow-up**
-
-- DAG to picture the game
-- doing = mutilating DAG
-- hotel 2: the Randtz
-- identifyability: more SCMs with same marginals
-- another hidden variable: are the guests brittish
-- SCM = know rules of the game
-- DAG = know who listens to what
-- why are DAGs useful? know what you can compute
-
+- Yes! When computing the effect of hospital deliveries on neonatal outcomes @eq-estimand
+- DAGs tell us what to adjust for
+- automatic algorithms tell use whether an estimand exists and what it is
+- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]
 
 
 ## References

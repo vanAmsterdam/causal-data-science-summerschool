@@ -121,6 +121,19 @@ With DAGs we can:
 - SCMs: the world as computer programs
 - interventions are submodels
 
+  - bonus queries:
+    - counterfactuals
+    - probability of necessity, probability of sufficiency
+    - actual causality (Joe Halpern)
+  - Pearl Causal Hierarchy
+  - other uses of DAGs: missing data, selection
+  - reflections on DAGs, limitations
+
+## practical 2
+
+  - causal ladder: what Q is this?
+  - give data of hierarchy and answer the Q
+  - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
 
 
 # Structural Causal Models: definitions
@@ -544,7 +557,7 @@ $^2$ because in the intervened DAG, $Z$ is independent of $T$
 
 . . .
 
-- $P(Y|\text{do}(T)) \neq P(Y|T)$ is Pearl's definition of confounding
+- $P(Y|\text{do}(T)) \neq P(Y|T)$ is Pearl's definition of confounding (def 6.2.1)
 - this shows why RCTs are special (i.e. no backdoor paths into $T$)
 
 ## Definition 3.2.4 (Causal Effect Identifiability)

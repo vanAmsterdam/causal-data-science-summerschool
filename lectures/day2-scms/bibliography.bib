@@ -16,6 +16,36 @@
   keywords = {Biological models,Epidemiology}
 }
 
+@article{cinelliCrashCourseGood2022,
+  title = {A {{Crash Course}} in {{Good}} and {{Bad Controls}}},
+  author = {Cinelli, Carlos and Forney, Andrew and Pearl, Judea},
+  date = {2022-05-20},
+  journaltitle = {Sociological Methods \& Research},
+  shortjournal = {Sociological Methods \& Research},
+  pages = {004912412210995},
+  issn = {0049-1241, 1552-8294},
+  doi = {10.1177/00491241221099552},
+  url = {http://journals.sagepub.com/doi/10.1177/00491241221099552},
+  urldate = {2024-07-13},
+  abstract = {Many students of statistics and econometrics express frustration with the way a problem known as “bad control” is treated in the traditional literature. The issue arises when the addition of a variable to a regression equation produces an unintended discrepancy between the regression coefficient and the effect that the coefficient is intended to represent. Avoiding such discrepancies presents a challenge to all analysts in the data intensive sciences. This note describes graphical tools for understanding, visualizing, and resolving the problem through a series of illustrative examples. By making this “crash course” accessible to instructors and practitioners, we hope to avail these tools to a broader community of scientists concerned with the causal interpretation of regression models.},
+  langid = {english}
+}
+
+@article{debertinSynthesizingSubjectmatterExpertise2024,
+  title = {Synthesizing Subject-Matter Expertise for Variable Selection in Causal Effect Estimation: {{A}} Case Study},
+  shorttitle = {Synthesizing Subject-Matter Expertise for Variable Selection in Causal Effect Estimation},
+  author = {Debertin, Julia and Jurado Vélez, Javier A. and Corlin, Laura and Hidalgo, Bertha and Murray, Eleanor J.},
+  date = {2024},
+  journaltitle = {Epidemiology},
+  pages = {10.1097/EDE.0000000000001758},
+  issn = {1044-3983},
+  doi = {10.1097/EDE.0000000000001758},
+  url = {https://journals.lww.com/epidem/abstract/9900/synthesizing_subject_matter_expertise_for_variable.260.aspx},
+  urldate = {2024-07-04},
+  abstract = {Background:~           Causal graphs are an important tool for covariate selection but there is limited applied research on how best to create them. Here, we used data from the Coronary Drug Project (CDP) trial to assess a range of approaches to directed acyclic graph (DAG) creation. We focused on the effect of adherence on mortality in the placebo arm, since the true causal effect is believed with a high degree of certainty.           Methods:~           We created DAGs for the effect of placebo adherence on mortality using different approaches for identifying variables and links to include or exclude. For each DAG, we identified minimal adjustment sets of covariates for estimating our causal effect of interest, and applied these to analyses of the CDP data.           Results:~           When we used only baseline covariate values to estimate the cumulative effect of placebo adherence on mortality, all adjustment sets performed similarly. The specific choice of covariates had minimal effect on these (biased) point estimates, but including non-confounding prognostic factors resulted in smaller variance estimates. When we additionally adjusted for time-varying covariates of adherence using inverse probability weighting, covariates identified from the DAG created by focusing on prognostic factors performed best.           Conclusion:~           Theoretical advice on covariate selection suggests including prognostic factors that are not exposure predictors can reduce variance without increasing bias. In contrast, for exposure predictors that are not prognostic factors, inclusion may result in less bias control. Our results empirically confirm this advice. We recommend that hand-creating DAGs begin with identification of all potential outcome-prognostic factors.},
+  langid = {american}
+}
+
 @article{matthewsStorksDeliverBabies2000,
   title = {Storks {{Deliver Babies}} (P= 0.008)},
   author = {Matthews, Robert},
@@ -26,6 +56,15 @@
   pages = {36--38},
   doi = {10.1111/1467-9639.00013},
   abstract = {This article shows that a highly statisticallysignificant correlation exists between storkpopulations and human birth rates across Europe.While storks may not deliver babies, unthinkinginterpretation of correlation and p-values cancertainly deliver unreliable conclusions.}
+}
+
+@book{pearlCausality2009,
+  title = {Causality},
+  author = {Pearl, Judea},
+  date = {2009-09},
+  publisher = {Cambridge University Press},
+  abstract = {Written by one of the preeminent researchers in the field, this book provides a comprehensive exposition of modern analysis of causation. It shows how causality has grown from a nebulous concept into a mathematical theory with significant applications in the fields of statistics, artificial intelligence, economics, philosophy, cognitive science, and the health and social sciences. Judea Pearl presents and unifies the probabilistic, manipulative, counterfactual, and structural approaches to causation and devises simple mathematical tools for studying the relationships between causal connections and statistical associations. The book will open the way for including causal analysis in the standard curricula of statistics, artificial intelligence, business, epidemiology, social sciences, and economics. Students in these fields will find natural models, simple inferential procedures, and precise mathematical definitions of causal concepts that traditional texts have evaded or made unduly complicated. The first edition of Causality has led to a paradigmatic change in the way that causality is treated in statistics, philosophy, computer science, social science, and economics. Cited in more than 5,000 scientific publications, it continues to liberate scientists from the traditional molds of statistical thinking. In this revised edition, Judea Pearl elucidates thorny issues, answers readers' questions, and offers a panoramic view of recent advances in this field of research. Causality will be of interests to students and professionals in a wide variety of fields. Anyone who wishes to elucidate meaningful relationships from data, predict effects of actions and policies, assess explanations of reported events, or form theories of causal understanding and causal speech will find this book stimulating and invaluable.},
+  langid = {english}
 }
 
 @incollection{pearlLogicStructureBasedCounterfactuals2009,
@@ -42,4 +81,23 @@
   urldate = {2024-05-28},
   abstract = {And the Lord said,“If I find in the city of Sodom fifty good men,I will pardon the whole place for their sake.”Genesis 18:26PrefaceThis chapter provides a formal analysis of structure-based counterfactuals, a concept introduced briefly in Chapters 1 and 3 that will occupy the rest of our discussion in this book. Through this analysis, we will obtain sharper mathematical definitions of other concepts that were introduced in earlier chapters, including causal models, action, causal effects, causal relevance, error terms, and exogeneity.After casting the concepts of causal model and counterfactuals in formal mathematical terms, we will demonstrate by examples how counterfactual questions can be answered from both deterministic and probabilistic causal models (Section 7.1). In Section 7.2.1, we will argue that policy analysis is an exercise in counterfactual reasoning and demonstrate this thesis in a simple example taken from econometrics. This will set the stage for our discussion in Section 7.2.2, where we explicate the empirical content of counterfactuals in terms of policy predictions. Section 7.2.3 discusses the role of counterfactuals in the interpretation and generation of causal explanations. Section 7.2 concludes with discussions of how causal relationships emerge from actions and mechanisms (Section 7.2.4) and how causal directionality can be induced from a set of symmetric equations (Section 7.2.5).In Section 7.3 we develop an axiomatic characterization of counterfactual and causal relevance relationships as they emerge from the structural model semantics. Section 7.3.1 will identify a set of properties, or axioms, that allow us to derive new counterfactual relations from assumptions, and Section 7.3.2 demonstrates the use of these axioms in algebraic derivation of causal effects. Section 7.3.3 introduces axioms for the relationship of causal relevance and, using their similarity to the axioms of graphs, describes the use of graphs for verifying relevance relationships.The axiomatic characterization developed in Section 7.3 enables us to compare structural models with other approaches to causality and counterfactuals, most notably those based on Lewis's closest-world semantics (Sections 7.4.1–7.4.4). The formal equivalence of the structural approach and the Neyman–Rubin potential-outcome framework is discussed in Section 7.4.4. Finally, we revisit the topic of exogeneity and extend our discussion of Section 5.4.3 with counterfactual definitions of exogenous and instrumental variables in Section 7.4.5.},
   isbn = {978-0-521-89560-6}
+}
+
+@article{tianProbabilitiesCausationBounds2000,
+  title = {Probabilities of Causation: {{Bounds}} and Identification},
+  shorttitle = {Probabilities of Causation},
+  author = {Tian, Jin and Pearl, Judea},
+  date = {2000-10-01},
+  journaltitle = {Annals of Mathematics and Artificial Intelligence},
+  shortjournal = {Annals of Mathematics and Artificial Intelligence},
+  volume = {28},
+  number = {1},
+  pages = {287--313},
+  issn = {1573-7470},
+  doi = {10.1023/A:1018912507879},
+  url = {https://doi.org/10.1023/A:1018912507879},
+  urldate = {2024-07-13},
+  abstract = {This paper deals with the problem of estimating the probability of causation, that is, the probability that one event was the real cause of another, in a given scenario. Starting from structural‐semantical definitions of the probabilities of necessary or sufficient causation (or both), we show how to bound these quantities from data obtained in experimental and observational studies, under general assumptions concerning the data‐generating process. In particular, we strengthen the results of Pearl [39] by presenting sharp bounds based on combined experimental and nonexperimental data under no process assumptions, as well as under the mild assumptions of exogeneity (no confounding) and monotonicity (no prevention). These results delineate more precisely the basic assumptions that must be made before statistical measures such as the excess‐risk‐ratio could be used for assessing attributional quantities such as the probability of causation.},
+  langid = {english},
+  keywords = {Causal Effect,Causal Graph,Causal Model,Causal Power,Joint Probability Function}
 }
