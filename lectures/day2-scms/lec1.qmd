@@ -84,7 +84,8 @@ Qs:
     - SCM approach is broader in that it can define more different types of causal questions
 - Equivalence: given the same data and assumptions, get the same estimates
 
-## Lecture 1 & 2 topics {background-image="1920_1080.png" background-size="contain"}
+<!--## Lecture 1 & 2 topics {background-image="1920_1080.png" background-size="contain"}-->
+## Lecture 1 & 2 topics
 
 - motivating examples for DAGs
 - what are DAGs
@@ -954,9 +955,11 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
     - the causes for hospital admission now seem anti-correlated
 - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
 
+<!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
+
 ## When life gets complicated / real
 
-![Figure 4 in @debertinSynthesizingSubjectmatterExpertise2024](figs/dag-murray.jpg)
+![Bogie, James; Fleming, Michael; Cullen, Breda; Mackay, Daniel; Pell, Jill P. (2021). Full directed acyclic graph.. PLOS ONE. Figure. https://doi.org/10.1371/journal.pone.0249258.s003](figs/bigdag.jpg)
 
 ## d-separation (directional-separation)
 
@@ -1001,7 +1004,16 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$ {#eq-backdooradjustment}
 - Yes! When computing the effect of hospital deliveries on neonatal outcomes @eq-estimand
 - DAGs tell us what to adjust for
 - automatic algorithms tell use whether an estimand exists and what it is
-- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]
+
+## How about positivity
+
+- backdoor adjustment with $z$ requires computing $P(y|x,z)$
+- by the product rule:
+
+  $$P(y|x,z) = \frac{P(y,x,z)}{P(x,z)}$$ 
+- this division is only defined when $P(x,z) > 0$
+- which is the same as the positivity assumption from Day 1 in Potential Outcomes
+
 
 
 ## References

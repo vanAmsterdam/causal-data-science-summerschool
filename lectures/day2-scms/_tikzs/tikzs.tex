@@ -278,7 +278,7 @@
     
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}
     \begin{center}
     \tikzsetnextfilename{dag1-obs}
         \begin{tikzpicture}
@@ -293,7 +293,7 @@
     \end{center}
 \end{figure}
 
-\begin{figure}[htpb]
+\begin{figure}
     \begin{center}
     \tikzsetnextfilename{dag1-intervened}
         \begin{tikzpicture}
@@ -308,7 +308,7 @@
 \end{figure}
 
 
-\begin{figure}[htpb]
+\begin{figure}
     \begin{center}
     \tikzsetnextfilename{path1}
         \begin{tikzpicture}
@@ -331,7 +331,7 @@
 \end{figure}
 
 
-\begin{figure}[htpb]
+\begin{figure}
     \begin{center}
     \tikzsetnextfilename{path1z}
         \begin{tikzpicture}
@@ -354,6 +354,26 @@
     \end{center}
 \end{figure}
 
+\begin{figure}
+    \begin{center}
+        \tikzsetnextfilename{house}
+        \begin{tikzpicture}
+            \node (w) at (1, 2) {$W$};
+            \node (z1) at (0, 1) {$Z_1$};
+            \node (z2) at (2, 1) {$Z_2$};
+            \node (t) at (0, 0) {$T$};
+            \node (y) at (2, 0) {$Y$};
+
+            \draw[->] (w) -- (z1);
+            \draw[->] (w) -- (z2);
+            \draw[->] (z1) -- (t);
+            \draw[->] (z2) -- (y);
+            \draw[->] (t) -- (y);
+        \end{tikzpicture}
+        
+    \end{center}
+    
+\end{figure}
 
 
 \end{document}

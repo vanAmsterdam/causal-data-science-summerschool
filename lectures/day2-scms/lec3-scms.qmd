@@ -27,17 +27,6 @@ categories:
     - DAG
     - day2
 bibliography: bibliography.bib
-filters:
-    - diagram
-diagram:
-  cache: true
-  engine:
-    tikz:
-      execpath: lualatex
-      header-includes:
-        - '\usepackage{adjustbox}'
-        - '\usetikzlibrary{arrows, shapes}'
----
 ---
 
 ```{r}
@@ -102,15 +91,12 @@ With DAGs we can:
 - express (non-parametric) prior knowledge
 - understand that seeing $\neq$ doing
 - know what variables to condition on for estimating treatment effect
-
 - DAGs and RCTs do not cover all causal questions
 - SCMs go a level deeper than DAGs
 - DAGs naturally 'arise' from SCMs
 - some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification
 - understand 'identifyability'
 - SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality
-
-
 
 ---
 
@@ -120,14 +106,13 @@ With DAGs we can:
 
 - SCMs: the world as computer programs
 - interventions are submodels
-
-  - bonus queries:
+- bonus queries:
     - counterfactuals
     - probability of necessity, probability of sufficiency
-    - actual causality (Joe Halpern)
-  - Pearl Causal Hierarchy
-  - other uses of DAGs: missing data, selection
-  - reflections on DAGs, limitations
+    <!--- actual causality (Joe Halpern)-->
+- Pearl Causal Hierarchy
+- other uses of DAGs: missing data, selection
+- reflections on DAGs, limitations
 
 ## practical 2
 
@@ -254,7 +239,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![](scm1_03.png)
+![](figs/scm1_03.png)
 ::::
 :::
 
@@ -315,9 +300,9 @@ submodel7(2, 1, 5)
 ::::{.column width="50%"}
 ::::: {.r-stack}
 
-![](scm1_03.png){.fragment}
+![](figs/scm1_03.png){.fragment}
 
-![](scm1_04.png){.fragment}
+![](figs/scm1_04.png){.fragment}
 
 :::::
 ::::
@@ -342,7 +327,7 @@ The *Effect of Action* $do(X=x)$ is defined as the submodel $M_x$.
 #| execute: false
 #| echo: true
 #| code-line-numbers: "1|2|3|4|7"
-#| output-location: "fragment"
+#| output-location: fragment
 sample_u <- function() {
     u_surgery  = runif(1,  2,  8)
     u_los      = runif(1, -1,  7)
@@ -373,7 +358,7 @@ ggplot(udfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="fr
 #| label: pcm1
 #| echo: true
 #| execute: true
-#| output-location: "fragment"
+#| output-location: fragment
 #| code-line-numbers: "1|2|3|7"
 sample_pcm <- function() {
   U <- sample_u()
@@ -392,30 +377,49 @@ sample_pcm()
 #| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
 vs <- map(us, ~do.call(scm1, as.list(.x)))
 vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
-vdfm <- melt(vdf, measure.vars=names(vs[[1]]))
+vdf[, idx:=.I]
+vdfm <- melt(vdf, id.vars="idx")
 ggplot(vdfm, aes(x=value)) + geom_histogram() + facet_grid(~variable, scales="free_x")
 ```
 
-## Calculating a treatment effect in a fully specified probabilisitc causal model
+## Calculating a treatment effect in a fully specified probabilistic causal model
 
-- take `U` distributions as above and set `los=7`
-- calculate expected survival, taking expectation correctly
-- estimand:
+- take random samples from `U`, push forward through `submodel7` and `submodel3`
 
-\begin{align}
-  E[Y|\text{do}(T=7)] &= E_{Z|\text{do}(T=7)}[E[Y|\text{do}(T=7),Z]] \\
-                      &= E_{Z|\text{do}(T=7)}[E[Y|\text{do}(T=7),Z]]
-\end{align}
+```{r}
+#| label: submodel3
+submodel3 <- function(u_surgery, u_los, u_survival) {
+  surgery = f_surgery(u_surgery)
+  los = 3
+  survival = f_survival(surgery, los, u_survival)
+  c(surgery=surgery, los=los, survival=survival)
+}
+
+```
 
 ```{r}
 #| label: do7
 #| echo: true
+#| code-line-numbers: "1-2|4-5|7-18"
+#| output-location: fragment
+# N = 1e3
+# us <- map(1:N, ~sample_u())
 
-N = 1e3
-us <- map(1:N, ~sample_u())
+v3s <- map(us, ~do.call(submodel3, as.list(.x)))
+v7s <- map(us, ~do.call(submodel7, as.list(.x)))
 
+v3df <- v3s |> map(~data.table(t(.x))) |> rbindlist()
+v7df <- v7s |> map(~data.table(t(.x))) |> rbindlist()
+v3df[, idx:=.I]
+v7df[, idx:=.I]
 
+dfa <- rbindlist(list(
+  scm1=vdf,
+  submodel3=v3df,
+  submodel7=v7df
+), idcol='model')
 
+dfa[, list(mean_survival=mean(survival)), by="model"]
 ```
 
 # Identification
@@ -511,7 +515,7 @@ i.e. multiple models with different answers for $Q$ fit the observed data equall
 
 ## Not identified vs estimand
 
-![](scm1_03.png){fig-align="center"}
+![](figs/scm1_03.png){fig-align="center"}
 
 The backdoor adjustment in this DAG means the correct estimand is:
 
@@ -530,23 +534,21 @@ The backdoor adjustment in this DAG means the correct estimand is:
 
 :::: {#fig-seeing}
 
-![](scm1_03.png)
+![](figs/scm1_03.png)
 
 \begin{align}
-  P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
-         &\neq P(Y|\text{do}(T))
+  P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T)
 \end{align}
 
 ::::
 
 :::: {#fig-doing}
 
-![](scm1_04.png)
+![](figs/scm1_04.png)
 
 \begin{align}
   P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
-         &=^2 \sum_{z} P(Y|T,z)P(Z=z) \\
-         &= P(Y|\text{do}(T))
+         &=^2 \sum_{z} P(Y|T,z)P(Z=z)
 \end{align}
 
 $^2$ because in the intervened DAG, $Z$ is independent of $T$
@@ -560,17 +562,10 @@ $^2$ because in the intervened DAG, $Z$ is independent of $T$
 - $P(Y|\text{do}(T)) \neq P(Y|T)$ is Pearl's definition of confounding (def 6.2.1)
 - this shows why RCTs are special (i.e. no backdoor paths into $T$)
 
-## Definition 3.2.4 (Causal Effect Identifiability)
+<!-- ## Definition 3.2.4 (Causal Effect Identifiability)
 
-The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity $P(y | \hat{x})$ can be computed uniquely from any positive probability of the observed variables – that is, if $P_{M_1}(y|\hat{x}) = P_{M_2}(y|\hat{x})$ for every pair of models $M_1$ and $M_2$ with $P_{M_1}(v) = P_{M_2}(v) > 0$ and $G(M_1) = G(M_2) = G$.
+The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity $P(y | \hat{x})$ can be computed uniquely from any positive probability of the observed variables – that is, if $P_{M_1}(y|\hat{x}) = P_{M_2}(y|\hat{x})$ for every pair of models $M_1$ and $M_2$ with $P_{M_1}(v) = P_{M_2}(v) > 0$ and $G(M_1) = G(M_2) = G$. -->
 
-
-## Needed steps
-
-1. what is a directed acyclic graph
-2. define identifyability
-3. rules for identifyability based on DAGs
-   a. the backdoor rule (+ backdoor adjustment)
 
 # Defining counterfactuals and the causal Hierarchy (of questions)
 
@@ -580,20 +575,129 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 - e.g. *What is the expected survival if we keep all patients in the hospital for 7 days?
 
 
-- Q:
+## Take it one level higher: counterfactuals
 
-. . . 
+::: {layout-ncol="2"}
 
 For patient Adam we had this data:
-- surgery duration: 2 hours
+- surgery duration: 4 hours
 - length of stay: 3 days
 - survival: 4 years
-- (i.e. we do not observe Adams `U`)
 
-. . . 
+For patient Zoe we had this data:
+- surgery duration: 4 hours
+- length of stay: 3 days
+- survival: 7.5 years
 
-What is the expected survival if Adam had been kept in the hospital for 5 days?
+:::
 
+- we do not observe Adam's/Zoe's `U`
+- What would the expected survival have been had Adam/Zoe been kept in the hospital for 7 days?
+
+## Adam versus Zeno
+
+- Average causal effects in subgroup with `surgery=4`: 
+  - 3-days LOS: `r v3df[round(surgery)==4, round(mean(survival),1)]`
+  - 7-days LOS: `r v7df[round(surgery)==4, round(mean(survival),1)]`
+
+:::{.fragment}
+```{r}
+#| label: "counterfactuals"
+#| echo: false
+
+pdf <- data.table(
+  patient=c("adam", "zoe"),
+  variable=c("survival", "survival"),
+  survival=c(4, 7.5),
+  idx=c(707, 439)
+)
+
+vdf[, losr:=round(los)]
+vdf[, surgeryr:=round(surgery)]
+
+# vdf[losr==3&surgeryr==4]
+
+vdfm2 <- melt(vdf, id.vars=c("idx", "losr", "surgeryr"))
+vdfm2[, los_is_3:=losr==3]
+vdfm2[, surgery_is_4:=surgeryr==4]
+vdfm2[, los3_surgery4:=los_is_3&surgery_is_4]
+
+ggplot(vdfm2, aes(x=value, fill=los3_surgery4)) +
+  geom_histogram(alpha=0.5) +
+  geom_vline(data=pdf, aes(xintercept=survival, linetype=patient)) +
+  facet_grid(~variable, scales="free_x")
+
+```
+:::
+
+- what do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?
+
+## Now comes the SCM super-power
+
+- Given our information on the structural equation for `survival`:
+  $$\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}$$
+- and observed values on Adam's and Zoe's `surgery` AND `survival` following `los=3`
+- we can compute their individual $u_{\text{survival}}$:
+
+:::{.r-stack}
+
+::::{.fragment .fade-in-then-out}
+|patient|surgery|los|survival|
+|-------|-------|---|--------|
+| Adam  | 4     | 3 | 4      |
+| Zoe   | 4     | 3 | 7.5    |
+::::
+
+::::{.fragment .fade-in-then-out}
+|patient|surgery|los|survival|u_survival|
+|-------|-------|---|--------|----------|
+| Adam  | 4     | 3 | 4      | 9        |
+| Zoe   | 4     | 3 | 7.5    | 12.5     |
+::::
+
+::::{.fragment}
+|patient|surgery|los|survival|u_survival|survival7|
+|-------|-------|---|--------|----------|---------|
+| Adam  | 4     | 3 | 4      | 9        | 8       |
+| Zoe   | 4     | 3 | 7.5    | 12.5     | 11.5    |
+::::
+
+:::
+
+- **and (counterfactual) survival under 7 days LOS**
+
+## Computing counterfactuals
+
+- notation: $P(Y_{t'}  = y' | T=t,Y=y)$ where $Y_{t'}$ means "set $T=t'$ through intervention"
+- steps:
+  1. Abduction (update $P(U)$ from observed evidence)
+  2. Action (modify the treatment)
+  3. Prediction (calculate outcomes in submodel, putting in the updated $P(U)$)
+
+## Pearl's Causal Hierarchy (of questions)
+
+If you have data to solve the upper, you can solve the lower ranks too [@bareinboimPearlHierarchyFoundations2022]
+
+1. counterfactuals
+2. interventions
+3. associations
+
+## Where do we get this knowledge from?
+
+- not from observational data
+- not from RCTs
+- from assumptions
+- can get bounds from combinations of RCT data and observational data
+- caveat: some researchers think the hierarchy is upside down because you go further away from data and closer to unverifiable assumptions the 'higher' you get
+
+## Not covered but also possible:
+
+- DAGs:
+  - *soft intervention*: don't set treatment to fixed value but replace function with other function of variables
+- SCMs:
+  - probability of sufficiency
+  - probability of necessity
+  - individual causal effects
 
 ## References
 
