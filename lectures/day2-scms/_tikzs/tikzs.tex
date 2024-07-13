@@ -189,6 +189,25 @@
 \begin{figure}
     \centering
 
+    \tikzsetnextfilename{dag-dag1x}
+        \begin{tikzpicture}
+          % Nodes
+          \node (z) at (0, 1) {$Z$};
+          \node (x) at (-1, 0) {$X$};
+          \node (y) at (1, 0) {$Y$};
+
+          % Edges
+          \draw[->] (z) -- (x);
+          \draw[->] (z) -- (y);
+          \draw[->] (x) -- (y);
+
+        \end{tikzpicture}
+
+\end{figure}
+
+\begin{figure}
+    \centering
+
     \tikzsetnextfilename{dag-chain}
         \begin{tikzpicture}
           % Nodes

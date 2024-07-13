@@ -13,45 +13,127 @@ format:
     number-sections: true
 ---
 
-In this practical, ...
-
-
-::: {.callout-tip appearance="default" icon=true}
-The answers to each exercise are available as a collapsed `code` block. Try to work out the answer yourself before looking at this code block!
-:::
-
-First we load a package
-
 ```{r}
 #| label: setup
-#| message: false
-#| warning: false
-#| code-fold: false
 #| eval: true
+#| echo: false
 
-library(survival)
+suppressPackageStartupMessages({
+  require(purrr)
+  require(broom)
+  require(data.table)
+})
+
+# if(!file.exists("./data1.csv")) source("./_makedatas.R")
+source(here::here("practicals", "21_dags", "_makedatas.R"))
+datas <- make_datas()
 ```
 
-In this practical, we will also use the following two packages:
+In this practical we'll do exercises with DAGs
 
-::: {.callout-note}
-## Exercise 1
-Grab a coffee
+## DAGs 1
+
+DAGs imply (conditional) indepencies. These can be checked with data.
+
+See the DAGs in @fig-dags1.
+
+::: {#fig-dags1 layout-ncol=3}
+
+![collider](../../lectures/day2-scms/_tikzs/dag-collider.png){#fig-collider}
+
+![chain](../../lectures/day2-scms/_tikzs/dag-chain.png){#fig-chain}
+
+![confounded](../../lectures/day2-scms/_tikzs/dag-dag1x.png){#fig-dag1}
+
 :::
 
 
+::: {.callout-tip collapse="true"}
+## What independencies are implied by the DAGs?
+
+answer: 
+
+- @fig-collider: $X \perp Y$
+- @fig-chain: $X \perp Y | M$
+- @fig-dag1: none
+
+:::
+
+We generated datasets according to each DAG named `df1`, `df2` and `df3`, but forgot what dataset corresponded to what DAG.
+
 ::: {.callout-note}
-## Exercise 2
-Load the `mtcars` dataset in R 
+
+## Assume linear models with Gaussian error terms for all variables, how would you test the conditional independencies to figure out what DAG corresponds to what dataset?
 
 ```{r}
-#| label: data-true
-#| eval: true
+#| label: "q1-get-data"
+#| echo: true
+#| eval: false
 
-data(mtcars)
+summary(lm(y~x, data=df1))
+summary(lm(y~x+z, data=df1))
+
+summary(lm(y~x, data=df2))
+summary(lm(y~x+z, data=df2))
+
+summary(lm(y~x, data=df3))
+summary(lm(y~x+z, data=df3))
+
 ```
 
 :::
+
+::: {.callout-tip collapse="true"}
+
+## The datasets are downloadable here:
+
+
+|data|link|
+|----|----|
+|`df1`|[data1.csv](datas/data1.csv)
+|`df2`|[data2.csv](datas/data2.csv)
+|`df3`|[data3.csv](datas/data3.csv)
+
+:::
+
+See the results of the analyses summarized below in @tbl-indeptests
+
+```{r}
+#| label: tbl-indeptests
+#| eval: true
+#| code-fold: true
+#| tbl-cap: "P-values for coefficient of variable x in linear regression model" 
+
+dfnames <- c("df1", "df2", "df3")
+fits_marginal    <- map(dfnames, function(dfname) lm(y~x, data=datas[[dfname]]))
+fits_conditional <- map(dfnames, function(dfname) lm(y~x+z, data=datas[[dfname]]))
+names(fits_marginal) <- dfnames
+names(fits_conditional) <- dfnames
+
+results_marginal <- map(fits_marginal, broom::tidy) |> rbindlist(idcol="dataset")
+results_conditional <- map(fits_conditional, broom::tidy) |> rbindlist(idcol="dataset")
+results_df <- rbindlist(list(
+  marginal = results_marginal,
+  conditional = results_conditional
+), idcol="analysis")
+results_df[, rformula:=ifelse(analysis=="marginal", "lm(y~x)", "lm(y~x+z)")]
+
+dcast(results_df[term%in%c("x")], dataset ~ rformula, value.var="p.value")
+
+```
+
+::: {.callout-tip collapse="true"}
+
+## What is the conclusion regarding what dataset corresponds to what DAG?
+
+answer:
+
+- `df1`: @fig-chain
+- `df2`: @fig-dag1
+- `df3`: @fig-collider
+
+:::
+
 
 ## Non-coding questions
 
@@ -82,11 +164,12 @@ see also the [lecture on DAGs](../../lectures/day2-scms/lec1.qmd#sec-assumptions
 
 ### RCTs
 
-Why are RCT special for causal questions?
+According to the DAG framework, why are RCTs especially fit for causal questions?
 
 1. they are often infeasible and unethical
 2. they sample data from the target distribution
-3. they have better external validity
+3. they have better external validity than observational studies
+4. randomization balances confounders
 
 ::: {.callout-tip collapse="true"}
 ## Which answers are true?
@@ -95,18 +178,11 @@ answer: 2.
 
 See also [the DAG lecture](../../lectures/day2-scms/lec1.qmd#sec-def-intervention)
 
+Context:
+
+1. This is often said of RCTs but has no direct bearing on why they are special for causal inference
+2. Remember that the target distribution has no arrows going in to the treatment variable, this is what we get in a RCT
+3. RCTs are often critiqued as having *poor* external validity, because they may recruit non-random subpopulations from the target population
+4. This is a subtle point, but RCTs have no confounders as there are no common causes of the treatment and the outcome. Variables that are confounders in observational studies are prognostic factors in RCTs, as they (by definition of being a confounder in an observational study) influence the outcome, but not the treatment in the RCT. Randomization balances the distribution of prognostic factors between treatment arms *in expectation*. In a particular RCT, observed (and unobserved) prognostic factors will always have some random variation between treatment arms. This does not reduce the validity of the RCT in terms of bias. This variation is reflected in the standard error of the estimate. In some cases, adjusting for known prognostic factors in RCTs may reduce the variance of the treatment estimate (i.e. narrowing the confidence interval), but this is an entire discussion on its own.
+
 :::
-
-::: {.callout-goals}
-## my goals
-:::
-
-
-## Conclusion
-
-You learned ABC
-
-## Further reading
-
-Read Chapter 9 of Pearls Causality [@pearlCausalDiagramsIdentification2009]
-

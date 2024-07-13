@@ -13,7 +13,7 @@ format:
         #number-sections: true
     revealjs:
         toc: false
-        theme: umcu.scss
+        #theme: [default, umcu.scss]
         incremental: true
         width: 1920
         height: 1080
