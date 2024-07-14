@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.54">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Wouter van Amsterdam, Oisín Ryan">
+<meta name="dcterms.date" content="2024-07-10">
+
+<title>dags – Causal Inference and Causal Data Science Summerschool</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body>
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<p class="subtitle lead">Graphical Causal Models</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Wouter van Amsterdam, Oisín Ryan </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 10, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="today" class="level2">
+<h2 class="anchored" data-anchor-id="today">Today</h2>
+<p>We will learn about another way to approach causal modeling involving <strong>graphs</strong> and <strong>structural causal models</strong></p>
+<ul>
+<li>Developed by different people initially - Judea Pearl, Peter Spirtes, Clark Glymour</li>
+</ul>
+<p>This approach involves using graphical models to represent our beliefs about causal structure</p>
+<ul>
+<li>These graphs might be familiar to some of you as “Bayesian networks" :::</li>
+</ul>
+<div class="frame">
+<p>Why Two Approaches?</p>
+<p>Different but highly related approaches.</p>
+<ul>
+<li><p>Two different “hats”</p></li>
+<li><p>Potential Outcomes: Individual observations <span class="math inline">\(\rightarrow\)</span> individual causal effects <span class="math inline">\(\rightarrow\)</span> average causal effect</p></li>
+<li><p>Structural Causal Models: Causal relations and manipulations of <em>variables</em></p></li>
+<li><p>Graphical representations of causal structure</p></li>
+<li><p>Advantage of todays approach: Easier to deal with many different variables and many causal relations at the same time</p></li>
+</ul>
+</div>
+<div class="frame">
+<div class="columns">
+<div class="column">
+<p>0.5 <img src="figures/pill.jpg" class="img-fluid" alt="image"></p>
+</div><div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/headache.jpg" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson_a.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: white">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson_b.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: white">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson_c.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: white">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson_d.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: black">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson2_edit.png" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: black">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson1_edit_conditional.png" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: Purple">Conditional Probabilities</span>: <span class="math display">\[P(R = r | D = d, S = s)\]</span></p>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson1_edit_marginal.png" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: Green">Marginal Probabilities</span>: <span class="math display">\[P(R =r | D = d)\]</span></p>
+</div>
+<div class="frame">
+<div class="block">
+<p><strong>Simpsons Paradox</strong></p>
+</div>
+<div class="block">
+<p><strong>Berksons Paradox</strong></p>
+</div>
+<div class="block">
+<p><strong>Lord’s Paradox</strong></p>
+</div>
+<p><strong>Confusing</strong>, but <strong>not a paradox</strong></p>
+<p>You’re asking a question that statistical inference alone is not equipped to answer</p>
+</div>
+<div class="frame">
+<p>Which statistical information should I use as an estimate of a causal effect?</p>
+</div>
+<div class="frame">
+<div class="center">
+<p>Causal Graphs</p>
+</div>
+</div>
+<div class="frame">
+<p>Causal Graphs: Draw Your Assumptions before your Conclusions A causal graph is a diagram representing our beliefs about which variables share causal relations with each other</p>
+<div class="columns">
+<div class="column">
+<p>0.6</p>
+<ul>
+<li><p>The arrow X <span class="math inline">\(\rightarrow\)</span> Y represents our belief that X is a direct cause of Y</p></li>
+<li><p>We omit an arrow if expert knowledge tells us that one variable does not directly cause another. The <em>absence</em> of an arrow is a strong statement</p></li>
+</ul>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Graph known as a <strong>Directed Acyclic Graph</strong> (DAG) or Bayesian Network</p>
+</div>
+<div class="frame">
+<p>Causal Graphs and Structural Causal Models</p>
+<p>We can formalize the idea that the arrows in the DAG represent our beliefs about causal relations by saying that the DAG visualizes a <em>Structural Causal Model (SCM)</em></p>
+<p>An SCM is a set of equations describing <strong>causal relations</strong> between variables, which are also influenced by independent noise terms <span class="math inline">\(N\)</span> (typically not drawn in the graph).</p>
+<p>We can denote an SCM using the notation <span class="math inline">\(Y := f(X, N)\)</span></p>
+<ul>
+<li>read as: the variable <span class="math inline">\(Y\)</span> is assigned a value determined by some function (<span class="math inline">\(f\)</span>) of the variable <span class="math inline">\(X\)</span>, as well as some random component (noise) <span class="math inline">\(N\)</span>.</li>
+</ul>
+</div>
+<div class="frame">
+<p>Causal Graphs and Structural Causal Models</p>
+<div class="columns">
+<div class="column">
+<p>0.5 <span class="math display">\[\begin{aligned}
+    Z &amp;:= f_z(N_z) \\
+    X &amp;:= f_x(Z, N_x) \\
+    Y &amp;:= f_y(X, Z, N_y)
+\end{aligned}\]</span> where</p>
+<ul>
+<li><p><span class="math inline">\(N_i\)</span> are jointly independent</p></li>
+<li><p><span class="math inline">\(f\)</span> represents potentially any function - any type of functional form, and variables can have any distribution</p></li>
+</ul>
+</div><div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Causal Graphs and Structural Causal Models</p>
+<p>The SCM is in principle non-parametric (also known as <em>non-parametric SEMs</em>).</p>
+<p>In practice it is sometimes necessary to assume something about a) the distribution of the variables involved, and b) the functional form of the causal relationships.</p>
+<ul>
+<li><p>This introduces extra <strong>non-causal</strong> assumptions which are not represented by the DAG</p></li>
+<li><p>But it often makes our life (i.e.&nbsp;analyses) easier</p></li>
+<li><p>For convenience only, many <strong>examples</strong> we will use today will assume linear relations and Gaussian distributions for the error</p></li>
+</ul>
+</div>
+<div class="frame">
+<p>Causal Graphs and Structural Causal Models</p>
+<div class="columns">
+<div class="column">
+<p>0.5 <span class="math display">\[\begin{aligned}
+    Z &amp;:= \epsilon_Z \\
+    X &amp;:= 2Z + \epsilon_X \\
+    Y &amp;:= 1X + 2Z + \epsilon_Y
+\end{aligned}\]</span> where</p>
+<ul>
+<li><span class="math inline">\(\epsilon_X, \epsilon_Z, \epsilon_Y\)</span> are iid, <span class="math inline">\(\sim\mathcal{N}(0,1)\)</span></li>
+</ul>
+</div><div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Causal Effects in SCMs In the SCM framework, a <strong>causal effect</strong> is defined with respect to an <em>intervention</em> on a <em>variable</em>.</p>
+<p>The do-operator <span class="math inline">\(do(X=x)\)</span> represents a “surgical intervention” to set the value of the variable <span class="math inline">\(X\)</span> to a constant value <span class="math inline">\(x\)</span></p>
+<ul>
+<li>Let <span class="math inline">\(X\)</span> represent aspirin-taking. Then read <span class="math inline">\(do(X=x)\)</span> as the act of intervening such that everyone takes an aspirin.</li>
+</ul>
+<p>In the graph, a <span class="math inline">\(do-\)</span> operation on <span class="math inline">\(X\)</span> cuts-off all incoming ties</p>
+<ul>
+<li><p>Intervening makes <span class="math inline">\(X\)</span> independent of other causes</p></li>
+<li><p>Note: this is not yet a <strong>causal effect</strong>, but something we need to define a causal effect</p></li>
+</ul>
+</div>
+<div class="frame">
+<p>Causal Effects in SCMs</p>
+<div class="columns">
+<div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc_do.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.5 when we intervene <span class="math inline">\(do(X = x)\)</span> our SCM becomes <span class="math display">\[\begin{aligned}
+    Z &amp;:= \epsilon_Z \\
+    \textcolor{orange}{X} &amp;\textcolor{orange}{:= x} \\
+    Y &amp;:= 1X + 2Z + \epsilon_Y
+\end{aligned}\]</span> where</p>
+<ul>
+<li><span class="math inline">\(\epsilon_Z, \epsilon_Y\)</span> are iid, <span class="math inline">\(\sim\mathcal{N}(0,1)\)</span></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Causal Effects in SCMs Often interested in the causal effect of a <em>do-</em> intervention on the <strong>mean</strong> of another variable</p>
+<div class="block">
+<p><strong>Average causal effect</strong>:</p>
+<p><span class="math inline">\(ACE = E[Y \mid do(X = 1)] - E[Y \mid do(X = 0)]\)</span></p>
+</div>
+<ul>
+<li>Read as: The difference in the average value of <span class="math inline">\(Y\)</span> given the setting where everyone is forced to take aspirin vs the setting where everyone is forced to not take aspirin</li>
+</ul>
+<p>If we only observe the system, i.e., we only “see" the system, the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> may not be the same as the”do" relationship</p>
+<div class="block">
+<p><strong>Observing <span class="math inline">\(\neq\)</span> Intervening</strong>:</p>
+<p><span class="math inline">\(E[Y \mid X=x]\)</span> is not <strong>generally</strong> the same as <span class="math inline">\(E[Y \mid do(X=x)]\)</span></p>
+</div>
+</div>
+<div class="frame">
+<p>Two versions of the causal system</p>
+<div class="columns">
+<div class="column">
+<p>0.5 <span style="color: blue">Observing</span></p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.5 <span style="color: orange">Intervening</span></p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc_do.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>SCMs and Causal Inference DAGs are useful because they tell us a) when and why observing <span class="math inline">\(\neq\)</span> intervening, and b) <em>how</em> we should estimate causal effects like the ACE!</p>
+<p>Let’s say we have <span style="color: blue">observational</span> data. This allows us to learn <em>statistical dependencies</em> in the observational setting</p>
+<ul>
+<li>“Seeing" relationships</li>
+</ul>
+<p>But we want to use observational data to obtain dependencies in the <span style="color: orange">intervention</span> setting (i.e., we want to estimate a causal effect)</p>
+<ul>
+<li>We want to learn/estimate “doing" relationships</li>
+</ul>
+<p>The structure of the DAG tells us how to do this!</p>
+</div>
+<div class="frame">
+<div class="center">
+<p>DAG Rules</p>
+</div>
+</div>
+<div class="frame">
+<p>3 fundamental graphical structures</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/screen_three_examples.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Chains</p>
+<div class="columns">
+<div class="column">
+<p>0.6 Chains transmit causal associations</p>
+<ul>
+<li><p><span class="math inline">\(X\)</span> changes <span class="math inline">\(Z\)</span> which in turn changes <span class="math inline">\(Y\)</span></p></li>
+<li><p>aka mediation</p></li>
+<li><p>Conditioning on <span class="math inline">\(Z\)</span> (i.e.&nbsp;controlling for <span class="math inline">\(Z\)</span>) blocks transmission of causal information</p></li>
+</ul>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/chain_snip.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Forks</p>
+<div class="columns">
+<div class="column">
+<p>0.6 Forks transmit non-causal (statistical) information</p>
+<ul>
+<li><p><span class="math inline">\(Z\)</span> causes <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, which makes <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> statistically dependent</p></li>
+<li><p>But intervening on <span class="math inline">\(X\)</span> doesn’t change <span class="math inline">\(Y\)</span></p></li>
+<li><p>aka confounding or common-cause variables</p></li>
+<li><p>This is known as a <strong>backdoor path</strong></p></li>
+<li><p>Conditioning on <span class="math inline">\(Z\)</span> (i.e.&nbsp;controlling for <span class="math inline">\(Z\)</span>) blocks transmission of non-causal information</p></li>
+</ul>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/fork_snip.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Colliders</p>
+<div class="columns">
+<div class="column">
+<p>0.6 Colliders do not transmit any information</p>
+<ul>
+<li><p><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are uncorrelated, but both cause <span class="math inline">\(Z\)</span></p></li>
+<li><p>aka a common effect</p></li>
+<li><p>But, conditioning on <span class="math inline">\(Z\)</span> <em>introduces</em> a non-causal (spurious) association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></p></li>
+<li><p>This is known as collider bias</p></li>
+</ul>
+<p><strong>Implication</strong>: Estimating a causal effect by controlling for <strong>everything</strong> is a <strong>terrible idea</strong></p>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/collider_snip.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Collider Bias</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/collider_data1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Collider Bias</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/collider_data2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Causal Effects according to the DAG</p>
+<p>In a nutshell: To estimate the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> we</p>
+<ul>
+<li><p>block <em>backdoor paths</em> by conditioning on <strong>confounders</strong></p>
+<ul>
+<li>This stops the transmission of <em>non-causal</em> (statistical) information between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></li>
+</ul></li>
+<li><p>avoid conditioning on any <strong>colliders</strong></p>
+<ul>
+<li>Conditioning on a collider induces a non-causal statistical association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></li>
+</ul></li>
+<li><p>avoid conditioning on any <em>mediators</em></p>
+<ul>
+<li><p>conditioning on a mediator blocks an interesting causal pathway</p></li>
+<li><p>Note: Today, and unless otherwise specified, the causal effects we are interested in are “total effects”</p></li>
+</ul></li>
+</ul>
+<p>We want to estimate the causal effect of <em>Aspirin</em> (X) on <em>Headache Recovery</em> (Y). We have also measured the variable <em>Sex assigned at Birth</em> (Z)</p>
+</div>
+<div class="frame">
+<p>Example: Aspirin and Headaches</p>
+<div class="columns">
+<div class="column">
+<p>0.6 <strong>Causal Estimand</strong>:<br>
+<span class="math inline">\(ACE = E[Y \mid do(X = 1)] - E[Y \mid do(X = 0)]\)</span><br>
+</p>
+<p><strong>Naive Estimate:</strong><br>
+<span class="math inline">\(E[Y | X =1] - E[Y | X = 0]\)</span></p>
+<p><span style="color: white">Seeing <span class="math inline">\(\neq\)</span> Doing: Unblocked backdoor path through Z</span></p>
+<p><span style="color: white">Correct Estimate:</span><br>
+<span style="color: white">EMPTY</span></p>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Example: Aspirin and Headaches</p>
+<div class="columns">
+<div class="column">
+<p>0.6 <strong>Causal Estimand</strong>:<br>
+<span class="math inline">\(ACE = E[Y \mid do(X = 1)] - E[Y \mid do(X = 0)]\)</span><br>
+</p>
+<p><strong>Naive Estimate:</strong><br>
+<span class="math inline">\(E[Y | X =1] - E[Y | X = 0]\)</span></p>
+<p>Seeing <span class="math inline">\(\neq\)</span> Doing: Unblocked backdoor through Z</p>
+<p><strong>Correct Estimate:</strong><br>
+<span class="math inline">\(E[Y | X =1, Z] - E[Y | X = 0, Z]\)</span></p>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/graph1_cc_block.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson_d.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<p><span style="color: black">Should we prescribe the drug? <a href="app.wooclap.com/CBRFDD" class="uri">app.wooclap.com/CBRFDD</a></span></p>
+</div>
+<div class="frame">
+<div class="columns">
+<div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>The question “Should I prescribe the drug or not?” is a question about the <strong>Average Causal Effect</strong> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></p>
+<p>Statistical Information alone cannot provide the answer. But the DAG immediately allows us to answer it!</p>
+<p>If the third variable is a common-cause, condition on it.</p>
+<ul>
+<li>Use <span class="math inline">\(E[Y | X = x, Z]\)</span> to estimate <span class="math inline">\(E[Y | do(X =x)]\)</span></li>
+</ul>
+<p>If the third variable is a mediator or collider, don’t condition on it!</p>
+<ul>
+<li>Use <span class="math inline">\(E[Y | X =x]\)</span> to estimate <span class="math inline">\(E[Y | do(X =x)]\)</span></li>
+</ul>
+</div>
+<div class="frame">
+<div class="center">
+<p>DAGs with many variables</p>
+</div>
+</div>
+<div class="frame">
+<p>d-seperation rules For bigger graphs, statistical (in)dependence is read off using <strong>d-seperation rules</strong></p>
+<ul>
+<li><p>A <em>path</em> is a sequence of nodes and edges (of any direction) connecting two nodes</p></li>
+<li><p><em>Open Paths</em> <span class="math inline">\(\Rightarrow\)</span> St.&nbsp;Dependence .…. <em>Blocked Paths</em> <span class="math inline">\(\Rightarrow\)</span> St.&nbsp;Independence</p></li>
+<li><p>Chains and forks are <em>open paths</em>. We close them by <em>conditioning</em> on the mediator or common cause</p></li>
+<li><p>Colliders block paths. But conditioning on a collider opens that path</p>
+<ul>
+<li>Conditioning on an <em>effect</em> (child) of a collider also opens up a path</li>
+</ul></li>
+</ul>
+</div>
+<div class="frame">
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/screen_three_examples.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Valid Adjustment Sets The DAG tells us which variables to condition on, and which variables not to condition on, to estimate a causal effect</p>
+<div class="block">
+<p><strong>Valid Adjustment Set</strong></p>
+</div>
+<p>By drawing bigger DAGs, and including observed and unobserved variables, we can assess if and how the causal effect of interest is <strong>identified</strong></p>
+</div>
+<div class="frame">
+<p>Benefits of a DAG approach</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_empty_sex.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Benefits of a DAG approach</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_2_sex.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Benefits of a DAG approach</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_3_b.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Benefits of a DAG approach</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_full_b.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Estimating Causal Effects</p>
+<div class="columns">
+<div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_full_b.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.5 To estimate ACE of Aspirin on Recovery<br>
+Condition on <em>Sex</em> only</p>
+<ul>
+<li><p>Not necessary to condition on Dehydration</p></li>
+<li><p>Conditioning on BP blocks a causal path, and opens a collider path <span class="math inline">\(A - D \rightarrow R\)</span></p></li>
+</ul>
+<p><strong>Unobserved</strong> confounders should also be included in your DAG to determine if a causal effect is identified</p>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Unobserved Confounders</p>
+<div class="columns">
+<div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_confb1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.5 Anti-inflammatory <em>Medicine</em> reduces blood pressure and recovery</p>
+<ul>
+<li>But the ACE is still identified, even without observing this variable</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Unobserved Confounders</p>
+<div class="columns">
+<div class="column">
+<p>0.5</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/example_confb2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.5</p>
+<p>If someone has a <em>History</em> of migraines, this may effect <span class="math inline">\(A\)</span> and <span class="math inline">\(R\)</span></p>
+<ul>
+<li>The ACE is not identified from the observed data in this case</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Draw Your Assumptions before your Conclusions We should be both careful and critical we drawing causal graphs</p>
+<ul>
+<li><p>Often our assumptions about the role of <em>unobserved</em> variables is critical</p></li>
+<li><p>It might be the case that your causal model tells you that a causal effect <strong>cannot be estimated</strong> given your observed data</p></li>
+<li><p>D-seperation rules in graphs with many variables can have difficult-to-oversee consequences</p></li>
+</ul>
+</div>
+<div class="frame">
+<p>We are interested in the <span class="math inline">\(ACE\)</span> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>.</p>
+<p>Can we estimate the <span class="math inline">\(ACE\)</span>? If so, how?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/mw_collider_1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<div class="frame">
+<p>We are interested in the <span class="math inline">\(ACE\)</span> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>.</p>
+<p>Can we estimate the <span class="math inline">\(ACE\)</span>? If so, how?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/mw_collider_2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+<div class="frame">
+<p>We are interested in the <span class="math inline">\(ACE\)</span> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>.</p>
+<p>Can we estimate the <span class="math inline">\(ACE\)</span>? If so, how?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/mw_collider_3.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+<p>Adapted from Elwert and Winship (2014), Figure 13</p>
+</div>
+<div class="frame">
+<p>We are interested in the <span class="math inline">\(ACE\)</span> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>.</p>
+<p>Can we estimate the <span class="math inline">\(ACE\)</span>? If so, how?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/mw_collider_2b.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+<p>Adapted from Elwert and Winship (2014), Figure 13</p>
+</div>
+<div class="frame">
+<p>We are interested in the <span class="math inline">\(ACE\)</span> of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>.</p>
+<p>Can we estimate the <span class="math inline">\(ACE\)</span>? If so, how?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/mw_collider_3b.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+<p>Adapted from Elwert and Winship (2014), Figure 13</p>
+</div>
+<div class="frame">
+<div class="center">
+<p>Assumptions for Causal Inference using DAGs</p>
+</div>
+</div>
+<div class="frame">
+<p>Assumptions for Causal Inference I Why is it that the DAG tells us about which variables are statistically dependent on which other variables?</p>
+<p>It turns out that, if we assume there is <em>some</em> underlying SCM that the DAG represents, this is always the case.</p>
+<p>This is known formally as the “Global Markov Condition”, which links the structure of the graph <span class="math inline">\(G\)</span> with the joint density of the variables <span class="math inline">\(P\)</span></p>
+<div class="block">
+<p><strong>Global Markov Condition</strong>: <span class="math inline">\(P\)</span> is Markov w.r.t <span class="math inline">\(G\)</span> iff</p>
+<p><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are d-seperated by <span class="math inline">\(S\)</span> <span class="math inline">\(X \mathrel{\text{\scalebox{1.07}{$\perp\mkern-10mu\perp$}}}Y \mid S\)</span></p>
+</div>
+</div>
+<div class="frame">
+<p>Reasoning about observations Because of the markov condition(s), the structure of a DAG tells us how we can describe the joint density of <span class="math inline">\(X\)</span></p>
+<div class="block">
+<p><strong>Markov Factorization</strong>:</p>
+<p>The joint density of the variables <span class="math inline">\(P(X_1, \dots X_n)\)</span> is given by <span class="math inline">\(\prod_{i=1}^{n}P(X_i \mid \intertext{Parents}(X_i))\)</span></p>
+</div>
+<p>e.g., <span class="math inline">\(P(X, Z, Y) = P(Z) P(X \mid Z) P(Y\mid X,Z)\)</span></p>
+<p>Consequence: DAGs &amp; SCMs tell us what statistical dependencies to expect if we collect a random sample of those variables in an observational or an intervention setting.</p>
+</div>
+<div class="frame">
+<p>Assumptions for Causal Inference II We define a causal effect using the do-operator, but this also comes with assumptions</p>
+<div class="block">
+<p><strong>do-operator</strong>:</p>
+</div>
+<div class="block">
+<p><strong>Modularity and Localized Interventions</strong>:</p>
+</div>
+<ul>
+<li><p>We can change <span class="math inline">\(p(X)\)</span> without changing <span class="math inline">\(p(Z \mid X)\)</span></p></li>
+<li><p>Forcing someone to take aspirin has the same effect on headaches as if they chose to take aspirin</p></li>
+<li><p>We can change one cause-effect mechanism without changing the others</p></li>
+</ul>
+</div>
+<div class="frame">
+<div class="center">
+<p>Discussion</p>
+</div>
+</div>
+<div class="frame">
+<p>Benefits of DAGs: Conceptual Clarity Drawing DAGs gives you practical guidelines about when causal inferences can be made, what variables to control for, and what variables not to control for</p>
+<ul>
+<li><p>Transparent way of representing <em>your/expert beliefs</em> about the causal system at hand</p></li>
+<li><p>These beliefs guide statistical analyses in a straightforward way</p></li>
+</ul>
+<p>Emphasis here on <em>identification</em> rather than <em>estimation</em>: You still need to choose <em>how</em> to condition on variables! <strong>Things can still go wrong in this step</strong>.</p>
+<p>Many controversial and seemingly difficult problems are made easy by drawing DAGs</p>
+</div>
+<div class="frame">
+<p>Simpsons Paradox</p>
+<div class="block">
+<p><strong>Simpsons Paradox</strong></p>
+</div>
+<p>Example (Pearl, Glymour &amp; Jewell, 2016):</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson1.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Simpsons Paradox</p>
+<div class="columns">
+<div class="column">
+<p>0.6</p>
+<ul>
+<li><p>Estrogen levels negatively affect recovery</p></li>
+<li><p>Women are more likely to take the drug than men</p></li>
+<li><p>We should condition on Sex - it blocks a backdoor path!</p></li>
+</ul>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson1.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Simpsons Paradox</p>
+<div class="columns">
+<div class="column">
+<p>0.6 Suppose that we measure post-treatment blood pressure (B) instead</p>
+<ul>
+<li><p>Statistical information is exactly the same</p></li>
+<li><p>B cannot cause drug taking</p></li>
+<li><p>The drug works in part by decreasing blood pressure</p></li>
+<li><p>We should <strong>not</strong> condition on blood pressure</p></li>
+</ul>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figures/simpson2.PNG" class="img-fluid figure-img"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Simpsons Paradox</p>
+<ul>
+<li><p>Statistical information alone cannot provide the answer</p></li>
+<li><p>Two different DAGs can produce the exact same statistical dependencies in the observational setting</p>
+<ul>
+<li>Observationally equivalent</li>
+</ul></li>
+<li><p>These DAGs imply different intervention effects, and different ways to estimate those effects from observational data!</p></li>
+</ul>
+<div class="columns">
+<div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div><div class="column">
+<p>0.4</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_dag2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Selection Bias</p>
+<div class="block">
+<p><strong>Berksons Paradox</strong></p>
+</div>
+<p><strong>Classic example</strong>: We are interested in the relationship between <em>Lung Cancer</em> (<span class="math inline">\(L\)</span>) and <em>Diabetes</em> (<span class="math inline">\(D\)</span>)</p>
+<ul>
+<li><p>General population, these two variables are independent.</p></li>
+<li><p>In a sample of <em>hospital patients</em>, there is a negative dependency - patients who don’t have diabetes are <em>more likely</em> to have lung cancer.</p></li>
+</ul>
+</div>
+<div class="frame">
+<p>Selection Bias</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/collider_ex_dag.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+<ul>
+<li><p>Lung cancer <span class="math inline">\(L\)</span> and diabetes <span class="math inline">\(D\)</span> cause hospitalization <span class="math inline">\(H\)</span></p></li>
+<li><p>By taking participants from a hospital we <em>condition</em> on hospitalization (<span class="math inline">\(H = 1\)</span>)</p></li>
+<li><p>If you are hospitalised, and you <em>don’t</em> have diabetes, probably you do have lung cancer (Otherwise - why would you be in hospital?).</p></li>
+<li><p><span class="math inline">\(P(D| L = 1, H = 1) \neq P(D|L = 1) \neq P(D | do(L) = 1)\)</span></p></li>
+<li><p>We have conditioned on a <em>collider</em></p></li>
+</ul>
+</div>
+</div>
+<div class="frame">
+<p>Collider Bias</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/collider_data1.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Collider Bias</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/collider_data2.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Randomized Control Trials</p>
+<div class="columns">
+<div class="column">
+<p>0.7 If we have observational data, we need to know something about the DAG in order to estimate a causal effect</p>
+<ul>
+<li><p>RCTs are extremely powerful because randomization ensures no confounding</p>
+<ul>
+<li>There can’t be any backdoor paths if everyone has an equal probability of being treated or not</li>
+</ul></li>
+<li><p>Previous example: If drug-taking is randomly assigned, we don’t need to account for Sex</p></li>
+<li><p>But RCTs often not possible in many settings</p></li>
+</ul>
+</div><div class="column">
+<p>0.3</p>
+<div class="center">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><embed src="figures/simpson_rct.pdf" class="img-fluid"></p>
+<figcaption>image</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="frame">
+<p>Causal Inference from an SCM perspective Causal Inference is the problem of making inferences about the <span style="color: orange">interventional</span> density of our variables using the <span style="color: blue">observational density</span></p>
+<p>Steps (broadly):</p>
+<ul>
+<li><p>Specify your causal target of inference (i.e.&nbsp;<strong>causal estimand</strong>)</p></li>
+<li><p>Draw the DAG of your causal system. Include any observed OR unobserved variables that relate to <em>at least two</em> variables in your causal system</p></li>
+<li><p>Find <em>valid adjustment sets</em>: what variables do you need to condition on to block backdoor paths</p></li>
+<li><p>Decide if your causal effect is <em>identified</em>: Can you block all backdoor paths using only <em>observed variables</em>?</p></li>
+<li><p>Estimate causal effect by conditioning appropriately* on those variables</p></li>
+</ul>
+</div>
+<div class="frame">
+<p>Two Hats: Revisited</p>
+<div class="columns">
+<div class="column">
+<p>0.5 Potential Outcomes</p>
+<ul>
+<li><p>Causal effects as Target Trial</p></li>
+<li><p>Emulating RCT where <span class="math inline">\(X-Y\)</span> effect is only thing of interest</p></li>
+<li><p>View on covariates: Use only <strong>pre-treatment</strong>, throw everything into propensity score</p></li>
+<li><p>Emphasis on estimation tools</p></li>
+</ul>
+</div><div class="column">
+<p>0.5 Structural Causal Models</p>
+<ul>
+<li><p>Causal effects as variable relationships</p></li>
+<li><p>Intervention density</p></li>
+<li><p>Much more detailed view of “covariates" - distinguishing multivariate systems of causal effects</p></li>
+<li><p>Emphasis on identification</p></li>
+<li><p>Things like mediation, direct/indirect effects can be defined more easily</p></li>
+</ul>
+</div>
+</div>
+<p>Agree on most things, just a different perspective/emphasis/level of abstraction</p>
+</div>
+<div class="frame">
+<p>Discussion This type of causal modeling approach allows us <em>in theory</em> to make causal statements from observational data</p>
+<ul>
+<li><p>But of course, this rests on our beliefs/assumptions about the DAG being correct</p></li>
+<li><p>We often may not be able to verify those assumptions without intervention data!</p></li>
+</ul>
+<p>But what if we don’t know the DAG?</p>
+<ul>
+<li>Next Week: Causal Discovery</li>
+</ul>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp("https:\/\/vanAmsterdam\.github\.io\/causal-data-science-summerschool\/");
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
