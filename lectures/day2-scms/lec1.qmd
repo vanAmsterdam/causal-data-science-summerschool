@@ -851,7 +851,7 @@ is to take data we have to make inferences about data from a different distribut
 - causal inference frameworks provide a language to express assumptions
 - based on these assumptions, the framework tell us whether such an inference is possible
     - this is often referred to as *is the effect identified*
-- and provide formulas for how to do so based on the observed data distribution (*estimands*)
+- and provide formula(s) for how to do so based on the observed data distribution (*estimand(s)*)
 - (one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)
 - not yet said: *how* to do statistical inference to estimate the estimand (much can still go wrong here)
   - can also be part of identification, see [the following lecture on SCMs](./lec3-scms.html)

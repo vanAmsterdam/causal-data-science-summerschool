@@ -1,0 +1,25 @@
+\documentclass{article}
+\usepackage{tikz}
+\usetikzlibrary{arrows, shapes, positioning}
+\tikzstyle{nodeobserved} = [circle, minimum size = 10mm, thick, draw =black!80]
+\usetikzlibrary{external}
+\tikzexternalize
+
+\begin{document}
+
+\begin{figure}
+    \centering
+    \tikzsetnextfilename{dagu}
+    \begin{tikzpicture}
+          \node (u) at (-1, 1) {$U$};
+          \node (x) at (-1, 0) {$X$};
+          \node (y) at (0, 0) {$Y$};
+
+          % Edges
+          \draw[->] (u) -- (x);
+          \draw[->] (u) -- (y);
+          \draw[->] (x) -- (y);
+    \end{tikzpicture}
+\end{figure}
+
+\end{document}

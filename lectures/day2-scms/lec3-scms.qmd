@@ -448,7 +448,7 @@ dfa[, list(mean_survival=mean(survival)), by="model"]
 
 When and how might we learn the answer to such questions?
 
-## Identification
+## Identification {#sec-identification}
 
 Causal effect identification:
 

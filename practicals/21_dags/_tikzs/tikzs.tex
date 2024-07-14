@@ -8,6 +8,50 @@
 \begin{document}
 
 \begin{figure}
+    \begin{center}
+        \tikzsetnextfilename{dag-birthweight}
+        \begin{tikzpicture}
+            \node (age) at (-1.5, 2) {age over 35};
+            \node (smoking) at (-2, 1) {smoking};
+            \node (ht) at (-1, 3) {ht};
+            \node (gene) at (-2, -1) {gene};
+            \node (lbwt) at (-1, 0) {lbwt};
+            \node (death) at (1, 0) {death};
+
+            \draw[->] (smoking) -- (lbwt);
+            \draw[->] (ht) -- (lbwt);
+            \draw[->] (gene) -- (lbwt);
+            \draw[->] (gene) -- (death);
+            \draw[->] (lbwt) -- (death);
+            \draw[->] (smoking) -- (death);
+            \draw[->] (ht) -- (death);
+            \draw[->] (age) -- (death);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
+\begin{figure}
+    \begin{center}
+        \tikzsetnextfilename{dag-birthweight2}
+        \begin{tikzpicture}
+            \node (age) at (-1.5, 2) {age over 35};
+            \node (smoking) at (-2, 1) {smoking};
+            \node (ht) at (-1, 3) {ht};
+            \node (gene) at (-2, -1) {gene};
+            \node (lbwt) at (-1, 0) {lbwt};
+            \node (death) at (1, 0) {death};
+
+            \draw[->] (smoking) -- (lbwt);
+            \draw[->] (ht) -- (lbwt);
+            \draw[->] (gene) -- (lbwt);
+            \draw[->] (smoking) -- (death);
+            \draw[->] (ht) -- (death);
+            \draw[->] (age) -- (death);
+        \end{tikzpicture}
+    \end{center}
+\end{figure}
+
+\begin{figure}
     \centering
     \tikzsetnextfilename{daga}
     \begin{tikzpicture}

@@ -3,9 +3,6 @@ title: "Setup for Causal Inference and Causal Data Science Course"
 subtitle: "To complete before start of the course"
 author: "Wouter van Amsterdam"
 eval: false
-bibliography: references.bib
-nocite: |
-  @*
 format: 
   html:
     toc: true
@@ -26,9 +23,8 @@ You can use your preferred way of working in R to do the practicals. Our preferr
 - Create an R script for the current practical, e.g., `introduction.R`
 - Create your well-documented and [well-styled](https://style.tidyverse.org/) code in this R script
 
-We try to make our practicals light in the number of required packages, but these are needed:
-
-You can install them via ...
+We try to make our practicals light in the number of required packages, but the packages below are needed.
+You can install them via:
 
 ```{r}
 #| label: setup
@@ -37,11 +33,14 @@ You can install them via ...
 #| code-fold: false
 #| eval: false
 
-install.packages(c("data.table"))
+needed_packages <- c(
+  "data.table", "broom", "purrr", "dagitty", "ggplot2", "dplyr", "marginaleffects"
+)
+cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
+
+for (pkg in needed_packages) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, repos=cran_repo)
+  }
+}
 ```
-
-## Recommended reading
-
-::: {#refs}
-
-:::

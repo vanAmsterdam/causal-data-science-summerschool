@@ -137,7 +137,7 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
 
 - i.e. the ATE collapses to the the regression parameter for $t$ in a linear regression model of $y$ on $t,z$
 
-## General estimators for the ATE and the CATE
+## General estimators for the ATE and the CATE (meta-learners) {#sec-metalearners}
 
 - denote $\tau(w) = E[y|\text{do}(t=1),w] - E[y|\text{do}(t=0),w]$
 - T-learner: model $T=0$ and $T=1$ separately (e.g. regression separetely for treated and untreated):

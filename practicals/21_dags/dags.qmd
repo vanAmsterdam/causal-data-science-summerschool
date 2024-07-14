@@ -2,6 +2,7 @@
 title: "Practical on DAGs"
 subtitle: ""
 author: "Wouter van Amsterdam"
+date: "2024-08-06"
 eval: false
 format: 
   html:
@@ -11,27 +12,266 @@ format:
     callout-appearance: simple
     callout-icon: false
     number-sections: true
+execute:
+  eval: true
 ---
+
+
+This lab will guide you through practical examples of drawing and analyzing DAGs using R. You will learn how to simulate data, create DAGs, and use them for causal inference.
 
 ```{r}
 #| label: setup
 #| eval: true
-#| echo: false
+# Install necessary packages if not already installed
+required_pkgs <- c("dagitty", "ggplot2", "broom", "purrr", "dplyr", "data.table", "marginaleffects")
+cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
+
+for (pkg in required_pkgs) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, repos=cran_repo)
+  }
+}
 
 suppressPackageStartupMessages({
-  require(purrr)
-  require(broom)
-  require(data.table)
+  # Load packages
+  library(purrr)
+  library(broom)
+  library(dagitty)
+  library(ggplot2)
+  library(dplyr)
+  library(marginaleffects)
+  library(data.table)
 })
 
-# if(!file.exists("./data1.csv")) source("./_makedatas.R")
 source(here::here("practicals", "21_dags", "_makedatas.R"))
 datas <- make_datas()
+
 ```
 
-In this practical we'll do exercises with DAGs
 
-## DAGs 1
+# Exercise: making a DAG an specifying the correct adjustment set
+
+In this example we'll practice creating a DAG, and we'll see how using the wrong DAG leads to the wrong analysis and wrong answers.
+
+Our question is "what is the effect of maternal smoking during pregnancy on neonatal death within 3 months" (expressed as a difference in percentage risk for smoking / no smoking)
+
+## Birthweight data:
+
+We'll use the (simulated) dataset `birthw` with data on birthweight and survival of babies.
+
+The `birthw` dataset contains the following variables:
+
+- `ageover35`: Indicator mother's age over 35 years (0 = age <= 35, 1 = age >35)
+- `smoking`: Smoking status during pregnancy (0 = no, 1 = yes)
+- `lbwt`: Los birth weight in grams (<2500grams)
+- `death`: Neonatal death within 3 months (0 = no, 1 = yes)
+
+```{r}
+birthw <- datas[["birthw"]]
+head(birthw)
+```
+
+The data can alternatively be downloaded here: [birthw.csv](datas/birthw.csv)
+
+:::
+
+## Create a DAG
+
+### Think of a DAG that may fit this data using the observed variables
+
+Take a few minutes to create a DAG (collaboratively) (using e.g. [dagitty.net](https://dagitty.net))
+
+### Are there variables that may be missing in the data but are relevant?
+
+If so, add them to the DAG, and indicate that they are unobserved
+
+### With your DAG, can the causal effect be estimated?
+
+Use e.g. [dagitty.net](https://dagitty.net) to create your DAG and see if there are ways to estimate the causal effect.
+
+## Do some analyses
+
+Let's try some analyses.
+
+To translate a logistic regression model into differences in probabilities we use the `avg_comparisons` function from the `marginaleffects` package.
+
+```{r}
+require(marginaleffects)
+
+fit_allobs <- glm(death~., data=birthw, family="binomial")
+fit_marginal <- glm(death~smoking, data=birthw, family="binomial")
+
+avg_comparisons(fit_allobs, variables="smoking")
+avg_comparisons(fit_marginal, variables="smoking")
+```
+
+These effect estimates are quite different. How could this be explained?
+Which effect estimate do you think is more credible?
+
+## Assume a DAG
+
+:::{.callout-tip collapse="true"}
+
+## Assume the following DAG
+
+![DAG for smoking and death](_tikzs/dag-birthweight.png){#fig-dagsmoke}
+
+In this DAG, there is another variable `gene` that influences both `lbwt` and `death`.
+
+:::
+
+:::{.callout-tip collapse="true"}
+
+## How does this DAG change the analysis?
+
+answer: the `smoking`-`death` relationship has no confounders, the marginal estimate is correct.
+Adjusting for `lbwt` 'washes-out' part of `smoking`'s effect because `lbwt` is a mediator.
+Also, `lbwt` is a collider between `gene` and `smoking`, and `gene` has a direct arrow into `death`.
+Conditioning on `lbwt` opens a bidirected path between `smoking` and `gene`, creating a new backdoor path.
+So there are two reasons not to condition on `lbwt`: it is a mediator and a collider with an unmeasured variable
+
+:::
+
+:::{.callout-tip collapse="true"}
+
+## See this other DAG on the smoking question
+
+![birthweight DAG 2](_tikzs/dag-birthweight2.png){#fig-dagsmoke2}
+
+:::
+
+Given the DAG in @fig-dagsmoke2, see the following regression model
+
+```{r}
+#| code-fold: false
+fit2 <- glm(death~smoking+ht+ageover35, data=birthw, family=binomial)
+```
+
+:::{.callout-note collapse="true"}
+
+## Assuming no parametric form bias, will this lead to an unbiased causal effect estimate?
+
+answer: yes this is a correct analysis. `lbwt` is still a collider, but it does not open any new back-door paths because `gene` no longer has a direct effect on `death` and all variables other than `smoking` that do have such an arrow are in the conditioning set (`ageover35`,`ht`) so these paths are blocked
+
+:::
+
+# Confounder adjustment with Daggity
+
+In this exercise we will use the dagitty package for creating and manipulating DAGs.
+
+### Step 1: Installing and Loading Required Packages
+
+## Step 2: Creating and Visualizing a DAG
+
+
+Let's create a DAG for the pregnancy example:
+
+```{r}
+#| label: makedag
+
+# Define the DAG
+dag <- dagitty("dag {
+  pregnancy_risk -> hospital_delivery
+  pregnancy_risk -> neonatal_outcome
+  hospital_delivery -> neonatal_outcome
+}")
+
+# Plot the DAG
+plot(dag)
+```
+
+This DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.
+
+### Step 3: Simulating Data
+
+We will simulate data based on the DAG structure:
+
+```{r}
+#| label: sims
+
+set.seed(123)
+
+n <- 1000
+
+# Simulate variables
+pregnancy_risk <- rbinom(n, 1, 0.3)  # 30% high risk
+hospital_delivery <- rbinom(n, 1, 0.5 + 0.3 * pregnancy_risk)  # 50% baseline + 30% if high risk
+neonatal_outcome <- rbinom(n, 1, 0.8 - 0.3 * pregnancy_risk + 0.15 * hospital_delivery)  # outcome affected by both
+
+# Create a data frame
+df <- data.table(pregnancy_risk, hospital_delivery, neonatal_outcome)
+```
+
+### Step 4: Analyzing the Data
+
+Check the relationships in the data:
+
+```{r}
+#| label: checks
+
+# Summary statistics
+summary(df)
+
+# Plot the data
+ggplot(df, aes(x = factor(hospital_delivery), fill = factor(neonatal_outcome))) +
+  geom_bar(position = "fill") +
+  facet_grid(~ pregnancy_risk) +
+  labs(x = "Hospital Delivery", y = "Proportion", fill = "Neonatal Outcome") +
+  theme_minimal()
+```
+
+### Step 5: Causal Inference Using DAGs
+
+Let's use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:
+
+```{r}
+#| label: adjustmentset
+
+# Identify adjustment set using DAGitty
+adjustmentSets(dag, exposure = "hospital_delivery", outcome = "neonatal_outcome")
+```
+
+The output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.
+
+### Step 6: Estimating the Causal Effect
+
+Estimate the causal effect using a regression model:
+
+```{r}
+#| label: estimate
+# Fit a regression model
+model <- glm(neonatal_outcome ~ hospital_delivery + pregnancy_risk, family = binomial, data = df)
+
+# Summarize the model
+summary(model)
+```
+
+### Step 7: Drawing Conclusions
+
+Interpret the model's output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.
+
+:::{.callout-note}
+
+## Is this odds ratio a correct estimate of the causal effect?
+
+answer: no
+
+hint: compare the structural equation used in generating the data with the statistical analysis
+
+This linear probability structural equation is not well-approximated by a linear logistic model (i.e. without interaction terms).
+We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using `avg_comparisons` from package `marginaleffects`.
+
+The correct estimate is given by:
+
+```{r}
+avg_comparisons(model, variables="hospital_delivery")
+full_model <- glm(neonatal_outcome~hospital_delivery*pregnancy_risk, family=binomial, data=df)
+avg_comparisons(full_model, variables="hospital_delivery")
+```
+
+:::
+
+# DAG assumptions: conditional independencies and strength of assumptions
 
 DAGs imply (conditional) indepencies. These can be checked with data.
 
@@ -86,7 +326,6 @@ summary(lm(y~x+z, data=df3))
 ::: {.callout-tip collapse="true"}
 
 ## The datasets are downloadable here:
-
 
 |data|link|
 |----|----|
