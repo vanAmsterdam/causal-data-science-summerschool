@@ -16,7 +16,7 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link |
 |---------------|-----------|---------------------------------------------------|-|
-| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              |[pdf](lectures/day1-potentialoutcomes/Day1_Intro_PotentialOutcomes.pdf)|
+| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              | |
 | 09:30 - 10:45 | Lecture   | Intro to Potential Outcomes I                     | |
 | 11:00 - 12:00 | Practical | Causal assumptions                                | |
 | 12:00 - 13:00 | LUNCH     |                                                   | |
@@ -41,7 +41,7 @@ Learn causal inference and causal data science!
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
 | 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I | |
-| 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
+| 10:00 - 10:45 | Lecture   | Target Trials Emulation I           |[pdf](lectures/day3-tte/LectureDay3.pdf) |
 | 11:00 - 12:00 | practical | Target Trials in Practice I         | |
 | 12:00 - 13:30 | LUNCH     |                                     | |
 | 13:30 - 14:15 | Lecture   | Target Trials Emulation II          | |
