@@ -1,0 +1,19 @@
+{
+  "hash": "3975ca3fe8fe7ff7f2f5ea49fbbb943a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Setup for Causal Inference and Causal Data Science Course\"\nsubtitle: \"To complete before start of the course\"\nauthor: \"Wouter van Amsterdam\"\neval: false\nformat: \n  html:\n    toc: true\n    self-contained: true\n    code-fold: true\n    df-print: paged\n    callout-appearance: simple\n    callout-icon: false\n---\n\n\nWe will work with R.\nYou can use your preferred way of working in R to do the practicals. Our preferred way is this:\n\n- Create a new folder with a good name, e.g., `practicals_causal_datascience` \n- Open RStudio\n- Create a new project from RStudio, which you associate with the folder\n- Create a `raw_data` subfolder\n- Create an R script for the current practical, e.g., `introduction.R`\n- Create your well-documented and [well-styled](https://style.tidyverse.org/) code in this R script\n\nWe try to make our practicals light in the number of required packages, but the packages below are needed.\nYou can install them via:\n\n\n::: {.cell}\n\n```{.r .cell-code  code-fold=\"false\"}\nneeded_packages <- c(\n  \"data.table\", \"broom\", \"purrr\", \"dagitty\", \"ggplot2\", \"dplyr\", \"marginaleffects\",\n  \"MatchIt\",\"survey\",\"tableone\"\n)\ncran_repo <- \"https://mirror.lyrahosting.com/CRAN/\" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in needed_packages) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}\n```\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"../../site_libs/pagedtable-1.1/css/pagedtable.css\" rel=\"stylesheet\" />\n<script src=\"../../site_libs/pagedtable-1.1/js/pagedtable.js\"></script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

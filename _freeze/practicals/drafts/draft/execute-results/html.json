@@ -1,0 +1,19 @@
+{
+  "hash": "9675e11d20c77b5785f8a6d489eb5c9b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Draft practical: \"\nsubtitle: \"subtitle\"\nauthor: \"Wouter van Amsterdam\"\neval: false\nbibliography: references.bib\nformat: \n  html:\n    toc: true\n    self-contained: true\n    code-fold: true\n    df-print: paged\n    callout-appearance: simple\n    callout-icon: false\n---\n\n\nIn this practical, ...\n\n\n::: {.callout-tip appearance=\"default\" icon=true}\nThe answers to each exercise are available as a collapsed `code` block. Try to work out the answer yourself before looking at this code block!\n:::\n\nFirst we load a package\n\n\n::: {.cell}\n\n```{.r .cell-code  code-fold=\"false\"}\nlibrary(survival)\n```\n:::\n\n\nIn this practical, we will also use the following two packages:\n\n::: {.callout-note}\n## Exercise 1\nGrab a coffee\n:::\n\n\n::: {.callout-note}\n## Exercise 2\nLoad the `mtcars` dataset in R \n\n\n::: {.cell}\n\n```{.r .cell-code}\ndata(mtcars)\n```\n:::\n\n\n:::\n\n## Non-coding questions\n\n::: {.callout-tip collapse=\"true\"}\n## Question Foo\n\nanswer: bar\n\n:::\n\n<!--Here's a cool fontawesome icon {{< fa thumbs-up >}}-->\n\n::: {.callout-goals}\n## my goals\n:::\n\n\n## Conclusion\n\nYou learned ABC\n\n## Further reading\n\nRead Chapter 9 of Pearls Causality [@pearlCausalDiagramsIdentification2009]\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"../../site_libs/pagedtable-1.1/css/pagedtable.css\" rel=\"stylesheet\" />\n<script src=\"../../site_libs/pagedtable-1.1/js/pagedtable.js\"></script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
