@@ -34,7 +34,8 @@ You can install them via:
 #| eval: false
 
 needed_packages <- c(
-  "data.table", "broom", "purrr", "dagitty", "ggplot2", "dplyr", "marginaleffects"
+  "data.table", "broom", "purrr", "dagitty", "ggplot2", "dplyr", "marginaleffects",
+  "MatchIt","survey","tableone"
 )
 cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
 
