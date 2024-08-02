@@ -8,7 +8,7 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.54">
+  <meta name="generator" content="quarto-1.5.56">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -30,6 +30,71 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
@@ -535,9 +600,31 @@ Qs:
 </section>
 <section id="where-does-the-variance-come-from" class="slide level2 non-incremental center">
 <h2>Where does the variance come from?</h2>
-<div>
-
-</div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb1-2"><a></a>n <span class="ot">=</span> <span class="fl">1e3</span></span>
+<span id="cb1-3"><a></a></span>
+<span id="cb1-4"><a></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> (x <span class="sc">-</span> pi) <span class="sc">+</span> u</span>
+<span id="cb1-5"><a></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">+</span> <span class="fu">sin</span>(x) <span class="sc">+</span> u</span>
+<span id="cb1-6"><a></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">*</span> <span class="fu">sin</span>(x) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>t) <span class="sc">*</span> <span class="fu">sin</span>(x) <span class="sc">+</span> u</span>
+<span id="cb1-7"><a></a></span>
+<span id="cb1-8"><a></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
+<span id="cb1-9"><a></a>  <span class="at">x =</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>pi),</span>
+<span id="cb1-10"><a></a>  <span class="at">t =</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
+<span id="cb1-11"><a></a>  <span class="at">u =</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, .<span class="dv">1</span>)</span>
+<span id="cb1-12"><a></a>)</span>
+<span id="cb1-13"><a></a></span>
+<span id="cb1-14"><a></a>df[, <span class="st">`</span><span class="at">:=</span><span class="st">`</span>(</span>
+<span id="cb1-15"><a></a>  <span class="at">y1 =</span> <span class="fu">f1</span>(t, x, u),</span>
+<span id="cb1-16"><a></a>  <span class="at">y2 =</span> <span class="fu">f2</span>(t, x, u),</span>
+<span id="cb1-17"><a></a>  <span class="at">y3 =</span> <span class="fu">f3</span>(t, x, u)</span>
+<span id="cb1-18"><a></a>)]</span>
+<span id="cb1-19"><a></a></span>
+<span id="cb1-20"><a></a>dfm <span class="ot">&lt;-</span> <span class="fu">melt</span>(df, <span class="at">measure.vars=</span><span class="fu">c</span>(<span class="st">'y1'</span>, <span class="st">'y2'</span>, <span class="st">'y3'</span>),</span>
+<span id="cb1-21"><a></a>            <span class="at">variable.name=</span><span class="st">"f"</span>, <span class="at">value.name=</span><span class="st">"y"</span>)</span>
+<span id="cb1-22"><a></a></span>
+<span id="cb1-23"><a></a><span class="fu">ggplot</span>(dfm, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">col=</span><span class="fu">factor</span>(t))) <span class="sc">+</span> </span>
+<span id="cb1-24"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb1-25"><a></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="quarto-layout-panel" data-layout="[30,70]">
 <div class="quarto-layout-row quarto-layout-valign-center">
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -553,7 +640,7 @@ Qs:
 <div id="fig-dag-nonparametric" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec4_files/figure-revealjs/fig-dag-nonparametric-1.png" width="960">
+<img data-src="lec4_files/figure-html/fig-dag-nonparametric-1.png" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Three datasets with the same DAG
@@ -585,6 +672,25 @@ Figure&nbsp;1: Three datasets with the same DAG
 </section>
 <section id="a003024-the-death-of-dags" class="slide level2 center">
 <h2>A003024: The death of DAGs?</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a>a003024 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">25</span>,<span class="dv">543</span>,<span class="dv">29281</span>,<span class="dv">3781503</span>,<span class="dv">1138779265</span>,</span>
+<span id="cb2-2"><a></a><span class="dv">783702329343</span>,<span class="dv">1213442454842881</span>,<span class="dv">4175098976430598143</span>,</span>
+<span id="cb2-3"><a></a><span class="dv">31603459396418917607425</span>,</span>
+<span id="cb2-4"><a></a><span class="dv">521939651343829405020504063</span>,</span>
+<span id="cb2-5"><a></a><span class="dv">18676600744432035186664816926721</span>,</span>
+<span id="cb2-6"><a></a><span class="dv">1439428141044398334941790719839535103</span>)</span>
+<span id="cb2-7"><a></a>a_years <span class="ot">&lt;-</span> a003024 <span class="sc">/</span> <span class="dv">31556952</span> <span class="co"># n seconds in gregorian calendar year</span></span>
+<span id="cb2-8"><a></a>a_days <span class="ot">&lt;-</span> a_years <span class="sc">*</span> <span class="fl">365.2425</span> <span class="co"># n seconds in gregorian calendar year</span></span>
+<span id="cb2-9"><a></a>adf <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">days=</span>a_days, <span class="at">years=</span>a_years, <span class="at">seconds=</span>a003024)</span>
+<span id="cb2-10"><a></a>adf[, hours<span class="sc">:</span><span class="er">=</span>days<span class="sc">*</span><span class="dv">24</span>]</span>
+<span id="cb2-11"><a></a>adf[, n_nodes<span class="sc">:</span><span class="er">=</span>.I<span class="dv">-1</span>]</span>
+<span id="cb2-12"><a></a>adf[, an_hour<span class="sc">:</span><span class="er">=</span>hours <span class="sc">&gt;</span> <span class="fl">1.</span>]</span>
+<span id="cb2-13"><a></a>adf[, a_day<span class="sc">:</span><span class="er">=</span>days <span class="sc">&gt;</span> <span class="fl">1.</span>]</span>
+<span id="cb2-14"><a></a>adf[, a_year<span class="sc">:</span><span class="er">=</span>years <span class="sc">&gt;</span> <span class="fl">1.</span>]</span>
+<span id="cb2-15"><a></a>adf[, human_species<span class="sc">:</span><span class="er">=</span>years <span class="sc">&gt;</span> <span class="fl">3e5</span>]</span>
+<span id="cb2-16"><a></a>adf[, age_universe<span class="sc">:</span><span class="er">=</span>years <span class="sc">&gt;</span> <span class="fl">13.787e9</span>]</span>
+<span id="cb2-17"><a></a>adf[n_nodes<span class="sc">&gt;</span><span class="dv">1</span>, <span class="fu">list</span>(n_nodes, <span class="at">n_dags=</span>seconds, an_hour, a_day, a_year, human_species, age_universe)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 <p>The number of possible DAGs grows super-exponentially in the number of nodes</p>
 <table class="caption-top">
 <thead>
@@ -900,44 +1006,6 @@ Anand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. <span>â€
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

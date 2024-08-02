@@ -7,9 +7,8 @@
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="../../site_libs/quarto-contrib/iconify-2.1.0/iconify-icon.min.js"></script><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.54">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.56">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -723,7 +722,7 @@ Qs:
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
 <pre><code> u_surgery      u_los u_survival 
-  3.382258   4.399784  10.359315 </code></pre>
+  7.340252   6.895731   9.506746 </code></pre>
 </div>
 </div>
 </div>
@@ -733,7 +732,7 @@ Qs:
 <div id="fig-u_samples" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-u_samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec3-scms_files/figure-revealjs/fig-u_samples-1.png" class="quarto-figure quarto-figure-center" width="960">
+<img data-src="lec3-scms_files/figure-html/fig-u_samples-1.png" class="quarto-figure quarto-figure-center" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-u_samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: 1000 random samples of U
@@ -758,7 +757,7 @@ Figure&nbsp;1: 1000 random samples of U
 <div class="cell fragment" data-execute="true">
 <div class="cell-output cell-output-stdout">
 <pre><code> u_surgery      u_los u_survival    surgery        los   survival 
-  7.870772   4.418977   8.949487   7.870772  12.289748   5.497692 </code></pre>
+  3.276522   3.013228   8.849926   3.276522   6.289751   8.586632 </code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -767,7 +766,7 @@ Figure&nbsp;1: 1000 random samples of U
 <div id="fig-pcm1-samples" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-pcm1-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec3-scms_files/figure-revealjs/fig-pcm1-samples-1.png" width="960">
+<img data-src="lec3-scms_files/figure-html/fig-pcm1-samples-1.png" width="672">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pcm1-samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Realisations of endogenous variables V over random samples of U in <a href="#/specifying-a-distribution-for-exogenous-variables-u" class="quarto-xref">Figure&nbsp;1</a>
@@ -784,32 +783,40 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <li class="fragment">take random samples from <code>U</code>, push forward through <code>submodel7</code> and <code>submodel3</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="1-2|4-5|7-18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="co"># N = 1e3</span></span>
-<span id="cb14-2"><a></a><span class="co"># us &lt;- map(1:N, ~sample_u())</span></span>
-<span id="cb14-3"><a></a></span>
-<span id="cb14-4"><a></a>v3s <span class="ot">&lt;-</span> <span class="fu">map</span>(us, <span class="sc">~</span><span class="fu">do.call</span>(submodel3, <span class="fu">as.list</span>(.x)))</span>
-<span id="cb14-5"><a></a>v7s <span class="ot">&lt;-</span> <span class="fu">map</span>(us, <span class="sc">~</span><span class="fu">do.call</span>(submodel7, <span class="fu">as.list</span>(.x)))</span>
-<span id="cb14-6"><a></a></span>
-<span id="cb14-7"><a></a>v3df <span class="ot">&lt;-</span> v3s <span class="sc">|&gt;</span> <span class="fu">map</span>(<span class="sc">~</span><span class="fu">data.table</span>(<span class="fu">t</span>(.x))) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span>
-<span id="cb14-8"><a></a>v7df <span class="ot">&lt;-</span> v7s <span class="sc">|&gt;</span> <span class="fu">map</span>(<span class="sc">~</span><span class="fu">data.table</span>(<span class="fu">t</span>(.x))) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span>
-<span id="cb14-9"><a></a>v3df[, idx<span class="sc">:</span><span class="er">=</span>.I]</span>
-<span id="cb14-10"><a></a>v7df[, idx<span class="sc">:</span><span class="er">=</span>.I]</span>
-<span id="cb14-11"><a></a></span>
-<span id="cb14-12"><a></a>dfa <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(</span>
-<span id="cb14-13"><a></a>  <span class="at">scm1=</span>vdf,</span>
-<span id="cb14-14"><a></a>  <span class="at">submodel3=</span>v3df,</span>
-<span id="cb14-15"><a></a>  <span class="at">submodel7=</span>v7df</span>
-<span id="cb14-16"><a></a>), <span class="at">idcol=</span><span class="st">'model'</span>)</span>
-<span id="cb14-17"><a></a></span>
-<span id="cb14-18"><a></a>dfa[, <span class="fu">list</span>(<span class="at">mean_survival=</span><span class="fu">mean</span>(survival)), by<span class="ot">=</span><span class="st">"model"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>submodel3 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<span id="cb14-2"><a></a>  surgery <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
+<span id="cb14-3"><a></a>  los <span class="ot">=</span> <span class="dv">3</span></span>
+<span id="cb14-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
+<span id="cb14-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
+<span id="cb14-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" data-code-line-numbers="1-2|4-5|7-18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="co"># N = 1e3</span></span>
+<span id="cb15-2"><a></a><span class="co"># us &lt;- map(1:N, ~sample_u())</span></span>
+<span id="cb15-3"><a></a></span>
+<span id="cb15-4"><a></a>v3s <span class="ot">&lt;-</span> <span class="fu">map</span>(us, <span class="sc">~</span><span class="fu">do.call</span>(submodel3, <span class="fu">as.list</span>(.x)))</span>
+<span id="cb15-5"><a></a>v7s <span class="ot">&lt;-</span> <span class="fu">map</span>(us, <span class="sc">~</span><span class="fu">do.call</span>(submodel7, <span class="fu">as.list</span>(.x)))</span>
+<span id="cb15-6"><a></a></span>
+<span id="cb15-7"><a></a>v3df <span class="ot">&lt;-</span> v3s <span class="sc">|&gt;</span> <span class="fu">map</span>(<span class="sc">~</span><span class="fu">data.table</span>(<span class="fu">t</span>(.x))) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span>
+<span id="cb15-8"><a></a>v7df <span class="ot">&lt;-</span> v7s <span class="sc">|&gt;</span> <span class="fu">map</span>(<span class="sc">~</span><span class="fu">data.table</span>(<span class="fu">t</span>(.x))) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>()</span>
+<span id="cb15-9"><a></a>v3df[, idx<span class="sc">:</span><span class="er">=</span>.I]</span>
+<span id="cb15-10"><a></a>v7df[, idx<span class="sc">:</span><span class="er">=</span>.I]</span>
+<span id="cb15-11"><a></a></span>
+<span id="cb15-12"><a></a>dfa <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(</span>
+<span id="cb15-13"><a></a>  <span class="at">scm1=</span>vdf,</span>
+<span id="cb15-14"><a></a>  <span class="at">submodel3=</span>v3df,</span>
+<span id="cb15-15"><a></a>  <span class="at">submodel7=</span>v7df</span>
+<span id="cb15-16"><a></a>), <span class="at">idcol=</span><span class="st">'model'</span>)</span>
+<span id="cb15-17"><a></a></span>
+<span id="cb15-18"><a></a>dfa[, <span class="fu">list</span>(<span class="at">mean_survival=</span><span class="fu">mean</span>(survival)), by<span class="ot">=</span><span class="st">"model"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
 <pre><code>       model mean_survival
       &lt;char&gt;         &lt;num&gt;
-1:      scm1      8.419564
-2: submodel3      3.525993
-3: submodel7      7.525993</code></pre>
+1:      scm1      8.612773
+2: submodel3      3.572904
+3: submodel7      7.572904</code></pre>
 </div>
 </div>
 </section></section>
@@ -875,7 +882,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 </section>
 <section id="idenfitication-in-pictures" class="slide level2 center">
 <h2>Idenfitication in pictures</h2>
-<p>Someone killed the priest <iconify-icon inline="" icon="ph:knife" aria-label="Icon knife from ph Iconify.design set." title="Icon knife from ph Iconify.design set."></iconify-icon> , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
+<p>Someone killed the priest {{&lt; iconify ph:knife &gt;}} , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
 <div class="fragment">
 <p>Based on prior knowledge on <em>5 suspects</em> (all the SCMs compatible with our DAG)</p>
 </div>
@@ -888,7 +895,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 </section>
 <section id="idenfitication-in-pictures-1" class="slide level2 center">
 <h2>Idenfitication in pictures</h2>
-<p>Someone killed the priest <iconify-icon inline="" icon="ph:knife" aria-label="Icon knife from ph Iconify.design set." title="Icon knife from ph Iconify.design set."></iconify-icon> , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
+<p>Someone killed the priest {{&lt; iconify ph:knife &gt;}} , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
 <p>Based on prior knowledge on <em>5 suspects</em> (all the SCMs compatible with our DAG)</p>
 
 <img data-src="figs/whodunnit-gray.png" class="r-stretch"><p>If we had full data, we would have know it was <span class="math inline">\(M_3\)</span></p>
@@ -1003,8 +1010,8 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <ul>
 <li class="fragment">Average causal effects in subgroup with <code>surgery=4</code>:
 <ul>
-<li class="fragment">3-days LOS: 5.4</li>
-<li class="fragment">7-days LOS: 9.4</li>
+<li class="fragment">3-days LOS: 5.6</li>
+<li class="fragment">7-days LOS: 9.6</li>
 </ul></li>
 </ul>
 <div class="fragment">
@@ -1012,7 +1019,7 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <div class="cell-output-display">
 <div>
 <figure>
-<p><img data-src="lec3-scms_files/figure-revealjs/counterfactuals-1.png" width="960"></p>
+<p><img data-src="lec3-scms_files/figure-html/counterfactuals-1.png" width="672"></p>
 </figure>
 </div>
 </div>
@@ -1396,44 +1403,6 @@ Pearl, Judea, ed. 2009. <span>“The <span>Logic</span> of <span>Structure-Based
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {
