@@ -21,7 +21,7 @@ Learn causal inference and causal data science!
 | 11:00 - 12:00 | Practical | Causal assumptions                                |[html](practicals/11_poutcomes/day1_practical.html) |
 | 12:00 - 13:00 | LUNCH     |                                                   | |
 | 13:00 - 14:00 | Lecture   | Intro to Potential Outcomes II                    | |
-| 14:15 - 15:00 | Lecture   | Adjustment Methods I: Stratification and Matching | |
+| 14:15 - 15:00 | Lecture   | Adjustment Methods I: Stratification and Matching |[html](practicals/11_poutcomes/day1_practical2.html) |
 | 15:15 - 16:30 | Practical | Adjustment Methods                                | |
 
 ### Day 2: DAGs and SCMs
