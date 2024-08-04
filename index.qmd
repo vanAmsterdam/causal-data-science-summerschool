@@ -16,7 +16,7 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link |
 |---------------|-----------|---------------------------------------------------|-|
-| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              | |
+| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              |[html](lectures/day1-potentialoutcomes/lecture_day1.pdf) |
 | 09:30 - 10:45 | Lecture   | Intro to Potential Outcomes I                     | |
 | 11:00 - 12:00 | Practical | Causal assumptions                                |[html](practicals/11_poutcomes/day1_practical.html) |
 | 12:00 - 13:00 | LUNCH     |                                                   | |
