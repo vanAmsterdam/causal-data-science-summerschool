@@ -16,7 +16,7 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link |
 |---------------|-----------|---------------------------------------------------|-|
-| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              |[html](lectures/day1-potentialoutcomes/lecture_day1.pdf) |
+| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              |[pdf](lectures/day1-potentialoutcomes/lecture_day1.pdf) |
 | 09:30 - 10:45 | Lecture   | Intro to Potential Outcomes I                     | |
 | 11:00 - 12:00 | Practical | Causal assumptions                                |[html](practicals/11_poutcomes/day1_practical.html) |
 | 12:00 - 13:00 | LUNCH     |                                                   | |
@@ -40,8 +40,8 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I | |
-| 10:00 - 10:45 | Lecture   | Target Trials Emulation I           |[pdf](lectures/day3-tte/LectureDay3.pdf) |
+| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |[pdf](lectures/day3-tte/LectureDay3.pdf) |
+| 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
 | 11:00 - 12:00 | practical | Target Trials in Practice I         | |
 | 12:00 - 13:30 | LUNCH     |                                     | |
 | 13:30 - 14:15 | Lecture   | Target Trials Emulation II          | |
@@ -67,7 +67,7 @@ Learn causal inference and causal data science!
 | 09:00 - 09:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   | |
 | 10:00 - 10:45 | Lecture  | When traditional methods fail                                         | |
 | 11:00 - 12:00 | Lecture  | Causal Inference in Quasi-Experimental and Policy Evaluation settings | |
-|               |          | Q&A                                                                   | |
+| 12.00 - 12.45 |          | Q&A and borrel                                                        | |
 
 ## Instructors
 
