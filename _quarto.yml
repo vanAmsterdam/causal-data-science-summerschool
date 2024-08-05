@@ -3,6 +3,10 @@ project:
 
 website:
   title: "Causal Inference and Causal Data Science Summerschool"
+  navbar:
+    left:
+      - text: "Home"
+        href: index.qmd
 
 format:
   html:
