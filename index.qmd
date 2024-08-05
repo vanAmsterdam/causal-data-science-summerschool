@@ -28,12 +28,12 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |[html](lectures/day2-scms/lec1.html)|
+| 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |[html](lectures/day2-scms/lec1.html) [pdf](lectures/day2-scms/lec1.pdf)|
 | 09:45 - 10:45 | Lecture   | Intro to DAGs II                                         ||
 | 11:00 - 12:00 | practical | Drawing and Using DAGs I                                 |[html](practicals/21_dags/dags.html)|
 | 12:00 - 13:00 | LUNCH     |                                                          | |
-| 13:00 - 14:00 | Lecture   | Structural Causal Models                                 |[html](lectures/day2-scms/lec3-scms.html)  |
-| 14:15 - 15:00 | Lecture   | Adjustment Methods II: Regression and Outcome Adjustment |[html](lectures/day2-scms/lec4.html) |
+| 13:00 - 14:00 | Lecture   | Structural Causal Models                                 |[html](lectures/day2-scms/lec3-scms.html) [pdf](lectures/day2-scms/lec3-scms.pdf)  |
+| 14:15 - 15:00 | Lecture   | Adjustment Methods II: Regression and Outcome Adjustment |[html](lectures/day2-scms/lec4.html) [pdf](lectures/day2-scms/lec4.pdf) |
 | 15:15 - 16:30 | practical | SCMs and meta-learners                                |[html](practicals/22_scms/index.html)|
 
 ### Day 3: Target Trial Emulation
