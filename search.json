@@ -1,5 +1,47 @@
 [
   {
+    "objectID": "practicals/22_scms/index.html",
+    "href": "practicals/22_scms/index.html",
+    "title": "Practical: Structural Causal Models and Meta-learners",
+    "section": "",
+    "text": "In this practical you’ll learn more about identification and counterfactuals using the Structural Causal Model approach, and meta-learners\n\nIdentification\n\n\n\n\n\n\nRemember the definition of identification in the lecture on SCMs:\n\n\n\n\n\nLet \\(Q(M)\\) be any computable quantity of a model \\(M\\). We say that \\(Q\\) is identifiable in a class \\(\\mathbb{M}\\) of models if, for any pairs of models \\(M_1\\) and \\(M_2\\) from \\(\\mathbb{M}\\), \\(Q(M_1) = Q(M_2)\\) whenever \\(P_{M_1} (y) = P_{M_2} (y)\\). If our observations are limited and permit only a partial set \\(F_M\\) of features (of \\(P_M(y)\\)) to be estimated, we define \\(Q\\) to be identifiable from \\(F_M\\) if \\(Q(M_1) = Q(M_2)\\) whenever \\(F_{M_1} = F_{M_2}\\).\n\n\n\nWe have two different datasets, for which we know they came from the following DAG:\n\n\n\n\n\n\nFigure 1: DAG U\n\n\n\n\n\nCode\nrequired_pkgs &lt;- c(\"marginaleffects\", \"ggplot2\", \"data.table\")\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in required_pkgs) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}\n\nsuppressPackageStartupMessages({\n  # Load packages\n  library(marginaleffects)\n  library(ggplot2)\n  library(data.table)\n})\n\nsource(here::here(\"practicals\", \"22_scms\", \"_makedatas.R\"))\ndatas &lt;- make_datas()\n\ndata1 &lt;- datas[[\"data1\"]]\ndata2 &lt;- datas[[\"data2\"]]\n\n\n\n\n\n\n\n\nThe datasets can alternatively be downloaded here:\n\n\n\n\n\n\n\n\ndata\nlink\n\n\n\n\ndata1\ndata1.csv\n\n\ndata2\ndata2.csv\n\n\n\n\n\n\n\n\n\n\n\n\nstate the ATE in terms of expected values of ‘do’ expressions\n\n\n\n\n\nanswer: \\[\\text{ATE} = E[Y|\\text{do}(X=1)] - E[Y|\\text{do}(X=0)] \\tag{1}\\]\n\n\n\n\n\n\n\n\n\nwe did not measure \\(U\\), can we estimate this target query based on the DAG, using the observed data\n\n\n\n\n\nanswer: no, there is an open back-door path through \\(U\\) which we cannot block as we did not observe that variable\n\n\n\ndata1 and data2 come from the same DAG but from different SCMs\n\n\n\n\n\n\nHow can this be? What does this mean?\n\n\n\n\n\nanswer: the endogenous variables have the same parents, so the DAG is the same. The structural equations are different\n\n\n\nWe can estimate four features of the observed distribution: \\(P(Y=1|X=0),P(Y=1|X=1),P(Y=1),P(X=1)\\). Observe that for data1 and data2, these are approximately the same (up to sampling variation)\n\n\n\n\n\n\nEstimate them from the observed data\n\n\n\n\n\n\n\nCode\nmean(data1[data1$x==0,\"y\"])\n\n\n[1] 0.3381743\n\n\nCode\nmean(data1[data1$x==1,\"y\"])\n\n\n[1] 0.6949807\n\n\nCode\nmean(data1[,\"y\"])\n\n\n[1] 0.523\n\n\nCode\nmean(data1[,\"x\"])\n\n\n[1] 0.518\n\n\nCode\nmean(data2[data2$x==0,\"y\"])\n\n\n[1] 0.2944664\n\n\nCode\nmean(data2[data2$x==1,\"y\"])\n\n\n[1] 0.6862348\n\n\nCode\nmean(data2[,\"y\"])\n\n\n[1] 0.488\n\n\nCode\nmean(data2[,\"x\"])\n\n\n[1] 0.494\n\n\n\n\n\n\n\n\n\n\n\nUse the fact that u is in the data to calculate the actual effect in both datasets, what are the answers?\n\n\n\n\n\n\n\nCode\nfit1 &lt;- glm(y~x*u, data=data1, family=binomial)\nfit2 &lt;- glm(y~x*u, data=data2, family=binomial)\navg_comparisons(fit1, variables=\"x\")\n\n\n\n Term          Contrast Estimate Std. Error      z Pr(&gt;|z|)   S  2.5 % 97.5 %\n    x mean(1) - mean(0) -0.00897     0.0675 -0.133    0.894 0.2 -0.141  0.123\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nCode\navg_comparisons(fit2, variables=\"x\")\n\n\n\n Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)     S 2.5 % 97.5 %\n    x mean(1) - mean(0)    0.393      0.029 13.5   &lt;0.001 136.3 0.336   0.45\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\n\n\n\n\n\n\n\n\n\nExplain how this proves (to statistical error) that our target query was not identified\n\n\n\n\n\nanswer: there were two datasets with two different underlying models. Both yielded the same distribution in terms of observed variables \\(X,Y\\), but when using the unobserved variable \\(U\\), we could see both models had different answers to our query.\n\n\n\n\n\nCounterfactual computations\nUse the following information on patient John:\n\nage: 60\nhypertension: true\ndiabetes: true\nintervention: weight-loss program\nsurvival-time: 10\n\nIn addition to the following structural equation, where u denotes an (unobserved) exogenous noise variable, such that \\(E[u] = 0\\) (i.e. the mean is 0):\n\\[\\text{survival-time} = 120 - \\text{age} - 10*\\text{hypertension} - 15*\\text{diabetes} + 5*\\text{weight-loss-program} + u\\]\n\n\n\n\n\n\ncalculate the expected survival time for patients like John with and without the weight-loss program\n\n\n\n\n\nanswer:\n\\[\\begin{align}\n  E[\\text{survival-time}|\\text{do}(\\text{program}=0),...] &= E[120 - 60 - 10 - 15 + u] \\\\\n                                                   &= 120 - 60 - 10 - 15 + E[u] \\\\\n                                                   &= 35 + E[u] \\\\\n                                                   &= 35 + 0 \\\\\n                                                   &= 35 \\\\\n\\end{align}\\]\n\\[\\begin{align}\n  E[\\text{survival-time}|\\text{do}(\\text{program}=1),...] &= E[120 - 60 - 10 - 15 + 5 + u] \\\\\n                                                   &= 120 - 60 - 10 - 15 + 5 + E[u] \\\\\n                                                   &= 40 + E[u] \\\\\n                                                   &= 40 + 0 \\\\\n                                                   &= 40 \\\\\n\\end{align}\\]\n\n\n\n\n\n\n\n\n\nCalculate the survival time for John, given that he took the weight-loss-program and survived 10 year, if he would not have taken the weigth-loss-program\n\n\n\n\n\nanswer:\n\nstep 1. abduction: infer John’s u\nJohn’s expected survival time with the program (which he had) was 35 years. He lived for 10 years. We can infer that his \\(u=-25\\)\n\n\nstep 2. action: modify the treatment\nWe update his treatment status to ‘no weight-loss-program’, the formula is now the second answer to the previous question\n\n\nstep 3. predict:\nGiven John’s \\(u=-25\\) and his other observed values, we can now calculate that his expected survival time was \\(5\\) years if he would not have taken the weight-loss program.\n\n\n\n\n\n\n\n\n\nMeta-learners\n\n\n\n\n\n\nRemember the definition of the conditional average treatment effect (CATE) from lecture 4\n\n\n\n\n\n\\(\\text{CATE}(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\n\n\n\n\n\n\n\n\n\nRembember the definition of the T-learner and the S-learner from lecture 4:\n\n\n\n\n\n\ndenote \\(\\tau(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\nT-learner: model \\(T=0\\) and \\(T=1\\) separately (e.g. regression separetely for treated and untreated): \\[\\begin{align}\n  \\mu_0(w) &= E[Y|\\text{do}(T=0),W=w] \\\\\n  \\mu_1(w) &= E[Y|\\text{do}(T=1),W=w] \\\\\n  \\tau(w)  &= \\mu_1(w) - \\mu_0(w)\n\\end{align}\\]\nS-learner: use \\(T\\) as just another feature (assuming \\(W\\) is a sufficient set) \\[\\begin{align}\n  \\mu(t,w) &= E[Y|T=t,W=w] \\\\\n  \\tau(w)  &= \\mu(1,w) - \\mu(0,w)\n\\end{align}\\]\n\n\n\n\nWith the following datasets:\n\n\n\n\n\n\n\n\nFigure 2: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\n\n\nwhat learning-approach would you recommend for estimating the CATE?\n\n\n\n\n\n\nS-learner with simple basemodel and no interaction (e.g. linear regression)\nS-learner with non-linear base model and no interaction term (e.g. splines / boosting / …)\nT-learner\n\nNOTE: we typically have data with multi-dimensional features and/or confounders. Having the above plot to decide on the right meta-learning approach is almost never possible."
+  },
+  {
+    "objectID": "practicals/drafts/draft.html",
+    "href": "practicals/drafts/draft.html",
+    "title": "Draft practical:",
+    "section": "",
+    "text": "In this practical, …\nFirst we load a package\nlibrary(survival)\nIn this practical, we will also use the following two packages:"
+  },
+  {
+    "objectID": "practicals/drafts/draft.html#non-coding-questions",
+    "href": "practicals/drafts/draft.html#non-coding-questions",
+    "title": "Draft practical:",
+    "section": "Non-coding questions",
+    "text": "Non-coding questions\n\n\n\n\n\n\nQuestion Foo\n\n\n\n\n\nanswer: bar"
+  },
+  {
+    "objectID": "practicals/drafts/draft.html#my-goals",
+    "href": "practicals/drafts/draft.html#my-goals",
+    "title": "Draft practical:",
+    "section": "my goals",
+    "text": "my goals"
+  },
+  {
+    "objectID": "practicals/drafts/draft.html#conclusion",
+    "href": "practicals/drafts/draft.html#conclusion",
+    "title": "Draft practical:",
+    "section": "Conclusion",
+    "text": "Conclusion\nYou learned ABC"
+  },
+  {
+    "objectID": "practicals/drafts/draft.html#further-reading",
+    "href": "practicals/drafts/draft.html#further-reading",
+    "title": "Draft practical:",
+    "section": "Further reading",
+    "text": "Further reading\nRead Chapter 9 of Pearls Causality (Pearl 2009)"
+  },
+  {
     "objectID": "lectures/day2-scms/lec4.html#how-to-find-adjustment-sets",
     "href": "lectures/day2-scms/lec4.html#how-to-find-adjustment-sets",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
@@ -46,14 +88,14 @@
     "href": "lectures/day2-scms/lec4.html#the-simplest-case-linear-regression",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
     "section": "The simplest case: linear regression",
-    "text": "The simplest case: linear regression\n\nassume the following structural causal model (\\(z\\) is confounder, \\(u\\) is exogenous noise): \\[f_y(t,z,u) = \\beta_t t + \\beta_z z + \\beta_u u\\]\nthen: \\[\\begin{align}\n  \\text{ATE} &= E[Y|\\text{do}(t=1)] - E[Y|\\text{do}(t=0)] \\\\\n             &\\class{fragment}{= E_{z,u}[\\beta_t * 1+ \\beta_z z + \\beta_u u] - E_{z,u}[\\beta_t * 0 + \\beta_z z + \\beta_u u]} \\\\\n             &\\class{fragment}{= \\beta_t + E_{z,u}[\\beta_z z + \\beta_u u] - E_{z,u}[\\beta_z z + \\beta_u u]} \\\\\n             &\\class{fragment}{= \\beta_t}\n\\end{align}\\]\ni.e. the ATE collapses to the the regression parameter for \\(t\\) in a linear regression model of \\(y\\) on \\(t,z\\)"
+    "text": "The simplest case: linear regression\n\nassume the following structural causal model (\\(z\\) is confounder, \\(u\\) is exogenous noise): \\[f_y(t,z,u) = \\beta_t t + \\beta_z z + \\beta_u u\\]\nthen: \\[\\begin{align}\n  \\text{ATE} &= E[Y|\\text{do}(t=1)] - E[Y|\\text{do}(t=0)] \\\\\n             &\\class{fragment}{= E_{z,u}[\\beta_t * 1+ \\beta_z z + \\beta_u u] - E_{z,u}[\\beta_t * 0 + \\beta_z z + \\beta_u u]} \\\\\n             &\\class{fragment}{= \\beta_t + E_{z,u}[\\beta_z z + \\beta_u u] - E_{z,u}[\\beta_z z + \\beta_u u]} \\\\\n             &\\class{fragment}{= \\beta_t}\n\\end{align}\\]\ni.e. the ATE collapses to the the regression parameter \\(\\beta_t\\) in a linear regression model of \\(y\\) on \\(t,z\\)"
   },
   {
     "objectID": "lectures/day2-scms/lec4.html#sec-metalearners",
     "href": "lectures/day2-scms/lec4.html#sec-metalearners",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
     "section": "General estimators for the ATE and the CATE (meta-learners)",
-    "text": "General estimators for the ATE and the CATE (meta-learners)\n\ndenote \\(\\tau(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\nT-learner: model \\(T=0\\) and \\(T=1\\) separately (e.g. regression separetely for treated and untreated): \\[\\begin{align}\n  \\mu_0(w) &= E[Y|\\text{do}(T=0),W=w] \\\\\n  \\mu_1(w) &= E[Y|\\text{do}(T=1),W=w] \\\\\n  \\tau(w)  &= \\mu_1(w) - \\mu_0(w)\n\\end{align}\\]\nS-learner: use \\(T\\) as just another feature (assuming \\(W\\) is a sufficient set) \\[\\begin{align}\n  \\mu(t,w) &= E[Y|T=t,W=w] \\\\\n  \\tau(w)  &= \\mu(1,w) - \\mu(0,w)\n\\end{align}\\]\n(many other variants combinations): this is a whole literature)"
+    "text": "General estimators for the ATE and the CATE (meta-learners)\n\ndenote \\(\\tau(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\nT-learner: model \\(T=0\\) and \\(T=1\\) separately (e.g. regression separetely for treated and untreated): \\[\\begin{align}\n  \\mu_0(w) &= E[Y|\\text{do}(T=0),W=w] \\\\\n  \\mu_1(w) &= E[Y|\\text{do}(T=1),W=w] \\\\\n  \\tau(w)  &= \\mu_1(w) - \\mu_0(w)\n\\end{align}\\]\nS-learner: use \\(T\\) as just another feature (assuming \\(W\\) is a sufficient set) \\[\\begin{align}\n  \\mu(t,w) &= E[Y|T=t,W=w] \\\\\n  \\tau(w)  &= \\mu(1,w) - \\mu(0,w)\n\\end{align}\\]\n(many other variants combinations: this is a whole literature)"
   },
   {
     "objectID": "lectures/day2-scms/lec4.html#intuitive-way-pointers",
@@ -67,7 +109,7 @@
     "href": "lectures/day2-scms/lec4.html#where-does-the-variance-come-from",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
     "section": "Where does the variance come from?",
-    "text": "Where does the variance come from?\nset.seed(12345)\nn = 1e3\n\nf1 &lt;- function(t, x, u) t + 0.5 * (x - pi) + u\nf2 &lt;- function(t, x, u) t + sin(x) + u\nf3 &lt;- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u\n\ndf &lt;- data.table(\n  x = runif(n, 0, 2*pi),\n  t = rbinom(n, 1, 0.5),\n  u = rnorm(n, 0, .1)\n)\n\ndf[, `:=`(\n  y1 = f1(t, x, u),\n  y2 = f2(t, x, u),\n  y3 = f3(t, x, u)\n)]\n\ndfm &lt;- melt(df, measure.vars=c('y1', 'y2', 'y3'),\n            variable.name=\"f\", value.name=\"y\")\n\nggplot(dfm, aes(x=x, y=y, col=factor(t))) + \n  geom_point() + \n  facet_grid(~f)\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\\(Y = T + 0.5 (X - \\pi) + \\epsilon\\) (linear)\n\\(Y = T + \\sin(X) + \\epsilon\\) (non-linear additive)\n\\(Y = T * \\sin(X) - (1-T) \\sin(x) + \\epsilon\\) (non-linear + interaction)"
+    "text": "Where does the variance come from?\n\n\n\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\\(Y = T + 0.5 (X - \\pi) + \\epsilon\\) (linear)\n\\(Y = T + \\sin(X) + \\epsilon\\) (non-linear additive)\n\\(Y = T * \\sin(X) - (1-T) \\sin(x) + \\epsilon\\) (non-linear + interaction)"
   },
   {
     "objectID": "lectures/day2-scms/lec4.html#making-dags",
@@ -81,7 +123,7 @@
     "href": "lectures/day2-scms/lec4.html#a003024-the-death-of-dags",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
     "section": "A003024: The death of DAGs?",
-    "text": "A003024: The death of DAGs?\n\na003024 &lt;- c(1,1,3,25,543,29281,3781503,1138779265,\n783702329343,1213442454842881,4175098976430598143,\n31603459396418917607425,\n521939651343829405020504063,\n18676600744432035186664816926721,\n1439428141044398334941790719839535103)\na_years &lt;- a003024 / 31556952 # n seconds in gregorian calendar year\na_days &lt;- a_years * 365.2425 # n seconds in gregorian calendar year\nadf &lt;- data.table(days=a_days, years=a_years, seconds=a003024)\nadf[, hours:=days*24]\nadf[, n_nodes:=.I-1]\nadf[, an_hour:=hours &gt; 1.]\nadf[, a_day:=days &gt; 1.]\nadf[, a_year:=years &gt; 1.]\nadf[, human_species:=years &gt; 3e5]\nadf[, age_universe:=years &gt; 13.787e9]\nadf[n_nodes&gt;1, list(n_nodes, n_dags=seconds, an_hour, a_day, a_year, human_species, age_universe)]\n\nThe number of possible DAGs grows super-exponentially in the number of nodes\n\n\n\nn_nodes\nn_dags\ntime at 1 sec / DAG\n\n\n\n\n1\n1\n\n\n\n2\n3\n\n\n\n3\n25\n\n\n\n4\n543\n\n\n\n5\n29281\n&gt; an hour\n\n\n6\n3781503\n&gt; a day\n\n\n7\n1138779265\n&gt; a year\n\n\n8\n783702329343\n\n\n\n9\n1213442454842881\n&gt; human species\n\n\n10\n4175098976430598143\n&gt; age of universe"
+    "text": "A003024: The death of DAGs?\nThe number of possible DAGs grows super-exponentially in the number of nodes\n\n\n\nn_nodes\nn_dags\ntime at 1 sec / DAG\n\n\n\n\n1\n1\n\n\n\n2\n3\n\n\n\n3\n25\n\n\n\n4\n543\n\n\n\n5\n29281\n&gt; an hour\n\n\n6\n3781503\n&gt; a day\n\n\n7\n1138779265\n&gt; a year\n\n\n8\n783702329343\n\n\n\n9\n1213442454842881\n&gt; human species\n\n\n10\n4175098976430598143\n&gt; age of universe"
   },
   {
     "objectID": "lectures/day2-scms/lec4.html#do-we-need-to-consider-all-dags",
@@ -95,147 +137,7 @@
     "href": "lectures/day2-scms/lec4.html#references",
     "title": "Adjustment Sets and Approaches - and limitations / critiques",
     "section": "References",
-    "text": "References\n\n\n\n\n\n\n\n\n\nAnand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. “Causal Effect Identification in Cluster DAGs.” Proceedings of the AAAI Conference on Artificial Intelligence 37 (10): 12172–79. https://doi.org/10.1609/aaai.v37i10.26435."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "",
-    "text": "Dates: Aug 5th - Aug 10th 2024\nplease have a look at the setup-document here before the first day and make sure you have a working R installation with the required packages"
-  },
-  {
-    "objectID": "index.html#course-objectives",
-    "href": "index.html#course-objectives",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "Course objectives",
-    "text": "Course objectives\nLearn causal inference and causal data science!"
-  },
-  {
-    "objectID": "index.html#schedule",
-    "href": "index.html#schedule",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "Schedule",
-    "text": "Schedule\n\nDay 1: Intro & Potential Outcomes\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:30\nLecture\nCausal Inference: What, Why, and How\npdf\n\n\n09:30 - 10:45\nLecture\nIntro to Potential Outcomes I\n\n\n\n11:00 - 12:15\nPractical\nCausal assumptions\nhtml\n\n\n12:30 - 13:15\nLUNCH\n\n\n\n\n13:15 - 14:00\nLecture\nIntro to Potential Outcomes II\n\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods I: Stratification, Matching and Propensity Scores\n\n\n\n15:15 - 16:30\nPractical\nAdjustment Methods I\nhtml\n\n\n\n\n\nDay 2: DAGs and SCMs\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to DAGs I\nhtml\n\n\n09:45 - 10:45\nLecture\nIntro to DAGs II\n\n\n\n11:00 - 12:00\npractical\nDrawing and Using DAGs I\nhtml\n\n\n12:00 - 13:00\nLUNCH\n\n\n\n\n13:00 - 14:00\nLecture\nStructural Causal Models\nhtml\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods II: Regression and Outcome Adjustment\nhtml\n\n\n15:15 - 16:30\npractical\nSCMs and meta-learners\nhtml\n\n\n\n\n\nDay 3: Target Trial Emulation\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to Trials and Target Trials I\npdf\n\n\n10:00 - 10:45\nLecture\nTarget Trials Emulation I\n\n\n\n11:00 - 12:00\npractical\nTarget Trials in Practice I\n\n\n\n12:30 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nTarget Trials Emulation II\n\n\n\n14:30 - 15:00\nLecture\nTarget Trials Emulation III\n\n\n\n15:15 - 16:30\npractical\nTarget Trials in practice II\n\n\n\n\n\n\nDay 4: Causal Data Science\n\n\n\n\n\n\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nCausal Perspectives on Prediction Modeling I\n\n\n\n10:00 - 10:45\nLecture\nCausal Perspectives on Prediction Modeling II\n\n\n\n11:00 - 12:00\npractical\nCausal Perspectives on Prediction Modeling\n\n\n\n12:00 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nCausal Structure Learning I\n\n\n\n14:30 - 15:00\nLecture\nCausal Structure Learning II\n\n\n\n15:15 - 16:30\npractical\nCausal Structure Learning\n\n\n\n\n\n\nDay 5: Advanced Topics in Causal Inference\n\n\n\n\n\n\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nMediation, Instrumental Variables and DAGs in Longitudinal settings\n\n\n\n10:00 - 10:45\nLecture\nWhen traditional methods fail\n\n\n\n11:00 - 12:00\nLecture\nCausal Inference in Quasi-Experimental and Policy Evaluation settings\n\n\n\n12.00 - 12.45\n\nQ&A and borrel"
-  },
-  {
-    "objectID": "index.html#instructors",
-    "href": "index.html#instructors",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "Instructors",
-    "text": "Instructors\n\nOisín Ryan (coordinator)\nBas Penning-de Vries\nWouter van Amsterdam"
-  },
-  {
-    "objectID": "index.html#links",
-    "href": "index.html#links",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "Links",
-    "text": "Links\n\nCourse home on utrechtsummerschool.nl"
-  },
-  {
-    "objectID": "index.html#license-disclaimer",
-    "href": "index.html#license-disclaimer",
-    "title": "Causal Inference and Causal Data Science Summerschool",
-    "section": "License & disclaimer",
-    "text": "License & disclaimer\nAll course materials are licensed under CC-BY-4.0.\n \nThese course materials were developed with great care. If you find any inaccuracies please contact us."
-  },
-  {
-    "objectID": "practicals/22_scms/index.html",
-    "href": "practicals/22_scms/index.html",
-    "title": "Practical: Structural Causal Model",
-    "section": "",
-    "text": "In this practical you’ll learn more about identification and counterfactuals using the Structural Causal Model approach, and meta-learners\n\nIdentification\n\n\n\n\n\n\nRemember the definition of identification in the lecture on SCMs:\n\n\n\n\n\nLet \\(Q(M)\\) be any computable quantity of a model \\(M\\). We say that \\(Q\\) is identifiable in a class \\(\\mathbb{M}\\) of models if, for any pairs of models \\(M_1\\) and \\(M_2\\) from \\(\\mathbb{M}\\), \\(Q(M_1) = Q(M_2)\\) whenever \\(P_{M_1} (y) = P_{M_2} (y)\\). If our observations are limited and permit only a partial set \\(F_M\\) of features (of \\(P_M(y)\\)) to be estimated, we define \\(Q\\) to be identifiable from \\(F_M\\) if \\(Q(M_1) = Q(M_2)\\) whenever \\(F_{M_1} = F_{M_2}\\).\n\n\n\nWe have two different datasets, for which we know they came from the following DAG:\n\n\n\n\n\n\nFigure 1: DAG U\n\n\n\n\n\nCode\nrequired_pkgs &lt;- c(\"marginaleffects\", \"ggplot2\", \"data.table\")\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in required_pkgs) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}\n\nsuppressPackageStartupMessages({\n  # Load packages\n  library(marginaleffects)\n  library(ggplot2)\n  library(data.table)\n})\n\nsource(here::here(\"practicals\", \"22_scms\", \"_makedatas.R\"))\ndatas &lt;- make_datas()\n\ndata1 &lt;- datas[[\"data1\"]]\ndata2 &lt;- datas[[\"data2\"]]\n\n\n\n\n\n\n\n\nThe datasets can alternatively be downloaded here:\n\n\n\n\n\n\n\n\ndata\nlink\n\n\n\n\ndata1\ndata1.csv\n\n\ndata2\ndata2.csv\n\n\n\n\n\n\n\n\n\n\n\n\nstate the ATE in terms of expected values of ‘do’ expressions\n\n\n\n\n\nanswer: \\[\\text{ATE} = E[Y|\\text{do}(X=1)] - E[Y|\\text{do}(X=0)] \\tag{1}\\]\n\n\n\n\n\n\n\n\n\ncan we estimate this target query based on the DAG, using the observed data\n\n\n\n\n\nanswer: no, there is an open back-door path through \\(U\\) which we cannot block as we did not observe that variable\n\n\n\ndata1 and data2 come from the same DAG but from different SCMs\n\n\n\n\n\n\nHow can this be? What does this mean?\n\n\n\n\n\nanswer: the endogenous variables have the same parents, so the DAG is the same. The structural equations are different\n\n\n\nWe can estimate three features of the observed distribution: \\(P(Y=1|X=0),P(Y=1|X=1),P(Y=1)\\).\n\n\n\n\n\n\nEstimate them from the observed data\n\n\n\n\n\n\n\nCode\nmean(data1[data1$x==0,\"y\"])\n\n\n[1] 0.3381743\n\n\nCode\nmean(data1[data1$x==1,\"y\"])\n\n\n[1] 0.6949807\n\n\nCode\nmean(data1[,\"y\"])\n\n\n[1] 0.523\n\n\nCode\nmean(data2[data2$x==0,\"y\"])\n\n\n[1] 0.2944664\n\n\nCode\nmean(data2[data2$x==1,\"y\"])\n\n\n[1] 0.6862348\n\n\nCode\nmean(data2[,\"y\"])\n\n\n[1] 0.488\n\n\n\n\n\n\n\n\n\n\n\nUse the fact that u is in the data to calculate the actual effect in both datasets, what are the answers?\n\n\n\n\n\n\n\nCode\nfit1 &lt;- glm(y~x*u, data=data1, family=binomial)\nfit2 &lt;- glm(y~x*u, data=data2, family=binomial)\navg_comparisons(fit1, variables=\"x\")\navg_comparisons(fit2, variables=\"x\")\n\n\n\n\n\n\n\n\n\n\n\nExplain how this proves (to statistical error) that our target query was not identified\n\n\n\n\n\nanswer: there were two datasets with two different underlying models. Both yielded the same distribution in terms of observed variables \\(X,Y\\), but when using the unobserved variable \\(U\\), we could see both models had different answers to our query.\n\n\n\n\n\nCounterfactual computations\nUse the following information on patient John:\n\nage: 60\nhypertension: true\ndiabetes: true\nintervention: weight-loss program\nsurvival-time: 10\n\nIn addition to the following structural equation, where u denotes an (unobserved) exogenous noise variable, such that \\(E[u] = 0\\) (i.e. the mean is 0):\n\\[\\text{survival-time} = 120 - \\text{age} - 10*\\text{hypertension} - 15*\\text{diabetes} + 5*\\text{weight-loss-program} + u\\]\n\n\n\n\n\n\ncalculate the expected survival time for patients like John with and without the weight-loss program\n\n\n\n\n\nanswer:\n\\[\\begin{align}\n  E[\\text{survival-time}|\\text{do}(\\text{program}=0),...] &= E[120 - 60 - 10 - 15 + u] \\\\\n                                                   &= 120 - 60 - 10 - 15 + E[u] \\\\\n                                                   &= 35 + E[u] \\\\\n                                                   &= 35 + 0 \\\\\n                                                   &= 35 \\\\\n\\end{align}\\]\n\\[\\begin{align}\n  E[\\text{survival-time}|\\text{do}(\\text{program}=1),...] &= E[120 - 60 - 10 - 15 + 5 + u] \\\\\n                                                   &= 120 - 60 - 10 - 15 + 5 + E[u] \\\\\n                                                   &= 40 + E[u] \\\\\n                                                   &= 40 + 0 \\\\\n                                                   &= 40 \\\\\n\\end{align}\\]\n\n\n\n\n\n\n\n\n\nCalculate the survival time for John, given that he took the weight-loss-program and survived 10 year, if he would not have taken the weigth-loss-program\n\n\n\n\n\nanswer:\n\nstep 1. abduction: infer John’s u\nJohn’s expected survival time with the program (which he had) was 35 years. He lived for 10 years. We can infer that his \\(u=-25\\)\n\n\nstep 2. action: modify the treatment\nWe update his treatment status to ‘no weight-loss-program’, the formula is now the second answer to the previous question\n\n\nstep 3. predict:\nGiven John’s \\(u=-25\\) and his other observed values, we can now calculate that his expected survival time was \\(5\\) years if he would not have taken the weight-loss program.\n\n\n\n\n\n\n\n\n\nMeta-learners\n\n\n\n\n\n\nRemember the definition of the conditional average treatment effect (CATE) from lecture 4\n\n\n\n\n\n\\(\\text{CATE}(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\n\n\n\n\n\n\n\n\n\nRembember the definition of the T-learner and the S-learner from lecture 4:\n\n\n\n\n\n\ndenote \\(\\tau(w) = E[y|\\text{do}(t=1),w] - E[y|\\text{do}(t=0),w]\\)\nT-learner: model \\(T=0\\) and \\(T=1\\) separately (e.g. regression separetely for treated and untreated): \\[\\begin{align}\n  \\mu_0(w) &= E[Y|\\text{do}(T=0),W=w] \\\\\n  \\mu_1(w) &= E[Y|\\text{do}(T=1),W=w] \\\\\n  \\tau(w)  &= \\mu_1(w) - \\mu_0(w)\n\\end{align}\\]\nS-learner: use \\(T\\) as just another feature (assuming \\(W\\) is a sufficient set) \\[\\begin{align}\n  \\mu(t,w) &= E[Y|T=t,W=w] \\\\\n  \\tau(w)  &= \\mu(1,w) - \\mu(0,w)\n\\end{align}\\]\n\n\n\n\nWith the following datasets:\n\n\n\n\n\n\n\n\nFigure 2: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\n\n\nwhat learning-approach would you recommend for estimating the CATE?\n\n\n\n\n\n\nS-learner with simple basemodel and no interaction (e.g. linear regression)\nS-learner with non-linear base model and no interaction term (e.g. splines / boosting / …)\nT-learner\n\nNOTE: we typically have data with multi-dimensional features and/or confounders. Having the above plot to decide on the right meta-learning approach is almost never possible."
-  },
-  {
-    "objectID": "practicals/00_setup/setup.html",
-    "href": "practicals/00_setup/setup.html",
-    "title": "Setup for Causal Inference and Causal Data Science Course",
-    "section": "",
-    "text": "We will work with R. You can use your preferred way of working in R to do the practicals. Our preferred way is this:\n\nCreate a new folder with a good name, e.g., practicals_causal_datascience\nOpen RStudio\nCreate a new project from RStudio, which you associate with the folder\nCreate a raw_data subfolder\nCreate an R script for the current practical, e.g., introduction.R\nCreate your well-documented and well-styled code in this R script\n\nWe try to make our practicals light in the number of required packages, but the packages below are needed. You can install them via:\n\nneeded_packages &lt;- c(\n  \"data.table\", \"broom\", \"purrr\", \"dagitty\", \"ggplot2\", \"dplyr\", \"marginaleffects\",\n  \"MatchIt\",\"survey\",\"tableone\"\n)\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in needed_packages) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html",
-    "href": "practicals/21_dags/dags.html",
-    "title": "Practical on DAGs",
-    "section": "",
-    "text": "This lab will guide you through practical examples of drawing and analyzing DAGs using R. You will learn how to simulate data, create DAGs, and use them for causal inference.\nCode\n# Install necessary packages if not already installed\nrequired_pkgs &lt;- c(\"dagitty\", \"ggplot2\", \"broom\", \"purrr\", \"dplyr\", \"data.table\", \"marginaleffects\")\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in required_pkgs) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}\n\n\nInstalling package into '/Users/oryan/Library/R/arm64/4.4/library'\n(as 'lib' is unspecified)\n\n\n\nThe downloaded binary packages are in\n    /var/folders/hp/k66j516s6r51wvhj_6q25n500000gq/T//Rtmp2bPzAJ/downloaded_packages\n\n\nInstalling package into '/Users/oryan/Library/R/arm64/4.4/library'\n(as 'lib' is unspecified)\n\n\nalso installing the dependency 'insight'\n\n\n\nThe downloaded binary packages are in\n    /var/folders/hp/k66j516s6r51wvhj_6q25n500000gq/T//Rtmp2bPzAJ/downloaded_packages\n\n\nCode\nsuppressPackageStartupMessages({\n  # Load packages\n  library(purrr)\n  library(broom)\n  library(dagitty)\n  library(ggplot2)\n  library(dplyr)\n  library(marginaleffects)\n  library(data.table)\n})\n\nsource(here::here(\"practicals\", \"21_dags\", \"_makedatas.R\"))\ndatas &lt;- make_datas()"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#birthweight-data",
-    "href": "practicals/21_dags/dags.html#birthweight-data",
-    "title": "Practical on DAGs",
-    "section": "1.1 Birthweight data:",
-    "text": "1.1 Birthweight data:\nWe’ll use the (simulated) dataset birthw with data on birthweight and survival of babies.\nThe birthw dataset contains the following variables:\n\nageover35: Indicator mother’s age over 35 years (0 = age &lt;= 35, 1 = age &gt;35)\nsmoking: Smoking status during pregnancy (0 = no, 1 = yes)\nlbwt: Los birth weight in grams (&lt;2500grams)\ndeath: Neonatal death within 3 months (0 = no, 1 = yes)\n\n\n\nCode\nbirthw &lt;- datas[[\"birthw\"]]\nhead(birthw)\n\n\n\n  \n\n\n\nThe data can alternatively be downloaded here: birthw.csv\n:::"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#create-a-dag",
-    "href": "practicals/21_dags/dags.html#create-a-dag",
-    "title": "Practical on DAGs",
-    "section": "1.2 Create a DAG",
-    "text": "1.2 Create a DAG\n\n1.2.1 Think of a DAG that may fit this data using the observed variables\nTake a few minutes to create a DAG (collaboratively) (using e.g. dagitty.net)\n\n\n1.2.2 Are there variables that may be missing in the data but are relevant?\nIf so, add them to the DAG, and indicate that they are unobserved\n\n\n1.2.3 With your DAG, can the causal effect be estimated?\nUse e.g. dagitty.net to create your DAG and see if there are ways to estimate the causal effect."
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#do-some-analyses",
-    "href": "practicals/21_dags/dags.html#do-some-analyses",
-    "title": "Practical on DAGs",
-    "section": "1.3 Do some analyses",
-    "text": "1.3 Do some analyses\nLet’s try some analyses.\nTo translate a logistic regression model into differences in probabilities we use the avg_comparisons function from the marginaleffects package.\n\n\nCode\nrequire(marginaleffects)\n\nfit_allobs &lt;- glm(death~., data=birthw, family=\"binomial\")\nfit_marginal &lt;- glm(death~smoking, data=birthw, family=\"binomial\")\n\navg_comparisons(fit_allobs, variables=\"smoking\")\n\n\n\n    Term          Contrast Estimate Std. Error     z Pr(&gt;|z|)    S  2.5 %\n smoking mean(1) - mean(0)    -0.13     0.0179 -7.25   &lt;0.001 41.1 -0.165\n  97.5 %\n -0.0948\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nCode\navg_comparisons(fit_marginal, variables=\"smoking\")\n\n\n\n    Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)   S  2.5 % 97.5 %\n smoking mean(1) - mean(0)   0.0808     0.0288 2.81  0.00502 7.6 0.0244  0.137\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nThese effect estimates are quite different. How could this be explained? Which effect estimate do you think is more credible?"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#assume-a-dag",
-    "href": "practicals/21_dags/dags.html#assume-a-dag",
-    "title": "Practical on DAGs",
-    "section": "1.4 Assume a DAG",
-    "text": "1.4 Assume a DAG\n\n\n\n\n\n\nAssume the following DAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: DAG for smoking and death\n\n\n\nIn this DAG, there is another variable gene that influences both lbwt and death.\n\n\n\n\n\n\n\n\n\nHow does this DAG change the analysis?\n\n\n\n\n\nanswer: the smoking-death relationship has no confounders, the marginal estimate is correct. Adjusting for lbwt ‘washes-out’ part of smoking’s effect because lbwt is a mediator. Also, lbwt is a collider between gene and smoking, and gene has a direct arrow into death. Conditioning on lbwt opens a bidirected path between smoking and gene, creating a new backdoor path. So there are two reasons not to condition on lbwt: it is a mediator and a collider with an unmeasured variable\n\n\n\n\n\n\n\n\n\nSee this other DAG on the smoking question\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: birthweight DAG 2\n\n\n\n\n\n\nGiven the DAG in Figure 2, see the following regression model\n\nfit2 &lt;- glm(death~smoking+ht+ageover35, data=birthw, family=binomial)\n\n\n\n\n\n\n\nAssuming no parametric form bias, will this lead to an unbiased causal effect estimate?\n\n\n\n\n\nanswer: yes this is a correct analysis. lbwt is still a collider, but it does not open any new back-door paths because gene no longer has a direct effect on death and all variables other than smoking that do have such an arrow are in the conditioning set (ageover35,ht) so these paths are blocked"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#step-2-creating-and-visualizing-a-dag",
-    "href": "practicals/21_dags/dags.html#step-2-creating-and-visualizing-a-dag",
-    "title": "Practical on DAGs",
-    "section": "2.1 Step 2: Creating and Visualizing a DAG",
-    "text": "2.1 Step 2: Creating and Visualizing a DAG\nLet’s create a DAG for the pregnancy example:\n\n\nCode\n# Define the DAG\ndag &lt;- dagitty(\"dag {\n  pregnancy_risk -&gt; hospital_delivery\n  pregnancy_risk -&gt; neonatal_outcome\n  hospital_delivery -&gt; neonatal_outcome\n}\")\n\n# Plot the DAG\nplot(dag)\n\n\nPlot coordinates for graph not supplied! Generating coordinates, see ?coordinates for how to set your own.\n\n\n\n\n\n\n\n\n\nThis DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.\n\n2.1.1 Step 3: Simulating Data\nWe will simulate data based on the DAG structure:\n\n\nCode\nset.seed(123)\n\nn &lt;- 1000\n\n# Simulate variables\npregnancy_risk &lt;- rbinom(n, 1, 0.3)  # 30% high risk\nhospital_delivery &lt;- rbinom(n, 1, 0.5 + 0.3 * pregnancy_risk)  # 50% baseline + 30% if high risk\nneonatal_outcome &lt;- rbinom(n, 1, 0.8 - 0.3 * pregnancy_risk + 0.15 * hospital_delivery)  # outcome affected by both\n\n# Create a data frame\ndf &lt;- data.table(pregnancy_risk, hospital_delivery, neonatal_outcome)\n\n\n\n\n2.1.2 Step 4: Analyzing the Data\nCheck the relationships in the data:\n\n\nCode\n# Summary statistics\nsummary(df)\n\n\n pregnancy_risk  hospital_delivery neonatal_outcome\n Min.   :0.000   Min.   :0.000     Min.   :0.000   \n 1st Qu.:0.000   1st Qu.:0.000     1st Qu.:1.000   \n Median :0.000   Median :1.000     Median :1.000   \n Mean   :0.295   Mean   :0.586     Mean   :0.806   \n 3rd Qu.:1.000   3rd Qu.:1.000     3rd Qu.:1.000   \n Max.   :1.000   Max.   :1.000     Max.   :1.000   \n\n\nCode\n# Plot the data\nggplot(df, aes(x = factor(hospital_delivery), fill = factor(neonatal_outcome))) +\n  geom_bar(position = \"fill\") +\n  facet_grid(~ pregnancy_risk) +\n  labs(x = \"Hospital Delivery\", y = \"Proportion\", fill = \"Neonatal Outcome\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n2.1.3 Step 5: Causal Inference Using DAGs\nLet’s use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:\n\n\nCode\n# Identify adjustment set using DAGitty\nadjustmentSets(dag, exposure = \"hospital_delivery\", outcome = \"neonatal_outcome\")\n\n\n{ pregnancy_risk }\n\n\nThe output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.\n\n\n2.1.4 Step 6: Estimating the Causal Effect\nEstimate the causal effect using a regression model:\n\n\nCode\n# Fit a regression model\nmodel &lt;- glm(neonatal_outcome ~ hospital_delivery + pregnancy_risk, family = binomial, data = df)\n\n# Summarize the model\nsummary(model)\n\n\n\nCall:\nglm(formula = neonatal_outcome ~ hospital_delivery + pregnancy_risk, \n    family = binomial, data = df)\n\nCoefficients:\n                  Estimate Std. Error z value Pr(&gt;|z|)    \n(Intercept)         1.7830     0.1407  12.675  &lt; 2e-16 ***\nhospital_delivery   1.0073     0.1998   5.042 4.61e-07 ***\npregnancy_risk     -2.2336     0.1987 -11.239  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 983.94  on 999  degrees of freedom\nResidual deviance: 834.27  on 997  degrees of freedom\nAIC: 840.27\n\nNumber of Fisher Scoring iterations: 5\n\n\n\n\n2.1.5 Step 7: Drawing Conclusions\nInterpret the model’s output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.\n\n\n\n\n\n\nIs this odds ratio a correct estimate of the causal effect?\n\n\n\nanswer: no\nhint: compare the structural equation used in generating the data with the statistical analysis\nThis linear probability structural equation is not well-approximated by a linear logistic model (i.e. without interaction terms). We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using avg_comparisons from package marginaleffects.\nThe correct estimate is given by:\n\n\nCode\navg_comparisons(model, variables=\"hospital_delivery\")\n\n\n\n              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S\n hospital_delivery mean(1) - mean(0)    0.133     0.0253 5.26   &lt;0.001 22.7\n  2.5 % 97.5 %\n 0.0837  0.183\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nCode\nfull_model &lt;- glm(neonatal_outcome~hospital_delivery*pregnancy_risk, family=binomial, data=df)\navg_comparisons(full_model, variables=\"hospital_delivery\")\n\n\n\n              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S\n hospital_delivery mean(1) - mean(0)    0.121     0.0261 4.63   &lt;0.001 18.0\n  2.5 % 97.5 %\n 0.0696  0.172\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response"
-  },
-  {
-    "objectID": "practicals/21_dags/dags.html#non-coding-questions",
-    "href": "practicals/21_dags/dags.html#non-coding-questions",
-    "title": "Practical on DAGs",
-    "section": "3.1 Non-coding questions",
-    "text": "3.1 Non-coding questions\n\n3.1.1 Strength of Assumptions\n\n\n\n\n\n\n\n\n\n\n\n(a) DAG\n\n\n\n\n\n\n\n\n\n\n\n(b) DAG\n\n\n\n\n\n\n\n\n\n\n\n(c) DAG\n\n\n\n\n\n\n\nFigure 4\n\n\n\n\n\n\n\n\n\nWhat is the correct ordering of strength of assumptions in the above DAGs, starting with the strongest assumption\n\n\n\n\n\nanswer: Figure 4 (b) &gt; Figure 4 (c) &gt; Figure 4 (a)\nFigure 4 (b) is stronger than Figure 4 (c) as in the latter, it could be that the effects through \\(W\\) are all absent (remember that the presence of an arrow from A to B implies a possible effect of A on B)\nFigure 4 (c) is stronger than Figure 4 (a) as in the first, Z can only affect Y through T and W, whereas in Figure 4 (a) Z can effect Y through T and can effect Y through other paths (e.g. W)\nsee also the lecture on DAGs\n\n\n\n\n\n3.1.2 RCTs\nAccording to the DAG framework, why are RCTs especially fit for causal questions?\n\nthey are often infeasible and unethical\nthey sample data from the target distribution\nthey have better external validity than observational studies\nrandomization balances confounders\n\n\n\n\n\n\n\nWhich answers are true?\n\n\n\n\n\nanswer: 2.\nSee also the DAG lecture\nContext:\n\nThis is often said of RCTs but has no direct bearing on why they are special for causal inference\nRemember that the target distribution has no arrows going in to the treatment variable, this is what we get in a RCT\nRCTs are often critiqued as having poor external validity, because they may recruit non-random subpopulations from the target population\nThis is a subtle point, but RCTs have no confounders as there are no common causes of the treatment and the outcome. Variables that are confounders in observational studies are prognostic factors in RCTs, as they (by definition of being a confounder in an observational study) influence the outcome, but not the treatment in the RCT. Randomization balances the distribution of prognostic factors between treatment arms in expectation. In a particular RCT, observed (and unobserved) prognostic factors will always have some random variation between treatment arms. This does not reduce the validity of the RCT in terms of bias. This variation is reflected in the standard error of the estimate. In some cases, adjusting for known prognostic factors in RCTs may reduce the variance of the treatment estimate (i.e. narrowing the confidence interval), but this is an entire discussion on its own."
-  },
-  {
-    "objectID": "practicals/drafts/draft.html",
-    "href": "practicals/drafts/draft.html",
-    "title": "Draft practical:",
-    "section": "",
-    "text": "In this practical, …\nFirst we load a package\nlibrary(survival)\nIn this practical, we will also use the following two packages:"
-  },
-  {
-    "objectID": "practicals/drafts/draft.html#non-coding-questions",
-    "href": "practicals/drafts/draft.html#non-coding-questions",
-    "title": "Draft practical:",
-    "section": "Non-coding questions",
-    "text": "Non-coding questions\n\n\n\n\n\n\nQuestion Foo\n\n\n\n\n\nanswer: bar"
-  },
-  {
-    "objectID": "practicals/drafts/draft.html#my-goals",
-    "href": "practicals/drafts/draft.html#my-goals",
-    "title": "Draft practical:",
-    "section": "my goals",
-    "text": "my goals"
-  },
-  {
-    "objectID": "practicals/drafts/draft.html#conclusion",
-    "href": "practicals/drafts/draft.html#conclusion",
-    "title": "Draft practical:",
-    "section": "Conclusion",
-    "text": "Conclusion\nYou learned ABC"
-  },
-  {
-    "objectID": "practicals/drafts/draft.html#further-reading",
-    "href": "practicals/drafts/draft.html#further-reading",
-    "title": "Draft practical:",
-    "section": "Further reading",
-    "text": "Further reading\nRead Chapter 9 of Pearls Causality (Pearl 2009)"
+    "text": "References\n\n\n\n\nWouter van Amsterdam — WvanAmsterdam — vanamsterdam.github.io\n\n\n\n\nAnand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. “Causal Effect Identification in Cluster DAGs.” Proceedings of the AAAI Conference on Artificial Intelligence 37 (10): 12172–79. https://doi.org/10.1609/aaai.v37i10.26435."
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#in-past-lectures-on-dags",
@@ -256,21 +158,14 @@
     "href": "lectures/day2-scms/lec3-scms.html#why-scms",
     "title": "Structural Causal Models",
     "section": "Why SCMs?",
-    "text": "Why SCMs?\nWith DAGs we can:\n\nexpress (non-parametric) prior knowledge\nunderstand that seeing \\(\\neq\\) doing\nknow what variables to condition on for estimating treatment effect\nDAGs and RCTs do not cover all causal questions\nSCMs go a level deeper than DAGs\nDAGs naturally ‘arise’ from SCMs\nsome questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification\nunderstand ‘identifyability’\nSCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality"
+    "text": "Why SCMs?\n\nWith DAGs we can:\n\nexpress (non-parametric) prior knowledge\nunderstand that seeing \\(\\neq\\) doing\nknow what variables to condition on for estimating treatment effect\n\nHowever,\n\nDAGs and RCTs do not cover all causal questions\nSCMs go a level deeper than DAGs\nDAGs naturally ‘arise’ from SCMs\nsome questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification\nunderstand ‘identifyability’\nSCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#topics-of-today",
     "href": "lectures/day2-scms/lec3-scms.html#topics-of-today",
     "title": "Structural Causal Models",
     "section": "Topics of today",
-    "text": "Topics of today\n\nSCMs: the world as computer programs\ninterventions are submodels\nbonus queries:\n\ncounterfactuals\nprobability of necessity, probability of sufficiency \n\nPearl Causal Hierarchy\nother uses of DAGs: missing data, selection\nreflections on DAGs, limitations"
-  },
-  {
-    "objectID": "lectures/day2-scms/lec3-scms.html#practical-2",
-    "href": "lectures/day2-scms/lec3-scms.html#practical-2",
-    "title": "Structural Causal Models",
-    "section": "practical 2",
-    "text": "practical 2\n\ncausal ladder: what Q is this?\ngive data of hierarchy and answer the Q\ngive data of 2 treatments + SCM (treatment 3 which can be extrapolated from)"
+    "text": "Topics of today\n\nSCMs: the world as computer programs\ninterventions are submodels\nbonus queries:\n\ncounterfactuals\n\nPearl Causal Hierarchy\nother uses of DAGs: missing data, selection\nreflections on DAGs, limitations"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#think-of-the-world-as-a-computer-program-with-a-set-of",
@@ -305,7 +200,7 @@
     "href": "lectures/day2-scms/lec3-scms.html#recursive-structural-causal-models-imply-a-directed-acyclic-graph-2",
     "title": "Structural Causal Models",
     "section": "Recursive Structural Causal Models imply a Directed Acyclic Graph",
-    "text": "Recursive Structural Causal Models imply a Directed Acyclic Graph\nAn SCM is recursive, i.e. acyclic when following the chain of parents, you never end up at the same variable twice\n\n\n\nscm1 &lt;- function(u_surgery, u_los, u_survival) {\n  surgery  = f_surgery(u_surgery)\n  los      = f_los(surgery, u_los)\n  survival = f_survival(surgery, los, u_survival)\n  c(surgery=surgery, los=los, survival=survival)\n}\n\n\n\n\n\nscm1 and the DAG are equivalent (they describe the same knowledge of the world)\nfor the remainder, we assume recursiveness"
+    "text": "Recursive Structural Causal Models imply a Directed Acyclic Graph\nAn SCM is recursive, i.e. acyclic when following the chain of parents, you never end up at the same variable twice\n\n\n\nscm1 &lt;- function(u_surgery, u_los, u_survival) {\n  surgery  = f_surgery(u_surgery)\n  los      = f_los(surgery, u_los)\n  survival = f_survival(surgery, los, u_survival)\n  c(surgery=surgery, los=los, survival=survival)\n}\n\n\n\n\n\nscm1 (without specifying the f_s) and the DAG are equivalent (they describe the same knowledge of the world)\nfor the remainder, we assume recursiveness"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#submodel-and-effect-of-action",
@@ -326,21 +221,21 @@
     "href": "lectures/day2-scms/lec3-scms.html#specifying-a-distribution-for-exogenous-variables-u",
     "title": "Structural Causal Models",
     "section": "Specifying a distribution for exogenous variables U",
-    "text": "Specifying a distribution for exogenous variables U\n\nExogenous variables U represent random variation in the world.\nWe can specify a distribution for them (e.g. Gaussian, Uniform)\n\n\n\nsample_u &lt;- function() {\n    u_surgery  = runif(1,  2,  8)\n    u_los      = runif(1, -1,  7)\n    u_survival = runif(1,  8, 13)\n    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)\n}\nsample_u()\n\n\n\n u_surgery      u_los u_survival \n  7.340252   6.895731   9.506746 \n\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: 1000 random samples of U"
+    "text": "Specifying a distribution for exogenous variables U\n\nExogenous variables U represent random variation in the world.\nWe can specify a distribution for them (e.g. Gaussian, Uniform)\n\n\n\nsample_u &lt;- function() {\n    u_surgery  = runif(1,  2,  8)\n    u_los      = runif(1, -1,  7)\n    u_survival = runif(1,  8, 13)\n    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)\n}\nsample_u()\n\n\n\n u_surgery      u_los u_survival \n  4.317931   3.909789  11.331566 \n\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: 1000 random samples of U"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u",
     "href": "lectures/day2-scms/lec3-scms.html#a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u",
     "title": "Structural Causal Models",
     "section": "A Probabilistic Causal Model is a SCM with a distribution over U",
-    "text": "A Probabilistic Causal Model is a SCM with a distribution over U\n\nsample_pcm &lt;- function() {\n  U &lt;- sample_u()\n  V &lt;- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])\n  c(U, V)\n}\n  \nsample_pcm()\n\n\n\n u_surgery      u_los u_survival    surgery        los   survival \n  3.276522   3.013228   8.849926   3.276522   6.289751   8.586632 \n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Realisations of endogenous variables V over random samples of U in Figure 1"
+    "text": "A Probabilistic Causal Model is a SCM with a distribution over U\n\nsample_pcm &lt;- function() {\n  U &lt;- sample_u()\n  V &lt;- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])\n  c(U, V)\n}\n  \nsample_pcm()\n\n\n\n u_surgery      u_los u_survival    surgery        los   survival \n  2.034069   5.222650  12.690868   2.034069   7.256719  15.879449 \n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Realisations of endogenous variables V over random samples of U in Figure 1"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#calculating-a-treatment-effect-in-a-fully-specified-probabilistic-causal-model",
     "href": "lectures/day2-scms/lec3-scms.html#calculating-a-treatment-effect-in-a-fully-specified-probabilistic-causal-model",
     "title": "Structural Causal Models",
     "section": "Calculating a treatment effect in a fully specified probabilistic causal model",
-    "text": "Calculating a treatment effect in a fully specified probabilistic causal model\n\ntake random samples from U, push forward through submodel7 and submodel3\n\n\nsubmodel3 &lt;- function(u_surgery, u_los, u_survival) {\n  surgery = f_surgery(u_surgery)\n  los = 3\n  survival = f_survival(surgery, los, u_survival)\n  c(surgery=surgery, los=los, survival=survival)\n}\n\n\n# N = 1e3\n# us &lt;- map(1:N, ~sample_u())\n\nv3s &lt;- map(us, ~do.call(submodel3, as.list(.x)))\nv7s &lt;- map(us, ~do.call(submodel7, as.list(.x)))\n\nv3df &lt;- v3s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv7df &lt;- v7s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv3df[, idx:=.I]\nv7df[, idx:=.I]\n\ndfa &lt;- rbindlist(list(\n  scm1=vdf,\n  submodel3=v3df,\n  submodel7=v7df\n), idcol='model')\n\ndfa[, list(mean_survival=mean(survival)), by=\"model\"]\n\n\n\n       model mean_survival\n      &lt;char&gt;         &lt;num&gt;\n1:      scm1      8.612773\n2: submodel3      3.572904\n3: submodel7      7.572904"
+    "text": "Calculating a treatment effect in a fully specified probabilistic causal model\n\ntake random samples from U, push forward through submodel7 and submodel3\n\n\n# N = 1e3\n# us &lt;- map(1:N, ~sample_u())\n\nv3s &lt;- map(us, ~do.call(submodel3, as.list(.x)))\nv7s &lt;- map(us, ~do.call(submodel7, as.list(.x)))\n\nv3df &lt;- v3s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv7df &lt;- v7s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv3df[, idx:=.I]\nv7df[, idx:=.I]\n\ndfa &lt;- rbindlist(list(\n  scm1=vdf,\n  submodel3=v3df,\n  submodel7=v7df\n), idcol='model')\n\ndfa[, list(mean_survival=mean(survival)), by=\"model\"]\n\n\n\n       model mean_survival\n      &lt;char&gt;         &lt;num&gt;\n1:      scm1      8.613519\n2: submodel3      3.585969\n3: submodel7      7.585969"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#recap-of-definitions",
@@ -375,7 +270,7 @@
     "href": "lectures/day2-scms/lec3-scms.html#idenfitication-in-pictures",
     "title": "Structural Causal Models",
     "section": "Idenfitication in pictures",
-    "text": "Idenfitication in pictures\nSomeone killed the priest {{&lt; iconify ph:knife &gt;}} , we want to know who-dunnit (\\(=Q\\))\n\nBased on prior knowledge on 5 suspects (all the SCMs compatible with our DAG)\n\n\n\n\n\nIf we had full data, we would have know it was \\(M_3\\)"
+    "text": "Idenfitication in pictures\n\nSomeone killed the priest (†), we want to know who-dunnit (\\(=Q\\))\n\nBased on prior knowledge on 5 suspects (all the SCMs compatible with our DAG)\n\n\n\n\n\nIf we had full data, we would know it was \\(M_3\\)"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#idenfitication-in-pictures-1",
@@ -399,32 +294,39 @@
     "text": "Seeing is not doing\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 3: \\[\\begin{align}\n  P(Y|T) &= \\sum_{z} P(Y|T,z)P(Z=z|T)\n\\end{align}\\]\n\n\n\n\n\n\n\n\n\n\\[\\begin{align}\n  P(Y|T) &= \\sum_{z} P(Y|T,z)P(Z=z|T) \\\\\n         &=^2 \\sum_{z} P(Y|T,z)P(Z=z)\n\\end{align}\\]\n\n\nFigure 4: \\(^2\\) because in the intervened DAG, \\(Z\\) is independent of \\(T\\)\n\n\n\n\n\n\n\n\n\\(P(Y|\\text{do}(T)) \\neq P(Y|T)\\) is Pearl’s definition of confounding (def 6.2.1)\nthis shows why RCTs are special (i.e. no backdoor paths into \\(T\\))"
   },
   {
+    "objectID": "lectures/day2-scms/lec3-scms.html#another-path-to-identification-parametric-assumptions",
+    "href": "lectures/day2-scms/lec3-scms.html#another-path-to-identification-parametric-assumptions",
+    "title": "Structural Causal Models",
+    "section": "Another path to identification: parametric assumptions",
+    "text": "Another path to identification: parametric assumptions\n\nfor example:\n\nassumption 1: \\(\\mathbb{M}_1\\), all SCMs with same DAG\nassumption 2: \\(\\mathbb{M}_2\\) SCMs with linear functions and Gaussian error terms\nassumption 1+2: \\(\\mathbb{M} = \\mathbb{M_1} \\cap \\mathbb{M_2}\\) (DAG + linear gaussian)\n\nmany more effects are identified in this setting\n‘works’ with unobserved confounding, positivity violations\ncaveats:\n\nmuch harder to determine identifyability (no backdoor-rule)\nprefer weaker assumptions over stronger assumption"
+  },
+  {
     "objectID": "lectures/day2-scms/lec3-scms.html#counterfactuals",
     "href": "lectures/day2-scms/lec3-scms.html#counterfactuals",
     "title": "Structural Causal Models",
     "section": "Counterfactuals",
-    "text": "Counterfactuals\n\nall of the above can be achieved with DAGs, but we haven’t used SCMs super-power yet: counterfactuals\ne.g. *What is the expected survival if we keep all patients in the hospital for 7 days?"
+    "text": "Counterfactuals\n\nall of the above can be achieved with DAGs, but we haven’t used SCMs super-power yet: counterfactuals\nRCT / DAG questions: What is the expected survival if we keep all patients in the hospital for 7 days?"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#take-it-one-level-higher-counterfactuals",
     "href": "lectures/day2-scms/lec3-scms.html#take-it-one-level-higher-counterfactuals",
     "title": "Structural Causal Models",
     "section": "Take it one level higher: counterfactuals",
-    "text": "Take it one level higher: counterfactuals\n\n\n\n\n\n\nFor patient Adam we had this data: - surgery duration: 4 hours - length of stay: 3 days - survival: 4 years\n\n\nFor patient Zoe we had this data: - surgery duration: 4 hours - length of stay: 3 days - survival: 7.5 years\n\n\n\n\nwe do not observe Adam’s/Zoe’s U\nWhat would the expected survival have been had Adam/Zoe been kept in the hospital for 7 days?"
+    "text": "Take it one level higher: counterfactuals\n\n\n\n\n\n\nFor patient Adam we had this data:\n\nsurgery duration: 4 hours\nlength of stay: 3 days\nsurvival: 4 years\n\n\nFor patient Zoe we had this data:\n\nsurgery duration: 4 hours\nlength of stay: 3 days\nsurvival: 7.5 years\n\n\n\n\nwe do not observe Adam’s/Zoe’s U\nWhat would the expected survival have been had Adam/Zoe been kept in the hospital for 7 days?"
   },
   {
-    "objectID": "lectures/day2-scms/lec3-scms.html#adam-versus-zeno",
-    "href": "lectures/day2-scms/lec3-scms.html#adam-versus-zeno",
+    "objectID": "lectures/day2-scms/lec3-scms.html#adam-versus-zoe",
+    "href": "lectures/day2-scms/lec3-scms.html#adam-versus-zoe",
     "title": "Structural Causal Models",
-    "section": "Adam versus Zeno",
-    "text": "Adam versus Zeno\n\nAverage causal effects in subgroup with surgery=4:\n\n3-days LOS: 5.6\n7-days LOS: 9.6\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nwhat do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?"
+    "section": "Adam versus Zoe",
+    "text": "Adam versus Zoe\n\nAverage causal effects in subgroup with surgery=4:\n\n3-days LOS: 5.7\n7-days LOS: 9.7\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nwhat do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?"
   },
   {
-    "objectID": "lectures/day2-scms/lec3-scms.html#now-comes-the-scm-super-power",
-    "href": "lectures/day2-scms/lec3-scms.html#now-comes-the-scm-super-power",
+    "objectID": "lectures/day2-scms/lec3-scms.html#computing-counterfactuals-with-scms",
+    "href": "lectures/day2-scms/lec3-scms.html#computing-counterfactuals-with-scms",
     "title": "Structural Causal Models",
-    "section": "Now comes the SCM super-power",
-    "text": "Now comes the SCM super-power\n\nGiven our information on the structural equation for survival: \\[\\text{survival} = \\text{los} - 2*\\text{surgery} + u_{\\text{survival}}\\]\nand observed values on Adam’s and Zoe’s surgery AND survival following los=3\nwe can compute their individual \\(u_{\\text{survival}}\\):\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\n\n\n\n\nAdam\n4\n3\n4\n\n\nZoe\n4\n3\n7.5\n\n\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\nu_survival\n\n\n\n\nAdam\n4\n3\n4\n9\n\n\nZoe\n4\n3\n7.5\n12.5\n\n\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\nu_survival\nsurvival7\n\n\n\n\nAdam\n4\n3\n4\n9\n8\n\n\nZoe\n4\n3\n7.5\n12.5\n11.5\n\n\n\n\n\n\nand (counterfactual) survival under 7 days LOS"
+    "section": "Computing counterfactuals with SCMs",
+    "text": "Computing counterfactuals with SCMs\n\nGiven our information on the structural equation for survival: \\[\\text{survival} = \\text{los} - 2*\\text{surgery} + u_{\\text{survival}}\\]\nand observed values on Adam’s and Zoe’s surgery AND survival following los=3\nwe can compute their individual \\(u_{\\text{survival}}\\):\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\n\n\n\n\nAdam\n4\n3\n4\n\n\nZoe\n4\n3\n7.5\n\n\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\nu_survival\n\n\n\n\nAdam\n4\n3\n4\n9\n\n\nZoe\n4\n3\n7.5\n12.5\n\n\n\n\n\n\n\n\npatient\nsurgery\nlos\nsurvival\nu_survival\nsurvival7\n\n\n\n\nAdam\n4\n3\n4\n9\n8\n\n\nZoe\n4\n3\n7.5\n12.5\n11.5\n\n\n\n\n\n\nand (counterfactual) survival under 7 days LOS"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#computing-counterfactuals",
@@ -445,35 +347,77 @@
     "href": "lectures/day2-scms/lec3-scms.html#where-do-we-get-this-knowledge-from",
     "title": "Structural Causal Models",
     "section": "Where do we get this knowledge from?",
-    "text": "Where do we get this knowledge from?\n\nnot from observational data\nnot from RCTs\nfrom assumptions\ncan get bounds from combinations of RCT data and observational data\ncaveat: some researchers think the hierarchy is upside down because you go further away from data and closer to unverifiable assumptions the ‘higher’ you get"
+    "text": "Where do we get this knowledge from?\n\nnot from observational data\nnot from RCTs\nfrom assumptions\ncan get bounds from combinations of RCT data and observational data\ncaveat: some say the hierarchy is upside down because you go further away from data and closer to unverifiable assumptions the ‘higher’ you get"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#not-covered-but-also-possible",
     "href": "lectures/day2-scms/lec3-scms.html#not-covered-but-also-possible",
     "title": "Structural Causal Models",
     "section": "Not covered but also possible:",
-    "text": "Not covered but also possible:\n\nDAGs:\n\nsoft intervention: don’t set treatment to fixed value but replace function with other function of variables\n\nSCMs:\n\nprobability of sufficiency\nprobability of necessity\nindividual causal effects"
+    "text": "Not covered but also possible:\n\nDAGs:\n\nsoft intervention: don’t set treatment to fixed value but replace function with other function of variables\nexpress patterns for missing data by including missingness indicators\n\nSCMs:\n\nprobability of sufficiency\nprobability of necessity"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#references",
     "href": "lectures/day2-scms/lec3-scms.html#references",
     "title": "Structural Causal Models",
     "section": "References",
-    "text": "References\n\n\n\n\n\n\n\n\n\nBareinboim, Elias, Juan Correa, Duligur Ibeling, and Thomas Icard. 2022. “On Pearl’s Hierarchy and the Foundations of Causal Inference (1st Edition).” In Probabilistic and Causal Inference: The Works of Judea Pearl, edited by Hector Geffner, Rita Dechter, and Joseph Halpern, 507–56. ACM Books.\n\n\nPearl, Judea, ed. 2009. “The Logic of Structure-Based Counterfactuals.” In Causality, 2nd ed., 201–58. Cambridge: Cambridge University Press. https://doi.org/10.1017/CBO9780511803161.009."
+    "text": "References\n\n\n\n\nWouter van Amsterdam — WvanAmsterdam — vanamsterdam.github.io\n\n\n\n\nBareinboim, Elias, Juan Correa, Duligur Ibeling, and Thomas Icard. 2022. “On Pearl’s Hierarchy and the Foundations of Causal Inference (1st Edition).” In Probabilistic and Causal Inference: The Works of Judea Pearl, edited by Hector Geffner, Rita Dechter, and Joseph Halpern, 507–56. ACM Books.\n\n\nPearl, Judea, ed. 2009. “The Logic of Structure-Based Counterfactuals.” In Causality, 2nd ed., 201–58. Cambridge: Cambridge University Press. https://doi.org/10.1017/CBO9780511803161.009."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "",
+    "text": "Dates: Aug 5th - Aug 10th 2024\nplease have a look at the setup-document here before the first day and make sure you have a working R installation with the required packages"
+  },
+  {
+    "objectID": "index.html#course-objectives",
+    "href": "index.html#course-objectives",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "Course objectives",
+    "text": "Course objectives\nLearn causal inference and causal data science!"
+  },
+  {
+    "objectID": "index.html#schedule",
+    "href": "index.html#schedule",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "Schedule",
+    "text": "Schedule\n\nDay 1: Intro & Potential Outcomes\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:30\nLecture\nCausal Inference: What, Why, and How\npdf\n\n\n09:30 - 10:45\nLecture\nIntro to Potential Outcomes I\n\n\n\n11:00 - 12:15\nPractical\nCausal assumptions\nhtml\n\n\n12:30 - 13:15\nLUNCH\n\n\n\n\n13:15 - 14:00\nLecture\nIntro to Potential Outcomes II\n\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods I: Stratification, Matching and Propensity Scores\n\n\n\n15:15 - 16:30\nPractical\nAdjustment Methods I\nhtml\n\n\n\n\n\nDay 2: DAGs and SCMs\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to DAGs I\nhtml pdf\n\n\n09:45 - 10:45\nLecture\nIntro to DAGs II\n\n\n\n11:00 - 12:00\npractical\nDrawing and Using DAGs I\nhtml\n\n\n12:00 - 13:00\nLUNCH\n\n\n\n\n13:00 - 14:00\nLecture\nStructural Causal Models\nhtml pdf\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods II: Regression and Outcome Adjustment\nhtml pdf\n\n\n15:15 - 16:30\npractical\nSCMs and meta-learners\nhtml\n\n\n\n\n\nDay 3: Target Trial Emulation\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to Trials and Target Trials I\npdf\n\n\n10:00 - 10:45\nLecture\nTarget Trials Emulation I\n\n\n\n11:00 - 12:00\npractical\nTarget Trials in Practice I\n\n\n\n12:30 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nTarget Trials Emulation II\n\n\n\n14:30 - 15:00\nLecture\nTarget Trials Emulation III\n\n\n\n15:15 - 16:30\npractical\nTarget Trials in practice II\n\n\n\n\n\n\nDay 4: Causal Data Science\n\n\n\n\n\n\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nCausal Perspectives on Prediction Modeling I\n\n\n\n10:00 - 10:45\nLecture\nCausal Perspectives on Prediction Modeling II\n\n\n\n11:00 - 12:00\npractical\nCausal Perspectives on Prediction Modeling\n\n\n\n12:00 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nCausal Structure Learning I\n\n\n\n14:30 - 15:00\nLecture\nCausal Structure Learning II\n\n\n\n15:15 - 16:30\npractical\nCausal Structure Learning\n\n\n\n\n\n\nDay 5: Advanced Topics in Causal Inference\n\n\n\n\n\n\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nMediation, Instrumental Variables and DAGs in Longitudinal settings\n\n\n\n10:00 - 10:45\nLecture\nWhen traditional methods fail\n\n\n\n11:00 - 12:00\nLecture\nCausal Inference in Quasi-Experimental and Policy Evaluation settings\n\n\n\n12.00 - 12.45\n\nQ&A and borrel"
+  },
+  {
+    "objectID": "index.html#instructors",
+    "href": "index.html#instructors",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "Instructors",
+    "text": "Instructors\n\nOisín Ryan (coordinator)\nBas Penning-de Vries\nWouter van Amsterdam"
+  },
+  {
+    "objectID": "index.html#links",
+    "href": "index.html#links",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "Links",
+    "text": "Links\n\nCourse home on utrechtsummerschool.nl"
+  },
+  {
+    "objectID": "index.html#license-disclaimer",
+    "href": "index.html#license-disclaimer",
+    "title": "Causal Inference and Causal Data Science Summerschool",
+    "section": "License & disclaimer",
+    "text": "License & disclaimer\nAll course materials are licensed under CC-BY-4.0.\n \nThese course materials were developed with great care. If you find any inaccuracies please contact us."
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#todays-lectures",
     "href": "lectures/day2-scms/lec1.html#todays-lectures",
     "title": "Causal Directed Acylic Graphs",
     "section": "Today’s lectures",
-    "text": "Today’s lectures\n\nintroduce new framework based on\n\ncausal Directed Acyclic Graphs (DAGs)\nStructral Causal Models (SCMs)\n\ncounterfactuals and Pearl’s Causal Hierarchy of questions\nlectures will follow Pearl’s book Causality Pearl (2009), specifically chapters 3 (DAGs) and 7 (SCMs)"
+    "text": "Today’s lectures\n\nintroduce 1.5 new framework based on\n\ncausal Directed Acyclic Graphs (DAGs)\nStructral Causal Models (SCMs)\n\ncounterfactuals and Pearl’s Causal Hierarchy of questions\nlectures will follow Pearl’s book Causality Pearl (2009), specifically chapters 3 (DAGs) and 7 (SCMs)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#causal-inference-frameworks",
     "href": "lectures/day2-scms/lec1.html#causal-inference-frameworks",
     "title": "Causal Directed Acylic Graphs",
     "section": "Causal inference frameworks",
-    "text": "Causal inference frameworks\nWhat are they for?\nMathematical language to\n\ndefine causal quantities\nexpress assumptions\nderive how to estimate causal effects"
+    "text": "Causal inference frameworks\nWhat are they for?\nMathematical language to\n\ndefine causal quantities\nexpress assumptions\nderive how to estimate causal quantities"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#causal-inference-frameworks-1",
@@ -487,14 +431,7 @@
     "href": "lectures/day2-scms/lec1.html#lecture-1-2-topics",
     "title": "Causal Directed Acylic Graphs",
     "section": "Lecture 1 & 2 topics",
-    "text": "Lecture 1 & 2 topics\n\nmotivating examples for DAGs\nwhat are DAGs\ncausal inference with DAGs\n\nwhat is an intervention\nstructures: confounding, mediation, colliders\nd-separation\nback-door criterion"
-  },
-  {
-    "objectID": "lectures/day2-scms/lec1.html#practical-1",
-    "href": "lectures/day2-scms/lec1.html#practical-1",
-    "title": "Causal Directed Acylic Graphs",
-    "section": "practical 1",
-    "text": "practical 1\n\ndrawing and using dags (what to condition on); daggity\nsame data, different dags, different answers"
+    "text": "Lecture 1 & 2 topics\n\nmotivating examples for DAGs\nwhat are DAGs\ncausal inference with DAGs\n\nwhat is an intervention\nDAG-structures: confounding, mediation, colliders\nd-separation\nback-door criterion"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#sec-example-delivery",
@@ -508,14 +445,14 @@
     "href": "lectures/day2-scms/lec1.html#example-task-are-hospital-deliveries-good-for-babies",
     "title": "Causal Directed Acylic Graphs",
     "section": "Example task: are hospital deliveries good for babies?",
-    "text": "Example task: are hospital deliveries good for babies?\n\nYou’re a data scientist in a children’s hospital\nHave data on\n\ndelivery location (home or hospital)\nneonatal outcomes (good or bad)\npregnancy risk (high or low)\n\nQuestion: do hospital deliveries result in better outcomes for babies?\n\n\n\n# t=0: home, t=1: hospital\n# z=0: low risk, z=1: high risk\n# y=1: good outcome\ndnames = list(location=c('home', 'hospital'), risk=c('low', 'high'))\npos_tz &lt;- matrix(c(\n  c(0.9,  0.5), # y|t=0,z=0,1\n  c(0.95, 0.8)  # y|t=1,z=0,1\n), nrow=2, byrow=T,\ndimnames=dnames)\n\nps_tz &lt;- matrix(c(\n  c(0.72, 0.08), # p(t=0,z=0,1)\n  c(0.02, 0.18)  # p(t=1,z=0,1)\n), nrow=2, byrow=T, dimnames=dnames)\n\n# p(t,z) under do(t)\nps_do0 &lt;- matrix(c( \n  c(0.8, 0.2), \n  c(0.0, 0.0)  \n), nrow=2, byrow=T)\n\nps_do1 &lt;- matrix(c( \n  c(0.0, 0.0), \n  c(0.8, 0.2) \n), nrow=2, byrow=T)\n\n\neys  &lt;- rowSums(pos_tz * ps_tz) / rowSums(ps_tz) # E y|t\ndots &lt;- c(sum(pos_tz * ps_do0), sum(pos_tz*ps_do1))\n\nn = 1000\n\nts  &lt;- vector(mode=\"logical\", length=0)\nzs  &lt;- vector(mode=\"logical\", length=0)\npy0s &lt;- vector(mode=\"numeric\", length=0)\npy1s &lt;- vector(mode=\"numeric\", length=0)\nys  &lt;- vector(mode=\"logical\", length=0)\n\nntots &lt;- n * ps_tz\n\nfor (t in c(0,1)) {\n  for (z in c(0,1)) {\n    ntz &lt;- n *ps_tz[t+1,z+1]\n    ts  &lt;- c(ts, rep(t, ntz))\n    zs  &lt;- c(zs, rep(z, ntz))\n    py &lt;- pos_tz[t+1,z+1]\n    y &lt;- c(rep(0,\n               round(ntz * (1-py))), # &lt;- round should not be needed here but found a bug\n           rep(1,\n               round(ntz*py))) \n    ys &lt;- c(ys, y)\n    py0s &lt;- c(py0s, rep(pos_tz[1, z+1], ntz))\n    py1s &lt;- c(py1s, rep(pos_tz[2, z+1], ntz))\n  }\n}\n# ys &lt;- ifelse(ts, y1s, y0s)\ndf &lt;- data.table(\n  location=ts,\n  risk=zs,\n  outcome=ys,\n  py0=py0s,\n  py1=py1s)\n\n# head(df)\n\n# kable(eys, col.names=\"tips\")\n#pander::pander(ftable(eys))\n\n# pander::pander(ftable(pos_tz), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))\n\nntots &lt;- n * ps_tz\nnys &lt;- ntots * pos_tz\n\nstrs &lt;- paste0(nys, \" / \", ntots, \" = \", 100*pos_tz, \"%\")\nstr_mat &lt;- matrix(strs, ncol=2, dimnames=dnames)\n# kable(t(str_mat))\n# pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))\n\nntotsm &lt;- rowSums(ntots)\nnysm &lt;- rowSums(nys)\nstrsm &lt;- paste0(nysm, \" / \", ntotsm, \" = \", 100*eys, \"%\")\n\ntab_tots &lt;- rbind(ntots, ntotsm)\n\n\n# tab &lt;- df[, list(good=sum(outcome==1), bad=sum(outcome==0), frac_good=mean(outcome)), by=c(\"risk\", \"location\")]"
+    "text": "Example task: are hospital deliveries good for babies?\n\nYou’re a data scientist in a children’s hospital\nHave data on\n\ndelivery location (home or hospital)\nneonatal outcomes (good or bad)\npregnancy risk (high or low)\n\nQuestion: do hospital deliveries result in better outcomes for babies?"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#observed-data",
     "href": "lectures/day2-scms/lec1.html#observed-data",
     "title": "Causal Directed Acylic Graphs",
     "section": "Observed data",
-    "text": "Observed data\n\n\n\n\n\nlocation\n\n\n\n\n\n\n\nhome\nhospital\n\n\nrisk\nlow\n648 / 720 = 90%\n19 / 20 = 95%\n\n\n\nhigh\n40 / 80 = 50%\n144 / 180 = 80%\n\n\n\n\nbetter outcomes for babies delivered in the hospital for both risk groups"
+    "text": "Observed data\n\npercentage of good neonatal outcomes\n\n\n\n\nlocation\n\n\n\n\n\n\n\nhome\nhospital\n\n\nrisk\nlow\n648 / 720 = 90%\n19 / 20 = 95%\n\n\n\nhigh\n40 / 80 = 50%\n144 / 180 = 80%\n\n\n\n\nbetter outcomes for babies delivered in the hospital for both risk groups"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#observed-data-1",
@@ -529,7 +466,7 @@
     "href": "lectures/day2-scms/lec1.html#new-question-hernia",
     "title": "Causal Directed Acylic Graphs",
     "section": "New question: hernia",
-    "text": "New question: hernia\n\nfor a patient with a hernia, will they be able to walk sooner when recovering at home or when recovering in a hospital?"
+    "text": "New question: hernia\n\nfor a patient with a hernia, will they be able to walk sooner when recovering at home or when recovering in a hospital?\nobserved data: location, recovery, bed-rest"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#observed-data-2",
@@ -557,35 +494,35 @@
     "href": "lectures/day2-scms/lec1.html#making-dags-for-our-examples",
     "title": "Causal Directed Acylic Graphs",
     "section": "Making DAGs for our examples:",
-    "text": "Making DAGs for our examples:\nThe pregnancy DAG\n\n\n\n\n\n\nFigure 2\n\n\n\n\nassumptions:\n\nwomen with high risk of bad neonatal outcomes (pregnancy risk) are referred to the hospital for delivery\nhospital deliveries lead to better outcomes for babies as more emergency treatments possible\nboth pregnancy risk and hospital delivery cause neonatal outcome\n\nthe other variable pregnancy risk is a common cause of the treatment (hospital delivery) and the outcome (this is what’s called a confounder)"
+    "text": "Making DAGs for our examples:\nThe pregnancy DAG\n\n\n\n\n\n\n\n\n\n\nassumptions:\n\nwomen with high risk of bad neonatal outcomes (pregnancy risk) are referred to the hospital for delivery\nhospital deliveries lead to better outcomes for babies as more emergency treatments possible\nboth pregnancy risk and hospital delivery cause neonatal outcome\n\nthe other variable pregnancy risk is a common cause of the treatment (hospital delivery) and the outcome (this is what’s called a confounder)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#making-dags-for-our-examples-1",
     "href": "lectures/day2-scms/lec1.html#making-dags-for-our-examples-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "Making DAGs for our examples:",
-    "text": "Making DAGs for our examples:\nThe hernia DAG\n\n\n\n\n\n\nFigure 3\n\n\n\n\nassumptions:\n\npatients admitted to the hospital keep more bed rest than those who remain at home\nbed rest leads to lower recovery times thus less walking patients after 1 week\n\nthe other variable bed rest is a mediator between the treatment (hospitalized) and the outcome"
+    "text": "Making DAGs for our examples:\nThe hernia DAG\n\n\n\n\n\n\n\n\n\n\nassumptions:\n\npatients admitted to the hospital keep more bed rest than those who remain at home\nbed rest leads to lower recovery times thus less walking patients after 1 week\n\nthe other variable bed rest is a mediator between the treatment (hospitalized) and the outcome"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#causal-dags-to-the-rescue",
     "href": "lectures/day2-scms/lec1.html#causal-dags-to-the-rescue",
     "title": "Causal Directed Acylic Graphs",
     "section": "Causal DAGs to the rescue",
-    "text": "Causal DAGs to the rescue\n\nthe other variable was:\n\na common cause of the treatment and outcome in the pregnancy example\na mediator between the treatment and the outcome in the hernia example,\n\nusing our background knowledge we could see something is different about these examples\nnext: ground this in causal theory and see implications for analysis"
+    "text": "Causal DAGs to the rescue\n\nthe other variable was:\n\na common cause of the treatment and outcome in the pregnancy example\na mediator between the treatment and the outcome in the hernia example\n\nusing our background knowledge we could see something is different about these examples\nnext: ground this in causal theory and see implications for analysis"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#why-math",
     "href": "lectures/day2-scms/lec1.html#why-math",
     "title": "Causal Directed Acylic Graphs",
     "section": "Why math???",
-    "text": "Why math???\n\n\n\n\n\n\n\nwhy not?\nneed probability for estimation\nneed conditional independence for causal inference\nneed to understand ‘strength’ of assumptions\n\n\n\n\n\n\noh no math"
+    "text": "Why math???\n\n\n\n\n\n\n\nneed probability for estimation\nneed conditional independence for causal inference\nneed to understand ‘strength’ of assumptions\n\n\n\n\n\n\noh no math"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#marginal-joint-and-conditional-probabilites",
     "href": "lectures/day2-scms/lec1.html#marginal-joint-and-conditional-probabilites",
     "title": "Causal Directed Acylic Graphs",
     "section": "Marginal, Joint and Conditional probabilites",
-    "text": "Marginal, Joint and Conditional probabilites\nProbability statements about random events \\(A\\) and \\(B\\)\n\\(A=1\\to\\) patient dies; \\(B=1\\to\\) has cancer\n\n\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A)\\)\nmarginal probability that event \\(A\\) occurs\n\n\n\\(P(B)\\)\nmarginal probability that event \\(B\\) occurs\n\n\n\n\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n10\n80\n90\n\n\n\n\n15\n85\n100\n\n\n\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n\n\n\n\n\n\nhas no cancer\n\n\n\n\n\n\n\n15\n85\n100\n\n\n\n\\(P(A=1) = 15 / 100\\)\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n\n\n10\n\n\n\nhas no cancer\n\n\n90\n\n\n\n\n\n\n100\n\n\n\n\\(P(B=1) = 10 / 100\\)"
+    "text": "Marginal, Joint and Conditional probabilites\nProbability statements about random events \\(A\\) and \\(B\\)\n\n\\(A\\): patient diest (\\(A=1\\))\n\\(B\\): patient has cancer (\\(B=1\\))\n\n\n\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A)\\)\nmarginal probability that event \\(A\\) occurs\n\n\n\\(P(B)\\)\nmarginal probability that event \\(B\\) occurs\n\n\n\n\n\n\n\njoint probability table\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n10\n80\n90\n\n\n\n\n15\n85\n100\n\n\n\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n\n\n\n\n\n\nhas no cancer\n\n\n\n\n\n\n\n15\n85\n100\n\n\n\n\\(P(A=1) = 15 / 100\\)\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n\n\n10\n\n\n\nhas no cancer\n\n\n90\n\n\n\n\n\n\n100\n\n\n\n\\(P(B=1) = 10 / 100\\)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#marginal-joint-and-conditional-probabilites-1",
@@ -599,7 +536,7 @@
     "href": "lectures/day2-scms/lec1.html#marginal-joint-and-conditional-probabilites-2",
     "title": "Causal Directed Acylic Graphs",
     "section": "Marginal, Joint and Conditional probabilites",
-    "text": "Marginal, Joint and Conditional probabilites\nProbability statements about random events \\(A\\) and \\(B\\):\n\n\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A)\\)\nmarginal probability that event \\(A\\) occurs\n\n\n\\(P(A,B)\\)\njoint probability of \\(A\\) and \\(B\\)\n\n\n\\(P(A|B)\\)\nconditional probability of \\(A\\) given \\(B\\)\n\n\n\n\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n10\n80\n90\n\n\n\n\n15\n85\n100\n\n\n\n- marginal \\(P(A=1) = 15/100\\)\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n\n\n\n\n\n\n\n\n\n\n\n\n\n- marginal \\(P(A=1) = 15/100\\)\n- conditional \\(P(A=1|B=1) = 5 / 10\\)"
+    "text": "Marginal, Joint and Conditional probabilites\nProbability statements about random events \\(A\\) and \\(B\\):\n\n\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A)\\)\nmarginal probability that event \\(A\\) occurs\n\n\n\\(P(A,B)\\)\njoint probability of \\(A\\) and \\(B\\)\n\n\n\\(P(A|B)\\)\nconditional probability of \\(A\\) given \\(B\\)\n\n\n\n\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n10\n80\n90\n\n\n\n\n15\n85\n100\n\n\n\n- marginal \\(P(A=1) = 15/100\\)\n\n\n\n\n\n\n\nA\n\n\n\n\n\n\n\n\ndies\nlives\n\n\n\nB\nhas cancer\n5\n5\n10\n\n\n\nhas no cancer\n\n\n\n\n\n\n\n\n\n\n\n\n\n- marginal \\(P(A=1) = 15/100\\)\n- conditional \\(P(A=1|B=1) = 5 / 10\\)\n\n\n\n\n\n\n\n\n\n\n\nconditional probabilities require dividing by the denominator of the conditioning set\n\n\nThis is why we need positivity (as dividing by \\(0\\) is not defined)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#probability-rules-and-identities",
@@ -620,6 +557,13 @@
     "href": "lectures/day2-scms/lec1.html#probability-rules-and-identities-2",
     "title": "Causal Directed Acylic Graphs",
     "section": "Probability rules and identities",
+    "text": "Probability rules and identities\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A) = \\sum_{b} P(A,B=b)\\)\nmarginal is sum over joint\n\n\n\\(P(A,B) = P(A|B)P(B)\\)\nproduct rule\n\n\n\\(P(A|B) = \\frac{P(A,B)}{P(B)}\\)\nconditional is joint over marginal (follows from product rule)"
+  },
+  {
+    "objectID": "lectures/day2-scms/lec1.html#probability-rules-and-identities-3",
+    "href": "lectures/day2-scms/lec1.html#probability-rules-and-identities-3",
+    "title": "Causal Directed Acylic Graphs",
+    "section": "Probability rules and identities",
     "text": "Probability rules and identities\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A) = \\sum_{b} P(A,B=b)\\)\nmarginal is sum over joint\n\n\n\\(P(A,B) = P(A|B)P(B)\\)\nproduct rule\n\n\n\\(P(A|B) = \\frac{P(A,B)}{P(B)}\\)\nconditional is joint over marginal (follows from product rule)\n\n\n\\(P(A|C) = \\sum_{b} P(A|B=b,C)P(B=b|C)\\)\ntotal expectation (consequence of marginal vs joint and product rule)"
   },
   {
@@ -634,14 +578,14 @@
     "href": "lectures/day2-scms/lec1.html#marginal-and-conditional-independence-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "Marginal and conditional independence:",
-    "text": "Marginal and conditional independence:\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A,B) = P(A)P(B)\\)\n(marginal) independence of \\(A\\) and \\(B\\)\n\n\n\\(P(A,B|C) = P(A|C)P(B|C)\\)\nconditional independence of \\(A\\) and \\(B\\) given \\(C\\)\n\n\n\n\n\\(C\\) has all the information that is shared between \\(A\\) and \\(B\\)"
+    "text": "Marginal and conditional independence:\n\n\n\n\n\n\n\nstatement\ninterpretation\n\n\n\n\n\\(P(A,B) = P(A)P(B)\\)\n(marginal) independence of \\(A\\) and \\(B\\)\n\n\n\\(P(A,B|C) = P(A|C)P(B|C)\\)\nconditional independence of \\(A\\) and \\(B\\) given \\(C\\)\n\n\n\\(P(A|B,C) = P(A|C)\\)\nconditional independence of \\(A\\) and \\(B\\) given \\(C\\)\n\n\n\n\n\\(C\\) has all the information that is shared between \\(A\\) and \\(B\\)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#conditional-independence-in-an-example",
     "href": "lectures/day2-scms/lec1.html#conditional-independence-in-an-example",
     "title": "Causal Directed Acylic Graphs",
     "section": "Conditional Independence in an example",
-    "text": "Conditional Independence in an example\n\n\n\n\n\n\n\nCharlie calls Alice and reads her script \\(C\\), then she calls Bob and reads him the same\nA week later we ask Alice to repeat the story Charlie told her, she remembered \\(A\\), a noisy version of \\(C\\)\nWe ask Bob the same, he recounts \\(B\\), a different noisy version of \\(C\\)\nAre \\(A\\) and \\(B\\) independent? No! \\(P(A,B) \\neq P(A)P(B)\\)\n\nIf we learn \\(A\\) from Alice, we can get a good guess about \\(B\\) from Bob\n\nIf we knew the \\(C\\), would hearing \\(A\\) give use more information about \\(B\\)?\n\nNo, because all the shared information between \\(A\\) and \\(B\\) is explained by \\(C\\), so:\n\\(P(A,B|C) = P(A|C)P(B|C)\\)\n\nVariables can be marginally dependent but conditionally independent\n\n\n\n\n\n\nABC"
+    "text": "Conditional Independence in an example\n\n\n\n\n\n\n\nCharlie calls Alice and reads her script \\(C\\), then she calls Bob and reads him the same\nA week later we ask Alice to repeat the story Charlie told her, she remembered \\(A\\), a noisy version of \\(C\\)\nWe ask Bob the same, he recounts \\(B\\), a different noisy version of \\(C\\)\nAre \\(A\\) and \\(B\\) independent? No! \\(P(A,B) \\neq P(A)P(B)\\)\n\nIf we learn \\(A\\) from Alice, we can get a good guess about \\(B\\) from Bob\n\nIf we knew \\(C\\), would hearing \\(A\\) give use more information about \\(B\\)?\n\nNo, because all the shared information between \\(A\\) and \\(B\\) is explained by \\(C\\), so:\n\\(P(A,B) \\neq P(A)P(B)\\)\n\\(P(A,B|C) = P(A|C)P(B|C)\\)\n\nVariables can be marginally dependent but conditionally independent (and vice-versa)\n\n\n\n\n\n\nABC"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#sec-assumptions",
@@ -662,14 +606,14 @@
     "href": "lectures/day2-scms/lec1.html#dags-convey-two-types-of-assumptions-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "DAGs convey two types of assumptions:",
-    "text": "DAGs convey two types of assumptions:\ncausal direction and conditional independence\n\nconditional indepence (e.g. exclusion of influence / information)\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5: DAG 1\n\n\n\n\n\n\n\n\n\n\n\nFigure 6: DAG 2\n\n\n\n\n\n\n\n\n\n\n\nFigure 7: DAG 3\n\n\n\n\n\n\n\nFigure 5 says fire can only cause wet floor through sprinkler on\nFigure 6 says there may be other ways through which fire causes wet floor\n\nFigure 6 is thus a weaker assumption than Figure 5\n\nFigure 7 is also compatible with Figure 6"
+    "text": "DAGs convey two types of assumptions:\ncausal direction and conditional independence\n\nconditional indepence (e.g. exclusion of influence / information)\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5: DAG 1\n\n\n\n\n\n\n\n\n\n\n\nFigure 6: DAG 2\n\n\n\n\n\n\n\n\n\n\n\nFigure 7: DAG 3\n\n\n\n\n\n\n\nFigure 5 says fire can only cause wet floor through sprinkler on\n\nthis implies fire is independent of wet floor given sprinkler on and can be tested!\n\nFigure 6 says there may be other ways through which fire causes wet floor\n\nFigure 6 is thus a weaker assumption than Figure 5\n\nFigure 7 is also compatible with Figure 6"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#dags-are-non-parametric",
     "href": "lectures/day2-scms/lec1.html#dags-are-non-parametric",
     "title": "Causal Directed Acylic Graphs",
     "section": "DAGs are ‘non-parametric’",
-    "text": "DAGs are ‘non-parametric’\nThey relay what variable ‘listens’ to what, but not in what way\nset.seed(12345)\nn = 1e3\n\nf1 &lt;- function(t, x, u) t + 0.5 * (x - pi) + u\nf2 &lt;- function(t, x, u) t + sin(x) + u\nf3 &lt;- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u\n\ndf &lt;- data.table(\n  x = runif(n, 0, 2*pi),\n  t = rbinom(n, 1, 0.5),\n  u = rnorm(n, 0, .1)\n)\n\ndf[, `:=`(\n  y1 = f1(t, x, u),\n  y2 = f2(t, x, u),\n  y3 = f3(t, x, u)\n)]\n\ndfm &lt;- melt(df, measure.vars=c('y1', 'y2', 'y3'),\n            variable.name=\"f\", value.name=\"y\")\n\nggplot(dfm, aes(x=x, y=y, col=factor(t))) + \n  geom_point() + \n  facet_grid(~f)\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 8: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\\(Y = T + 0.5 (X - \\pi) + \\epsilon\\) (linear)\n\\(Y = T + \\sin(X) + \\epsilon\\) (non-linear additive)\n\\(Y = T * \\sin(X) - (1-T) \\sin(x) + \\epsilon\\) (non-linear + interaction)"
+    "text": "DAGs are ‘non-parametric’\nThey relay what variable ‘listens’ to what, but not in what way\n\n\n\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 8: Three datasets with the same DAG\n\n\n\n\n\n\n\n\n\\(Y = T + 0.5 (X - \\pi) + \\epsilon\\) (linear)\n\\(Y = T + \\sin(X) + \\epsilon\\) (non-linear additive)\n\\(Y = T * \\sin(X) - (1-T) \\sin(x) + \\epsilon\\) (non-linear + interaction)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#dags-are-non-parametric-1",
@@ -683,14 +627,14 @@
     "href": "lectures/day2-scms/lec1.html#dags-imply-a-causal-factorization-of-the-joint-distribution",
     "title": "Causal Directed Acylic Graphs",
     "section": "DAGs imply a causal factorization of the joint distribution",
-    "text": "DAGs imply a causal factorization of the joint distribution\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 9: observational data\n\n\n\n\n\n\\[\\begin{align}\n    P(Y,T,Z,W) &= P(Y|T,Z,W)P(T,Z,W) \\\\\n               &\\class{fragment}{= P(Y|T,Z)P(T,Z,W)} \\\\\n               &\\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z,W)} \\\\\n               &\\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z)P(W)}\n\\end{align}\\]\n\n\n\nIf this looks complicated: just follow the arrows"
+    "text": "DAGs imply a causal factorization of the joint distribution\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 9: observational data\n\n\n\n\n\n\\[\\begin{align}\n    P(Y,T,Z,W) &=^1 P(Y|T,Z,W)P(T,Z,W) \\\\\n               &=^2 P(Y|T,Z)P(T,Z,W) \\\\\n               &=^3 P(Y|T,Z)P(T|Z,W)P(Z,W) \\\\\n               &=^4 P(Y|T,Z)P(T|Z,W)P(Z)P(W)\n\\end{align}\\]\n\n\nproduct-rule\n\\(Y\\) independent of \\(W\\) given \\(T,Z\\) per DAG\nproduct-rule\n\\(Z,W\\) marginally independent per DAG\n\n\n\n\n\nIf this looks complicated: just follow the arrows"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#sec-def-intervention",
     "href": "lectures/day2-scms/lec1.html#sec-def-intervention",
     "title": "Causal Directed Acylic Graphs",
     "section": "The DAG definition of an intervention",
-    "text": "The DAG definition of an intervention\nassume this is our DAG for a situation and we want to learn the effect \\(T\\) has on \\(Y\\)\n\nthis is denoted \\(P(Y|\\text{do}(T))\\)\nin the graph, intervening on variable \\(T\\) means removing all incoming arrows\nthis assumes such a modular intervention is possible: i.e. leave everything else unaltered\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 10: observational data\n\n\n\n\n\n\n\n\n\n\n\nFigure 11: intervened DAG\n\n\n\n\n\n\n\nwhich means \\(T\\) does not listen to other variables anymore, but is set at a particular value, like in an experiment"
+    "text": "The DAG definition of an intervention\nassume this is our DAG for a situation and we want to learn the effect \\(T\\) has on \\(Y\\)\n\nthis is denoted \\(P(Y|\\text{do}(T))\\): a hypothetical intervention in the system\nin the graph, intervening on variable \\(T\\) means removing all incoming arrows\nthis assumes such a modular intervention is possible: i.e. leave everything else unaltered\n\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 10: observational data\n\n\n\n\n\n\n\n\n\n\n\nFigure 11: intervened DAG\n\n\n\n\n\n\n\nwhich means \\(T\\) does not listen to other variables anymore, but is set at a particular value, like in an experiment\nimagining this scenario requires a well-defined treatment variable (akin to consistency)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#intervention-as-graph-surgery---changed-distribution",
@@ -704,14 +648,14 @@
     "href": "lectures/day2-scms/lec1.html#intervention-as-graph-surgery---changed-distribution-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "Intervention as graph surgery - changed distribution",
-    "text": "Intervention as graph surgery - changed distribution\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 14: observational data\n\n\n\n\\[P_{\\text{obs}}(Y|T) = \\sum_{z} P(Y|T,Z=z)\\color{red}{P(Z=z|T)}\\]\n\n\n\n\n\n\n\n\nFigure 15: intervened DAG\n\n\n\n\\[P_{\\text{int}}(Y|T) = \\sum_{z} P(Y|T,Z=z)\\color{green}{P(Z=z)} \\qquad(1)\\]\n\n\n\n\nin \\(P_{\\text{obs}}\\), \\(P(Z|T) \\color{red}{\\neq} P(Z)\\)\nin \\(P_{\\text{int}}\\), \\(P(Z|T) \\color{green}{\\neq} P(Z)\\)\nthereby \\(P_{\\text{obs}}(Y|T) \\neq P_{\\text{int}}(P(Y|T)) = P(Y|\\text{do}(T))\\)\nseeing is not doing\nlooking at Equation 1, we can compute these from \\(P_{\\text{obs}}\\)! (this is what is called an estimand)"
+    "text": "Intervention as graph surgery - changed distribution\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 14: observational data\n\n\n\n\\[P_{\\text{obs}}(Y|T) = \\sum_{z} P(Y|T,Z=z)\\color{red}{P(Z=z|T)}\\]\n\n\n\n\n\n\n\n\nFigure 15: intervened DAG\n\n\n\n\\[P_{\\text{int}}(Y|T) = \\sum_{z} P(Y|T,Z=z)\\color{green}{P(Z=z)} \\qquad(1)\\]\n\n\n\n\nin \\(P_{\\text{obs}}\\), \\(P(Z|T) \\color{red}{\\neq} P(Z)\\)\nin \\(P_{\\text{int}}\\), \\(P(Z|T) \\color{green}{=} P(Z)\\)\nthereby \\(P_{\\text{obs}}(Y|T) \\neq P_{\\text{int}}(P(Y|T)) = P(Y|\\text{do}(T))\\)\nseeing is not doing\nlooking at Equation 1, we can compute these from \\(P_{\\text{obs}}\\)! (this is what is called an estimand)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#back-to-example-1",
     "href": "lectures/day2-scms/lec1.html#back-to-example-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "Back to example 1",
-    "text": "Back to example 1\n\n\n\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\nlocation\n\n\n\n\n\n\n\nhome\nhospital\n\n\nrisk\nlow\n648 / 720 = 90%\n19 / 20 = 95%\n\n\n\nhigh\n40 / 80 = 50%\n144 / 180 = 80%\n\n\n\n\n\n\n\n\n\nmarginal\n688 / 800 = 86%\n163 / 200 = 81.5%\n\n\n\n\n\n\n\nestimand: \\(P(\\text{outcome}|\\text{do}(\\text{location})) = \\sum_{\\text{risk}} P(\\text{outcome}|\\text{location},\\text{risk})P(\\text{risk})\\)\n\\(P(\\text{risk}=\\text{low})=74\\%\\)\n\n\n\\[\\begin{align}\nP(\\text{outcome}|\\text{do}(\\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\\% \\\\\n     P(\\text{outcome}|\\text{do}(\\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\\%\n\\end{align}\\]\n\n\nconclusion: sending all deliveries to the hospital leads to better outcomes"
+    "text": "Back to example 1\n\n\n\n\n\n\n\n\n\nDAG\n\n\n\n\n\n\n\n\n\nlocation\n\n\n\n\n\n\n\nhome\nhospital\n\n\nrisk\nlow\n648 / 720 = 90%\n19 / 20 = 95%\n\n\n\nhigh\n40 / 80 = 50%\n144 / 180 = 80%\n\n\n\n\n\n\n\n\n\nmarginal\n688 / 800 = 86%\n163 / 200 = 81.5%\n\n\n\n\n\n\n\nestimand: \\(P(\\text{outcome}|\\text{do}(\\text{location})) = \\sum_{\\text{risk}} P(\\text{outcome}|\\text{location},\\text{risk})P(\\text{risk})\\)\n\\(P(\\text{risk}=\\text{low})=74\\%\\)\n\n\n\\[\\begin{align}\nP(\\text{outcome}|\\text{do}(\\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\\% \\\\\n     P(\\text{outcome}|\\text{do}(\\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\\%\n\\end{align}\\]\n\n\nconclusion: sending all deliveries to the hospital leads to better neonatal outcomes"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#back-to-example-2",
@@ -725,7 +669,7 @@
     "href": "lectures/day2-scms/lec1.html#the-gist-of-observational-causal-inference",
     "title": "Causal Directed Acylic Graphs",
     "section": "The gist of observational causal inference",
-    "text": "The gist of observational causal inference\nis to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)\n\n\n\n\n\n\n\n\nFigure 16: observational data: data we have\n\n\n\n\n\n\n\n\n\nFigure 17: intervened DAG: what we want to know\n\n\n\n\n\ncausal inference frameworks provide a language to express assumptions\nbased on these assumptions, the framework tell us whether such an inference is possible\n\nthis is often referred to as is the effect identified\n\nand provide formula(s) for how to do so based on the observed data distribution (estimand(s))\n(one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)\nnot yet said: how to do statistical inference to estimate the estimand (much can still go wrong here)\n\ncan also be part of identification, see the following lecture on SCMs"
+    "text": "The gist of observational causal inference\nis to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)\n\n\n\n\n\n\n\n\nFigure 16: observational data: data we have\n\n\n\n\n\n\n\n\n\nFigure 17: intervened DAG: what we want to know\n\n\n\n\n\ncausal inference frameworks provide a language to express assumptions\nbased on these assumptions, the framework tells us whether such an inference is possible\n\nthis is often referred to as is the effect identified\n\nand provide formula(s) for how to do so based on the observed data distribution (estimand(s))\n(one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)\nnot yet said: how to do statistical inference to estimate the estimand (much can still go wrong here)\n\ncan also be part of identification, see the following lecture on SCMs"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#basic-dag-patterns-chain",
@@ -753,7 +697,7 @@
     "href": "lectures/day2-scms/lec1.html#collider-bias---tinder",
     "title": "Causal Directed Acylic Graphs",
     "section": "Collider bias - Tinder",
-    "text": "Collider bias - Tinder\nintelligent = runif(n)\nattractive = runif(n)\ns = intelligent + attractive &gt; 1.\ndf &lt;- data.frame(intelligent, attractive, s)\ndf$s &lt;- factor(df$s)\n\nggplot(df, aes(x=intelligent, y=attractive)) +\n  geom_point(aes(alpha=s, col=s)) + \n  # stat_smooth(method='lm', col='black', se=F, formula=y~x) +\n  # stat_smooth(method='lm', se=F, formula=y~x, col='black') +\n  stat_smooth(data=df[df$s==T,], method='lm', col='darkred', formula=y~x, se=F) + \n  scale_color_manual(\n    breaks=c(F,T), values=c('gray', 'darkgreen'),\n    labels=c('on tinder', 'not on tinder'),\n    guide=guide_legend(\n      title=''\n      )\n    ) + \n  scale_alpha_manual(breaks=c(F,T), values=c(0.15, 0.2), guide=NULL) + \n  theme(axis.ticks=element_blank(), axis.text=element_blank()) + \n  coord_equal()\n\n\n\n\n\n\n\n\n\n\n\n\n(a) collider\n\n\n\n\n\nFigure 21: \\[\\begin{align}\n    \\text{intelligent} &\\sim U[0,1] \\\\\n    \\text{attractive}  &\\sim U[0,1] \\\\\n    \\text{on tinder}   &= I_{\\text{intelligent} + \\text{attractive} &lt; 1}\n\\end{align}\\]\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 22"
+    "text": "Collider bias - Tinder\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) collider\n\n\n\n\n\nFigure 21: \\[\\begin{align}\n    \\text{intelligent} &\\sim U[0,1] \\\\\n    \\text{attractive}  &\\sim U[0,1] \\\\\n    \\text{on tinder}   &= I_{\\text{intelligent} + \\text{attractive} &lt; 1}\n\\end{align}\\]"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#conditioning-on-a-collider-creates-dependence-of-its-parents",
@@ -788,14 +732,14 @@
     "href": "lectures/day2-scms/lec1.html#sec-backdoor",
     "title": "Causal Directed Acylic Graphs",
     "section": "The back-door criterion and adjustment",
-    "text": "The back-door criterion and adjustment\nDefinition 3.3.1 (Back-Door) (for pairs of variables)\nA set of variables \\(Z\\) satisfies the back-door criterion relative to an ordered pair of variables \\((X,Y)\\) in a DAG if:\n\nno node in \\(Z\\) is a descendant of \\(X\\) (e.g. mediatiors)\n\\(Z\\) blocks every path between \\(X\\) and \\(Y\\) that contains an arrow into \\(X\\)\n\n\nTheorem 3.2.2 (Back-Door Adjustment)\nIf a set of variables \\(Z\\) satisfies the back-door criterion relative to \\((X,Y)\\), then the causal effect of \\(X\\) on \\(Y\\) is identifiable and is given by the formula\n\\[P(y|\\text{do}(x)) = \\sum_z P(y|x,z)P(z) \\qquad(2)\\]"
+    "text": "The back-door criterion and adjustment\nDefinition 3.3.1 (Back-Door) (for pairs of variables)\nA set of variables \\(Z\\) satisfies the back-door criterion relative to an ordered pair of variables \\((X,Y)\\) in a DAG if:\n\nno node in \\(Z\\) is a descendant of \\(X\\) (e.g. mediators)\n\\(Z\\) blocks every path between \\(X\\) and \\(Y\\) that contains an arrow into \\(X\\)\n\n\nTheorem 3.2.2 (Back-Door Adjustment)\nIf a set of variables \\(Z\\) satisfies the back-door criterion relative to \\((X,Y)\\), then the causal effect of \\(X\\) on \\(Y\\) is identifiable and is given by the formula\n\\[P(y|\\text{do}(x)) = \\sum_z P(y|x,z)P(z) \\qquad(2)\\]"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#did-we-see-this-equation-before",
     "href": "lectures/day2-scms/lec1.html#did-we-see-this-equation-before",
     "title": "Causal Directed Acylic Graphs",
     "section": "Did we see this equation before?",
-    "text": "Did we see this equation before?\n\nYes! When computing the effect of hospital deliveries on neonatal outcomes Equation 1\nDAGs tell us what to adjust for\nautomatic algorithms tell use whether an estimand exists and what it is"
+    "text": "Did we see this equation before?\n\nYes! When computing the effect of hospital deliveries on neonatal outcomes Equation 1\nDAGs tell us what to adjust for\nautomatic algorithms tell use whether an estimand exists and what it is\nseveral point-and-click websites for making DAGs that implement these algorithms:\n\ndagitty.net\ncausalfusion.net"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#how-about-positivity",
@@ -809,6 +753,62 @@
     "href": "lectures/day2-scms/lec1.html#references",
     "title": "Causal Directed Acylic Graphs",
     "section": "References",
-    "text": "References\n\n\n\n\n\n\n\n\n\nBanack, H. R., and A. Stokes. 2017. “The ‘Obesity Paradox’ May Not Be a Paradox at All.” International Journal of Obesity 41 (8): 1162–63. https://doi.org/10.1038/ijo.2017.99.\n\n\nPearl, Judea. 2009. Causality. Cambridge University Press."
+    "text": "References\n\n\n\n\nWouter van Amsterdam — WvanAmsterdam — vanamsterdam.github.io\n\n\n\n\nBanack, H. R., and A. Stokes. 2017. “The ‘Obesity Paradox’ May Not Be a Paradox at All.” International Journal of Obesity 41 (8): 1162–63. https://doi.org/10.1038/ijo.2017.99.\n\n\nPearl, Judea. 2009. Causality. Cambridge University Press."
+  },
+  {
+    "objectID": "practicals/00_setup/setup.html",
+    "href": "practicals/00_setup/setup.html",
+    "title": "Setup for Causal Inference and Causal Data Science Course",
+    "section": "",
+    "text": "We will work with R. You can use your preferred way of working in R to do the practicals. Our preferred way is this:\n\nCreate a new folder with a good name, e.g., practicals_causal_datascience\nOpen RStudio\nCreate a new project from RStudio, which you associate with the folder\nCreate a raw_data subfolder\nCreate an R script for the current practical, e.g., introduction.R\nCreate your well-documented and well-styled code in this R script\n\nWe try to make our practicals light in the number of required packages, but the packages below are needed. You can install them via:\n\nneeded_packages &lt;- c(\n  \"data.table\", \"broom\", \"purrr\", \"dagitty\", \"ggplot2\", \"dplyr\", \"marginaleffects\",\n  \"MatchIt\",\"survey\",\"tableone\"\n)\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in needed_packages) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}"
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html",
+    "href": "practicals/21_dags/dags.html",
+    "title": "Practical on DAGs",
+    "section": "",
+    "text": "This lab will guide you through practical examples of drawing and analyzing DAGs using R. You will learn how to simulate data, create DAGs, and use them for causal inference.\nCode\n# Install necessary packages if not already installed\nrequired_pkgs &lt;- c(\"dagitty\", \"ggplot2\", \"broom\", \"purrr\", \"dplyr\", \"data.table\", \"marginaleffects\")\ncran_repo &lt;- \"https://mirror.lyrahosting.com/CRAN/\" # &lt;- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html\n\nfor (pkg in required_pkgs) {\n  if (!requireNamespace(pkg, quietly = TRUE)) {\n    install.packages(pkg, repos=cran_repo)\n  }\n}\n\nsuppressPackageStartupMessages({\n  # Load packages\n  library(purrr)\n  library(broom)\n  library(dagitty)\n  library(ggplot2)\n  library(dplyr)\n  library(marginaleffects)\n  library(data.table)\n})\n\nsource(here::here(\"practicals\", \"21_dags\", \"_makedatas.R\"))\ndatas &lt;- make_datas()"
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#birthweight-data",
+    "href": "practicals/21_dags/dags.html#birthweight-data",
+    "title": "Practical on DAGs",
+    "section": "1.1 Birthweight data:",
+    "text": "1.1 Birthweight data:\nWe’ll use the (simulated) dataset birthw with data on birthweight and survival of babies.\nThe birthw dataset contains the following variables:\n\nageover35: Indicator mother’s age over 35 years (0 = age &lt;= 35, 1 = age &gt;35)\nsmoking: Smoking status during pregnancy (0 = no, 1 = yes)\nlbwt: Low birth weight (0 = &gt;=2500grams, 1 = &lt; 2500grams)\ndeath: Neonatal death within 3 months (0 = no, 1 = yes)\n\n\n\nCode\nbirthw &lt;- datas[[\"birthw\"]]\nhead(birthw)\n\n\n\n  \n\n\n\nThe data can alternatively be downloaded here: birthw.csv"
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#create-a-dag",
+    "href": "practicals/21_dags/dags.html#create-a-dag",
+    "title": "Practical on DAGs",
+    "section": "1.2 Create a DAG",
+    "text": "1.2 Create a DAG\n\n1.2.1 Think of a DAG that may fit this data using the observed variables\nTake a few minutes to create a DAG (collaboratively) (using e.g. dagitty.net)\n\n\n1.2.2 Are there variables that may be missing in the data but are relevant?\nIf so, add them to the DAG, and indicate that they are unobserved\n\n\n1.2.3 With your DAG, can the causal effect be estimated?\nUse e.g. dagitty.net to create your DAG and see if there are ways to estimate the causal effect."
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#analyse-the-data",
+    "href": "practicals/21_dags/dags.html#analyse-the-data",
+    "title": "Practical on DAGs",
+    "section": "1.3 Analyse the data",
+    "text": "1.3 Analyse the data\nLet’s try some analyses on the data. We’ll fit different logistic regression models with different covariates (independent variables). Specifically, fit a model with:\n\nall observed covariates (fit_allobs)\nonly the somking variable (fit_marginal)\n\nThese models give us estimates of (log) odds ratios for the independent variables. To translate a logistic regression model into differences in probabilities we use the avg_comparisons function from the marginaleffects package.\n\n\nCode\nrequire(marginaleffects)\n\nfit_allobs &lt;- glm(death~., data=birthw, family=\"binomial\")\nfit_marginal &lt;- glm(death~smoking, data=birthw, family=\"binomial\")\n\navg_comparisons(fit_allobs, variables=\"smoking\")\n\n\n\n    Term          Contrast Estimate Std. Error     z Pr(&gt;|z|)    S  2.5 %\n smoking mean(1) - mean(0)    -0.13     0.0179 -7.25   &lt;0.001 41.1 -0.165\n  97.5 %\n -0.0948\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nCode\navg_comparisons(fit_marginal, variables=\"smoking\")\n\n\n\n    Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)   S  2.5 % 97.5 %\n smoking mean(1) - mean(0)   0.0808     0.0288 2.81  0.00502 7.6 0.0244  0.137\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\nThe effect estimates of fit_allobs and fit_marginal are quite different, they have different signs. How could this be explained? Which effect estimate do you think is more credible?"
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#assume-a-dag",
+    "href": "practicals/21_dags/dags.html#assume-a-dag",
+    "title": "Practical on DAGs",
+    "section": "1.4 Assume a DAG",
+    "text": "1.4 Assume a DAG\n\n\n\n\n\n\nAssume the following DAG\n\n\n\n\n\n\n\n\n\n\n\nFigure 1: DAG for smoking and death\n\n\n\nIn this DAG, there is another variable gene that influences both lbwt and death.\n\n\n\n\n\n\n\n\n\nHow does this DAG change the analysis? (tip: enter it in dagitty.net)\n\n\n\n\n\nanswer: the smoking-death relationship has no confounders, the marginal estimate is correct. Adjusting for lbwt ‘washes-out’ part of smoking’s effect because lbwt is a mediator. Also, lbwt is a collider between gene and smoking, and gene has a direct arrow into death. Conditioning on lbwt opens a bidirected path between smoking and gene, creating a new backdoor path. So there are two reasons not to condition on lbwt: it is a mediator and a collider with an unmeasured variable\n\n\n\n\n\n\n\n\n\nSee this other DAG on the smoking question\n\n\n\n\n\n\n\n\n\n\n\nFigure 2: birthweight DAG 2\n\n\n\n\n\n\nGiven the DAG in Figure 2, see the following regression model\n\nfit2 &lt;- glm(death~smoking+ht+ageover35, data=birthw, family=binomial)\n\n\n\n\n\n\n\nAssuming no parametric form bias, will this lead to an unbiased causal effect estimate?\n\n\n\n\n\nanswer: yes this is a correct analysis. lbwt is still a collider, but it does not open any new back-door paths because gene no longer has a direct effect on death and all variables other than smoking that do have such an arrow are in the conditioning set (ageover35,ht) so these paths are blocked"
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#non-coding-questions",
+    "href": "practicals/21_dags/dags.html#non-coding-questions",
+    "title": "Practical on DAGs",
+    "section": "2.1 Non-coding questions",
+    "text": "2.1 Non-coding questions\n\n2.1.1 Strength of Assumptions\n\n\n\n\n\n\n\n\n\n\n\n(a) DAG\n\n\n\n\n\n\n\n\n\n\n\n(b) DAG\n\n\n\n\n\n\n\n\n\n\n\n(c) DAG\n\n\n\n\n\n\n\nFigure 4\n\n\n\n\n\n\n\n\n\nWhat is the correct ordering of the strength of assumptions in the above DAGs, starting with the strongest assumption\n\n\n\n\n\nanswer: Figure 4 (b) &gt; Figure 4 (c) &gt; Figure 4 (a)\nFigure 4 (b) is stronger than Figure 4 (c) as in the latter, it could be that the effects through \\(W\\) are all absent (remember that the presence of an arrow from A to B implies a possible effect of A on B)\nFigure 4 (c) is stronger than Figure 4 (a) as in the first, Z can only affect Y through T and W, whereas in Figure 4 (a) Z can effect Y through T and can effect Y through other paths (e.g. W)\nsee also the lecture on DAGs\n\n\n\n\n\n2.1.2 RCTs\nAccording to the DAG framework, why are RCTs especially fit for causal questions?\n\nthey are often infeasible and unethical\nthey sample data from the target distribution\nthey have better external validity than observational studies\nrandomization balances confounders\n\n\n\n\n\n\n\nWhich answers are true?\n\n\n\n\n\nanswer: 2.\nSee also the DAG lecture\nContext:\n\nThis is often said of RCTs but has no direct bearing on why they are special for causal inference\nRemember that the target distribution has no arrows going in to the treatment variable, this is what we get in a RCT\nRCTs are often critiqued as having poor external validity, because they may recruit non-random subpopulations from the target population\nThis is a subtle point, but RCTs have no confounders as there are no common causes of the treatment and the outcome. Variables that are confounders in observational studies are prognostic factors in RCTs, as they (by definition of being a confounder in an observational study) influence the outcome, but not the treatment in the RCT. Randomization balances the distribution of prognostic factors between treatment arms in expectation. In a particular RCT, observed (and unobserved) prognostic factors will always have some random variation between treatment arms. This does not reduce the validity of the RCT in terms of bias. This variation is reflected in the standard error of the estimate. In some cases, adjusting for known prognostic factors in RCTs may reduce the variance of the treatment estimate (i.e. narrowing the confidence interval), but this is an entire discussion on its own."
+  },
+  {
+    "objectID": "practicals/21_dags/dags.html#creating-and-visualizing-a-dag",
+    "href": "practicals/21_dags/dags.html#creating-and-visualizing-a-dag",
+    "title": "Practical on DAGs",
+    "section": "3.1 Creating and Visualizing a DAG",
+    "text": "3.1 Creating and Visualizing a DAG\nLet’s create a DAG for the pregnancy example:\n\n\nCode\n# Define the DAG\ndag &lt;- dagitty(\"dag {\n  pregnancy_risk -&gt; hospital_delivery\n  pregnancy_risk -&gt; neonatal_outcome\n  hospital_delivery -&gt; neonatal_outcome\n}\")\n\n# Plot the DAG\nplot(dag)\n\n\nPlot coordinates for graph not supplied! Generating coordinates, see ?coordinates for how to set your own.\n\n\n\n\n\n\n\n\n\nThis DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.\n\n3.1.1 Simulating Data\nWe will simulate data based on the DAG structure:\n\n\nCode\nset.seed(123)\n\nn &lt;- 1000\n\n# Simulate variables\npregnancy_risk &lt;- rbinom(n, 1, 0.3)  # 30% high risk\nhospital_delivery &lt;- rbinom(n, 1, 0.5 + 0.3 * pregnancy_risk)  # 50% baseline + 30% if high risk\nneonatal_outcome &lt;- rbinom(n, 1, 0.8 - 0.3 * pregnancy_risk + 0.15 * hospital_delivery)  # outcome affected by both\n\n# Create a data frame\ndf &lt;- data.table(pregnancy_risk, hospital_delivery, neonatal_outcome)\n\n\n\n\n3.1.2 Analyzing the Data\nCheck the relationships in the data:\n\n\nCode\n# Summary statistics\nsummary(df)\n\n\n pregnancy_risk  hospital_delivery neonatal_outcome\n Min.   :0.000   Min.   :0.000     Min.   :0.000   \n 1st Qu.:0.000   1st Qu.:0.000     1st Qu.:1.000   \n Median :0.000   Median :1.000     Median :1.000   \n Mean   :0.295   Mean   :0.586     Mean   :0.806   \n 3rd Qu.:1.000   3rd Qu.:1.000     3rd Qu.:1.000   \n Max.   :1.000   Max.   :1.000     Max.   :1.000   \n\n\nCode\n# Plot the data\nggplot(df, aes(x = factor(hospital_delivery), fill = factor(neonatal_outcome))) +\n  geom_bar(position = \"fill\") +\n  facet_grid(~ pregnancy_risk) +\n  labs(x = \"Hospital Delivery\", y = \"Proportion\", fill = \"Neonatal Outcome\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\n3.1.3 Causal Inference Using DAGs\nLet’s use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:\n\n\nCode\n# Identify adjustment set using DAGitty\nadjustmentSets(dag, exposure = \"hospital_delivery\", outcome = \"neonatal_outcome\")\n\n\n{ pregnancy_risk }\n\n\nThe output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.\n\n\n3.1.4 Estimating the Causal Effect\nEstimate the causal effect using a regression model:\n\n\nCode\n# Fit a regression model\nmodel &lt;- glm(neonatal_outcome ~ hospital_delivery + pregnancy_risk, family = binomial, data = df)\n\n# Summarize the model\nsummary(model)\n\n\n\nCall:\nglm(formula = neonatal_outcome ~ hospital_delivery + pregnancy_risk, \n    family = binomial, data = df)\n\nCoefficients:\n                  Estimate Std. Error z value Pr(&gt;|z|)    \n(Intercept)         1.7830     0.1407  12.675  &lt; 2e-16 ***\nhospital_delivery   1.0073     0.1998   5.042 4.61e-07 ***\npregnancy_risk     -2.2336     0.1987 -11.239  &lt; 2e-16 ***\n---\nSignif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1\n\n(Dispersion parameter for binomial family taken to be 1)\n\n    Null deviance: 983.94  on 999  degrees of freedom\nResidual deviance: 834.27  on 997  degrees of freedom\nAIC: 840.27\n\nNumber of Fisher Scoring iterations: 5\n\n\n\n\n3.1.5 Drawing Conclusions\nInterpret the model’s output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.\n\n\nCode\navg_comparisons(model, variables=\"hospital_delivery\")\n\n\n\n              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S\n hospital_delivery mean(1) - mean(0)    0.133     0.0253 5.26   &lt;0.001 22.7\n  2.5 % 97.5 %\n 0.0837  0.183\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response \n\n\n\n\n\n\n\n\nIs this odds ratio a correct estimate of the causal effect?\n\n\n\n\n\nanswer: no\nhint: compare the structural equation used in generating the data with the statistical analysis\nThis linear probability structural equation is not well-approximated by a linear logistic model (i.e. without interaction terms). We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using avg_comparisons from package marginaleffects.\nThe correct estimate is given by:\n\n\nCode\nfull_model &lt;- glm(neonatal_outcome~hospital_delivery*pregnancy_risk, family=binomial, data=df)\navg_comparisons(full_model, variables=\"hospital_delivery\")\n\n\n\n              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S\n hospital_delivery mean(1) - mean(0)    0.121     0.0261 4.63   &lt;0.001 18.0\n  2.5 % 97.5 %\n 0.0696  0.172\n\nColumns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted \nType:  response"
   }
 ]

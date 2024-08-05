@@ -8,7 +8,7 @@
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.5.56">
+  <meta name="generator" content="quarto-1.5.54">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -30,71 +30,6 @@
       margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
       vertical-align: middle;
     }
-    /* CSS for syntax highlighting */
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      { color: #003b4f; background-color: #f1f3f5; }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span { color: #003b4f; } /* Normal */
-    code span.al { color: #ad0000; } /* Alert */
-    code span.an { color: #5e5e5e; } /* Annotation */
-    code span.at { color: #657422; } /* Attribute */
-    code span.bn { color: #ad0000; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #003b4f; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #20794d; } /* Char */
-    code span.cn { color: #8f5902; } /* Constant */
-    code span.co { color: #5e5e5e; } /* Comment */
-    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
-    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
-    code span.dt { color: #ad0000; } /* DataType */
-    code span.dv { color: #ad0000; } /* DecVal */
-    code span.er { color: #ad0000; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #ad0000; } /* Float */
-    code span.fu { color: #4758ab; } /* Function */
-    code span.im { color: #00769e; } /* Import */
-    code span.in { color: #5e5e5e; } /* Information */
-    code span.kw { color: #003b4f; font-weight: bold; } /* Keyword */
-    code span.op { color: #5e5e5e; } /* Operator */
-    code span.ot { color: #003b4f; } /* Other */
-    code span.pp { color: #ad0000; } /* Preprocessor */
-    code span.sc { color: #5e5e5e; } /* SpecialChar */
-    code span.ss { color: #20794d; } /* SpecialString */
-    code span.st { color: #20794d; } /* String */
-    code span.va { color: #111111; } /* Variable */
-    code span.vs { color: #20794d; } /* VerbatimString */
-    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
     /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
@@ -443,7 +378,7 @@ Qs:
 <section id="todays-lectures" class="slide level2 center">
 <h2>Today’s lectures</h2>
 <ul>
-<li class="fragment">introduce new framework based on
+<li class="fragment">introduce 1.5 new framework based on
 <ul>
 <li class="fragment">causal Directed Acyclic Graphs (DAGs)</li>
 <li class="fragment">Structral Causal Models (SCMs)</li>
@@ -459,7 +394,7 @@ Qs:
 <ul>
 <li class="fragment">define <em>causal</em> quantities</li>
 <li class="fragment">express <em>assumptions</em></li>
-<li class="fragment">derive how to <em>estimate</em> causal effects</li>
+<li class="fragment">derive how to <em>estimate</em> causal quantities</li>
 </ul>
 </section>
 <section id="causal-inference-frameworks-1" class="slide level2 center">
@@ -491,17 +426,10 @@ Qs:
 <li class="fragment">causal inference with DAGs
 <ul>
 <li class="fragment">what is an intervention</li>
-<li class="fragment">structures: confounding, mediation, colliders</li>
+<li class="fragment">DAG-structures: confounding, mediation, colliders</li>
 <li class="fragment">d-separation</li>
 <li class="fragment">back-door criterion</li>
 </ul></li>
-</ul>
-</section>
-<section id="practical-1" class="slide level2 center">
-<h2>practical 1</h2>
-<ul>
-<li class="fragment">drawing and using dags (what to condition on); daggity</li>
-<li class="fragment">same data, different dags, different answers</li>
 </ul>
 </section></section>
 <section>
@@ -529,100 +457,11 @@ Qs:
 </ul></li>
 <li class="fragment">Question: do hospital deliveries result in better outcomes for babies?</li>
 </ul>
-<div class="fragment">
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># t=0: home, t=1: hospital</span></span>
-<span id="cb1-2"><a></a><span class="co"># z=0: low risk, z=1: high risk</span></span>
-<span id="cb1-3"><a></a><span class="co"># y=1: good outcome</span></span>
-<span id="cb1-4"><a></a>dnames <span class="ot">=</span> <span class="fu">list</span>(<span class="at">location=</span><span class="fu">c</span>(<span class="st">'home'</span>, <span class="st">'hospital'</span>), <span class="at">risk=</span><span class="fu">c</span>(<span class="st">'low'</span>, <span class="st">'high'</span>))</span>
-<span id="cb1-5"><a></a>pos_tz <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
-<span id="cb1-6"><a></a>  <span class="fu">c</span>(<span class="fl">0.9</span>,  <span class="fl">0.5</span>), <span class="co"># y|t=0,z=0,1</span></span>
-<span id="cb1-7"><a></a>  <span class="fu">c</span>(<span class="fl">0.95</span>, <span class="fl">0.8</span>)  <span class="co"># y|t=1,z=0,1</span></span>
-<span id="cb1-8"><a></a>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">byrow=</span>T,</span>
-<span id="cb1-9"><a></a><span class="at">dimnames=</span>dnames)</span>
-<span id="cb1-10"><a></a></span>
-<span id="cb1-11"><a></a>ps_tz <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
-<span id="cb1-12"><a></a>  <span class="fu">c</span>(<span class="fl">0.72</span>, <span class="fl">0.08</span>), <span class="co"># p(t=0,z=0,1)</span></span>
-<span id="cb1-13"><a></a>  <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.18</span>)  <span class="co"># p(t=1,z=0,1)</span></span>
-<span id="cb1-14"><a></a>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">byrow=</span>T, <span class="at">dimnames=</span>dnames)</span>
-<span id="cb1-15"><a></a></span>
-<span id="cb1-16"><a></a><span class="co"># p(t,z) under do(t)</span></span>
-<span id="cb1-17"><a></a>ps_do0 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( </span>
-<span id="cb1-18"><a></a>  <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>), </span>
-<span id="cb1-19"><a></a>  <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>)  </span>
-<span id="cb1-20"><a></a>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">byrow=</span>T)</span>
-<span id="cb1-21"><a></a></span>
-<span id="cb1-22"><a></a>ps_do1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( </span>
-<span id="cb1-23"><a></a>  <span class="fu">c</span>(<span class="fl">0.0</span>, <span class="fl">0.0</span>), </span>
-<span id="cb1-24"><a></a>  <span class="fu">c</span>(<span class="fl">0.8</span>, <span class="fl">0.2</span>) </span>
-<span id="cb1-25"><a></a>), <span class="at">nrow=</span><span class="dv">2</span>, <span class="at">byrow=</span>T)</span>
-<span id="cb1-26"><a></a></span>
-<span id="cb1-27"><a></a></span>
-<span id="cb1-28"><a></a>eys  <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(pos_tz <span class="sc">*</span> ps_tz) <span class="sc">/</span> <span class="fu">rowSums</span>(ps_tz) <span class="co"># E y|t</span></span>
-<span id="cb1-29"><a></a>dots <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">sum</span>(pos_tz <span class="sc">*</span> ps_do0), <span class="fu">sum</span>(pos_tz<span class="sc">*</span>ps_do1))</span>
-<span id="cb1-30"><a></a></span>
-<span id="cb1-31"><a></a>n <span class="ot">=</span> <span class="dv">1000</span></span>
-<span id="cb1-32"><a></a></span>
-<span id="cb1-33"><a></a>ts  <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"logical"</span>, <span class="at">length=</span><span class="dv">0</span>)</span>
-<span id="cb1-34"><a></a>zs  <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"logical"</span>, <span class="at">length=</span><span class="dv">0</span>)</span>
-<span id="cb1-35"><a></a>py0s <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"numeric"</span>, <span class="at">length=</span><span class="dv">0</span>)</span>
-<span id="cb1-36"><a></a>py1s <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"numeric"</span>, <span class="at">length=</span><span class="dv">0</span>)</span>
-<span id="cb1-37"><a></a>ys  <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"logical"</span>, <span class="at">length=</span><span class="dv">0</span>)</span>
-<span id="cb1-38"><a></a></span>
-<span id="cb1-39"><a></a>ntots <span class="ot">&lt;-</span> n <span class="sc">*</span> ps_tz</span>
-<span id="cb1-40"><a></a></span>
-<span id="cb1-41"><a></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) {</span>
-<span id="cb1-42"><a></a>  <span class="cf">for</span> (z <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">1</span>)) {</span>
-<span id="cb1-43"><a></a>    ntz <span class="ot">&lt;-</span> n <span class="sc">*</span>ps_tz[t<span class="sc">+</span><span class="dv">1</span>,z<span class="sc">+</span><span class="dv">1</span>]</span>
-<span id="cb1-44"><a></a>    ts  <span class="ot">&lt;-</span> <span class="fu">c</span>(ts, <span class="fu">rep</span>(t, ntz))</span>
-<span id="cb1-45"><a></a>    zs  <span class="ot">&lt;-</span> <span class="fu">c</span>(zs, <span class="fu">rep</span>(z, ntz))</span>
-<span id="cb1-46"><a></a>    py <span class="ot">&lt;-</span> pos_tz[t<span class="sc">+</span><span class="dv">1</span>,z<span class="sc">+</span><span class="dv">1</span>]</span>
-<span id="cb1-47"><a></a>    y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>,</span>
-<span id="cb1-48"><a></a>               <span class="fu">round</span>(ntz <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>py))), <span class="co"># &lt;- round should not be needed here but found a bug</span></span>
-<span id="cb1-49"><a></a>           <span class="fu">rep</span>(<span class="dv">1</span>,</span>
-<span id="cb1-50"><a></a>               <span class="fu">round</span>(ntz<span class="sc">*</span>py))) </span>
-<span id="cb1-51"><a></a>    ys <span class="ot">&lt;-</span> <span class="fu">c</span>(ys, y)</span>
-<span id="cb1-52"><a></a>    py0s <span class="ot">&lt;-</span> <span class="fu">c</span>(py0s, <span class="fu">rep</span>(pos_tz[<span class="dv">1</span>, z<span class="sc">+</span><span class="dv">1</span>], ntz))</span>
-<span id="cb1-53"><a></a>    py1s <span class="ot">&lt;-</span> <span class="fu">c</span>(py1s, <span class="fu">rep</span>(pos_tz[<span class="dv">2</span>, z<span class="sc">+</span><span class="dv">1</span>], ntz))</span>
-<span id="cb1-54"><a></a>  }</span>
-<span id="cb1-55"><a></a>}</span>
-<span id="cb1-56"><a></a><span class="co"># ys &lt;- ifelse(ts, y1s, y0s)</span></span>
-<span id="cb1-57"><a></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
-<span id="cb1-58"><a></a>  <span class="at">location=</span>ts,</span>
-<span id="cb1-59"><a></a>  <span class="at">risk=</span>zs,</span>
-<span id="cb1-60"><a></a>  <span class="at">outcome=</span>ys,</span>
-<span id="cb1-61"><a></a>  <span class="at">py0=</span>py0s,</span>
-<span id="cb1-62"><a></a>  <span class="at">py1=</span>py1s)</span>
-<span id="cb1-63"><a></a></span>
-<span id="cb1-64"><a></a><span class="co"># head(df)</span></span>
-<span id="cb1-65"><a></a></span>
-<span id="cb1-66"><a></a><span class="co"># kable(eys, col.names="tips")</span></span>
-<span id="cb1-67"><a></a><span class="co">#pander::pander(ftable(eys))</span></span>
-<span id="cb1-68"><a></a></span>
-<span id="cb1-69"><a></a><span class="co"># pander::pander(ftable(pos_tz), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))</span></span>
-<span id="cb1-70"><a></a></span>
-<span id="cb1-71"><a></a>ntots <span class="ot">&lt;-</span> n <span class="sc">*</span> ps_tz</span>
-<span id="cb1-72"><a></a>nys <span class="ot">&lt;-</span> ntots <span class="sc">*</span> pos_tz</span>
-<span id="cb1-73"><a></a></span>
-<span id="cb1-74"><a></a>strs <span class="ot">&lt;-</span> <span class="fu">paste0</span>(nys, <span class="st">" / "</span>, ntots, <span class="st">" = "</span>, <span class="dv">100</span><span class="sc">*</span>pos_tz, <span class="st">"%"</span>)</span>
-<span id="cb1-75"><a></a>str_mat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(strs, <span class="at">ncol=</span><span class="dv">2</span>, <span class="at">dimnames=</span>dnames)</span>
-<span id="cb1-76"><a></a><span class="co"># kable(t(str_mat))</span></span>
-<span id="cb1-77"><a></a><span class="co"># pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))</span></span>
-<span id="cb1-78"><a></a></span>
-<span id="cb1-79"><a></a>ntotsm <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(ntots)</span>
-<span id="cb1-80"><a></a>nysm <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(nys)</span>
-<span id="cb1-81"><a></a>strsm <span class="ot">&lt;-</span> <span class="fu">paste0</span>(nysm, <span class="st">" / "</span>, ntotsm, <span class="st">" = "</span>, <span class="dv">100</span><span class="sc">*</span>eys, <span class="st">"%"</span>)</span>
-<span id="cb1-82"><a></a></span>
-<span id="cb1-83"><a></a>tab_tots <span class="ot">&lt;-</span> <span class="fu">rbind</span>(ntots, ntotsm)</span>
-<span id="cb1-84"><a></a></span>
-<span id="cb1-85"><a></a></span>
-<span id="cb1-86"><a></a><span class="co"># tab &lt;- df[, list(good=sum(outcome==1), bad=sum(outcome==0), frac_good=mean(outcome)), by=c("risk", "location")]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
 </section>
 <section id="observed-data" class="slide level2 center">
 <h2>Observed data</h2>
 <table class="caption-top">
+<caption>percentage of good neonatal outcomes</caption>
 <thead>
 <tr class="header">
 <th></th>
@@ -711,6 +550,7 @@ Qs:
 <h2>New question: hernia</h2>
 <ul>
 <li class="fragment">for a patient with a hernia, will they be able to walk sooner when recovering at home or when recovering in a hospital?</li>
+<li class="fragment">observed data: location, recovery, bed-rest</li>
 </ul>
 <div class="r-stack">
 <p><img data-src="figs/delivery-locations.png" class="fragment"></p>
@@ -806,7 +646,6 @@ Figure&nbsp;1: Directed Acyclic Graph
 <img data-src="_tikzs/dag-delivery.png" id="fig-dag-delivery1" style="height:40.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dag-delivery1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2
 </figcaption>
 </figure>
 </div>
@@ -829,7 +668,6 @@ Figure&nbsp;2
 <img data-src="_tikzs/dag-hernia.png" id="fig-dag-hernia" style="height:40.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-dag-hernia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;3
 </figcaption>
 </figure>
 </div>
@@ -848,7 +686,7 @@ Figure&nbsp;3
 <li class="fragment">the <em>other variable</em> was:
 <ul>
 <li class="fragment">a <strong>common cause</strong> of the treatment and outcome in the pregnancy example</li>
-<li class="fragment">a <strong>mediator</strong> between the treatment and the outcome in the hernia example,</li>
+<li class="fragment">a <strong>mediator</strong> between the treatment and the outcome in the hernia example</li>
 </ul></li>
 <li class="fragment">using our background knowledge we could see <em>something</em> is different about these examples</li>
 <li class="fragment">next: ground this in causal theory and see implications for analysis</li>
@@ -868,7 +706,6 @@ Figure&nbsp;3
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: flex-start;">
 <ul>
-<li class="fragment">why not?</li>
 <li class="fragment">need probability for estimation</li>
 <li class="fragment">need conditional independence for causal inference</li>
 <li class="fragment">need to understand ‘strength’ of assumptions</li>
@@ -888,13 +725,16 @@ Figure&nbsp;3
 <section id="marginal-joint-and-conditional-probabilites" class="slide level2 center">
 <h2>Marginal, Joint and Conditional probabilites</h2>
 <p>Probability statements about <em>random events</em> <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></p>
-<p><span class="math inline">\(A=1\to\)</span> patient dies; <span class="math inline">\(B=1\to\)</span> has cancer</p>
+<ul>
+<li class="fragment"><span class="math inline">\(A\)</span>: patient diest (<span class="math inline">\(A=1\)</span>)</li>
+<li class="fragment"><span class="math inline">\(B\)</span>: patient has cancer (<span class="math inline">\(B=1\)</span>)</li>
+</ul>
 <div>
 
 </div>
 <div class="quarto-layout-panel" data-layout="[60,40]">
 <div class="quarto-layout-row quarto-layout-valign-center">
-<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<div class="fragment quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -917,6 +757,7 @@ Figure&nbsp;3
 <div class="r-stack quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
 <div class="fragment fade-in-then-out">
 <table class="caption-top">
+<caption>joint probability table</caption>
 <thead>
 <tr class="header">
 <th style="text-align: left;"></th>
@@ -1247,7 +1088,7 @@ Figure&nbsp;3
 </table>
 <p><span class="non-incremental">- <em>marginal</em> <span class="math inline">\(P(A=1) = 15/100\)</span></span></p>
 </div>
-<div class="fragment fade-in-then-out">
+<div class="fragment">
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -1291,6 +1132,21 @@ Figure&nbsp;3
 </table>
 <p><span class="non-incremental">- <em>marginal</em> <span class="math inline">\(P(A=1) = 15/100\)</span></span></p>
 <p><span class="non-incremental">- <em>conditional</em> <span class="math inline">\(P(A=1|B=1) = 5 / 10\)</span></span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>conditional probabilities require dividing by the denominator of the conditioning set</strong></p>
+</div>
+<div class="callout-content">
+<p>This is why we need <em>positivity</em> (as dividing by <span class="math inline">\(0\)</span> is not defined)</p>
 </div>
 </div>
 </div>
@@ -1474,6 +1330,35 @@ Figure&nbsp;3
 <td><span class="math inline">\(P(A|B) = \frac{P(A,B)}{P(B)}\)</span></td>
 <td>conditional is joint over marginal (follows from product rule)</td>
 </tr>
+</tbody>
+</table>
+</section>
+<section id="probability-rules-and-identities-3" class="slide level2 center">
+<h2>Probability rules and identities</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td>marginal is sum over joint</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></td>
+<td>product rule</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(P(A|B) = \frac{P(A,B)}{P(B)}\)</span></td>
+<td>conditional is joint over marginal (follows from product rule)</td>
+</tr>
 <tr class="even">
 <td><span class="math inline">\(P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)\)</span></td>
 <td>total expectation (consequence of marginal vs joint and product rule)</td>
@@ -1524,6 +1409,10 @@ Figure&nbsp;3
 <td><span class="math inline">\(P(A,B|C) = P(A|C)P(B|C)\)</span></td>
 <td>conditional independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span></td>
 </tr>
+<tr class="odd">
+<td><span class="math inline">\(P(A|B,C) = P(A|C)\)</span></td>
+<td>conditional independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span></td>
+</tr>
 </tbody>
 </table>
 <ul>
@@ -1546,12 +1435,13 @@ Figure&nbsp;3
 <ul>
 <li class="fragment">If we learn <span class="math inline">\(A\)</span> from Alice, we can get a good guess about <span class="math inline">\(B\)</span> from Bob</li>
 </ul></li>
-<li class="fragment">If we knew the <span class="math inline">\(C\)</span>, would hearing <span class="math inline">\(A\)</span> give use more information about <span class="math inline">\(B\)</span>?
+<li class="fragment">If we knew <span class="math inline">\(C\)</span>, would hearing <span class="math inline">\(A\)</span> give use more information about <span class="math inline">\(B\)</span>?
 <ul>
 <li class="fragment">No, because all the shared information between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is explained by <span class="math inline">\(C\)</span>, so:</li>
+<li class="fragment"><span class="math inline">\(P(A,B) \neq P(A)P(B)\)</span></li>
 <li class="fragment"><span class="math inline">\(P(A,B|C) = P(A|C)P(B|C)\)</span></li>
 </ul></li>
-<li class="fragment">Variables can be marginally dependent but conditionally independent</li>
+<li class="fragment">Variables can be marginally dependent but conditionally independent (and vice-versa)</li>
 </ul>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -1651,7 +1541,7 @@ Figure&nbsp;4: DAG 1
 <div id="fig-dag-fire1" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-dag-fire1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-fire1.png" height="400">
+<img data-src="_tikzs/dag-fire1.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;5: DAG 1
@@ -1663,7 +1553,7 @@ Figure&nbsp;5: DAG 1
 <div id="fig-dag-fire2" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-dag-fire2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-fire2.png" height="400">
+<img data-src="_tikzs/dag-fire2.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: DAG 2
@@ -1675,7 +1565,7 @@ Figure&nbsp;6: DAG 2
 <div id="fig-dag-fire3" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-dag-fire3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-fire3.png" height="400">
+<img data-src="_tikzs/dag-fire3.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;7: DAG 3
@@ -1686,7 +1576,10 @@ Figure&nbsp;7: DAG 3
 </div>
 </div>
 <ul>
-<li class="fragment"><a href="#/dags-convey-two-types-of-assumptions-1" class="quarto-xref">Figure&nbsp;5</a> says <code>fire</code> can <strong>only</strong> cause <code>wet floor</code> through <code>sprinkler on</code></li>
+<li class="fragment"><a href="#/dags-convey-two-types-of-assumptions-1" class="quarto-xref">Figure&nbsp;5</a> says <code>fire</code> can <strong>only</strong> cause <code>wet floor</code> through <code>sprinkler on</code>
+<ul>
+<li class="fragment">this implies <code>fire</code> is independent of <code>wet floor</code> given <code>sprinkler on</code> and can be tested!</li>
+</ul></li>
 <li class="fragment"><a href="#/dags-convey-two-types-of-assumptions-1" class="quarto-xref">Figure&nbsp;6</a> says <em>there may be other ways through which <code>fire</code> causes <code>wet floor</code></em>
 <ul>
 <li class="fragment"><a href="#/dags-convey-two-types-of-assumptions-1" class="quarto-xref">Figure&nbsp;6</a> is thus a <em>weaker</em> assumption than <a href="#/dags-convey-two-types-of-assumptions-1" class="quarto-xref">Figure&nbsp;5</a></li>
@@ -1697,31 +1590,9 @@ Figure&nbsp;7: DAG 3
 <section id="dags-are-non-parametric" class="slide level2 center">
 <h2>DAGs are ‘non-parametric’</h2>
 <h3 id="they-relay-what-variable-listens-to-what-but-not-in-what-way">They relay what variable ‘listens’ to what, but not in what way</h3>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
-<span id="cb2-2"><a></a>n <span class="ot">=</span> <span class="fl">1e3</span></span>
-<span id="cb2-3"><a></a></span>
-<span id="cb2-4"><a></a>f1 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">+</span> <span class="fl">0.5</span> <span class="sc">*</span> (x <span class="sc">-</span> pi) <span class="sc">+</span> u</span>
-<span id="cb2-5"><a></a>f2 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">+</span> <span class="fu">sin</span>(x) <span class="sc">+</span> u</span>
-<span id="cb2-6"><a></a>f3 <span class="ot">&lt;-</span> <span class="cf">function</span>(t, x, u) t <span class="sc">*</span> <span class="fu">sin</span>(x) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>t) <span class="sc">*</span> <span class="fu">sin</span>(x) <span class="sc">+</span> u</span>
-<span id="cb2-7"><a></a></span>
-<span id="cb2-8"><a></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(</span>
-<span id="cb2-9"><a></a>  <span class="at">x =</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>pi),</span>
-<span id="cb2-10"><a></a>  <span class="at">t =</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>),</span>
-<span id="cb2-11"><a></a>  <span class="at">u =</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, .<span class="dv">1</span>)</span>
-<span id="cb2-12"><a></a>)</span>
-<span id="cb2-13"><a></a></span>
-<span id="cb2-14"><a></a>df[, <span class="st">`</span><span class="at">:=</span><span class="st">`</span>(</span>
-<span id="cb2-15"><a></a>  <span class="at">y1 =</span> <span class="fu">f1</span>(t, x, u),</span>
-<span id="cb2-16"><a></a>  <span class="at">y2 =</span> <span class="fu">f2</span>(t, x, u),</span>
-<span id="cb2-17"><a></a>  <span class="at">y3 =</span> <span class="fu">f3</span>(t, x, u)</span>
-<span id="cb2-18"><a></a>)]</span>
-<span id="cb2-19"><a></a></span>
-<span id="cb2-20"><a></a>dfm <span class="ot">&lt;-</span> <span class="fu">melt</span>(df, <span class="at">measure.vars=</span><span class="fu">c</span>(<span class="st">'y1'</span>, <span class="st">'y2'</span>, <span class="st">'y3'</span>),</span>
-<span id="cb2-21"><a></a>            <span class="at">variable.name=</span><span class="st">"f"</span>, <span class="at">value.name=</span><span class="st">"y"</span>)</span>
-<span id="cb2-22"><a></a></span>
-<span id="cb2-23"><a></a><span class="fu">ggplot</span>(dfm, <span class="fu">aes</span>(<span class="at">x=</span>x, <span class="at">y=</span>y, <span class="at">col=</span><span class="fu">factor</span>(t))) <span class="sc">+</span> </span>
-<span id="cb2-24"><a></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb2-25"><a></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>f)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+
+</div>
 <div class="quarto-layout-panel" data-layout="[30,70]">
 <div class="quarto-layout-row quarto-layout-valign-center">
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -1737,7 +1608,7 @@ Figure&nbsp;7: DAG 3
 <div id="fig-dag-nonparametric" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec1_files/figure-html/fig-dag-nonparametric-1.png" width="672">
+<img data-src="lec1_files/figure-revealjs/fig-dag-nonparametric-1.png" width="960">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;8: Three datasets with the same DAG
@@ -1799,23 +1670,32 @@ Figure&nbsp;9: observational data
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<div class="column quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
 <p><span class="math display">\[\begin{align}
-    P(Y,T,Z,W) &amp;= P(Y|T,Z,W)P(T,Z,W) \\
-               &amp;\class{fragment}{= P(Y|T,Z)P(T,Z,W)} \\
-               &amp;\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z,W)} \\
-               &amp;\class{fragment}{= P(Y|T,Z)P(T|Z,W)P(Z)P(W)}
+    P(Y,T,Z,W) &amp;=^1 P(Y|T,Z,W)P(T,Z,W) \\
+               &amp;=^2 P(Y|T,Z)P(T,Z,W) \\
+               &amp;=^3 P(Y|T,Z)P(T|Z,W)P(Z,W) \\
+               &amp;=^4 P(Y|T,Z)P(T|Z,W)P(Z)P(W)
 \end{align}\]</span></p>
+<div class="non-incremental">
+<ol type="1">
+<li class="fragment">product-rule</li>
+<li class="fragment"><span class="math inline">\(Y\)</span> independent of <span class="math inline">\(W\)</span> given <span class="math inline">\(T,Z\)</span> per DAG</li>
+<li class="fragment">product-rule</li>
+<li class="fragment"><span class="math inline">\(Z,W\)</span> marginally independent per DAG</li>
+</ol>
 </div>
+</div></div>
 </div>
-</div>
-<p>If this looks complicated: just follow the arrows</p>
+<ul>
+<li class="fragment">If this looks complicated: just follow the arrows</li>
+</ul>
 </section>
 <section id="sec-def-intervention" class="slide level2 center">
 <h2>The DAG definition of an intervention</h2>
 <p>assume this is our DAG for a situation and we want to learn the effect <span class="math inline">\(T\)</span> has on <span class="math inline">\(Y\)</span></p>
 <ul>
-<li class="fragment">this is denoted <span class="math inline">\(P(Y|\text{do}(T))\)</span></li>
+<li class="fragment">this is denoted <span class="math inline">\(P(Y|\text{do}(T))\)</span>: a hypothetical intervention in the system</li>
 <li class="fragment">in the graph, <span class="fg">intervening</span> on variable <span class="math inline">\(T\)</span> means removing all incoming arrows</li>
 <li class="fragment">this assumes such a <em>modular</em> intervention is possible: i.e.&nbsp;leave everything else unaltered</li>
 </ul>
@@ -1828,7 +1708,7 @@ Figure&nbsp;9: observational data
 <div id="fig-obs" class="quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-obs.png" style="width:50.0%">
+<img data-src="_tikzs/dag-obs.png" height="400">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;10: observational data
@@ -1840,7 +1720,7 @@ Figure&nbsp;10: observational data
 <div id="fig-intervened" class="fragment quarto-float quarto-figure quarto-figure-center">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-intervened.png" class="fragment" style="width:50.0%">
+<img data-src="_tikzs/dag-intervened.png" class="fragment" height="400">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;11: intervened DAG
@@ -1852,6 +1732,7 @@ Figure&nbsp;11: intervened DAG
 </div>
 <ul>
 <li class="fragment">which means <span class="math inline">\(T\)</span> does not <em>listen</em> to other variables anymore, but is set at a particular value, like in an experiment</li>
+<li class="fragment">imagining this scenario requires a well-defined treatment variable (akin to consistency)</li>
 </ul>
 </section>
 <section id="intervention-as-graph-surgery---changed-distribution" class="slide level2 center">
@@ -1946,7 +1827,7 @@ Figure&nbsp;15: intervened DAG
 </div>
 <ul>
 <li class="fragment">in <span class="math inline">\(P_{\text{obs}}\)</span>, <span class="math inline">\(P(Z|T) \color{red}{\neq} P(Z)\)</span></li>
-<li class="fragment">in <span class="math inline">\(P_{\text{int}}\)</span>, <span class="math inline">\(P(Z|T) \color{green}{\neq} P(Z)\)</span></li>
+<li class="fragment">in <span class="math inline">\(P_{\text{int}}\)</span>, <span class="math inline">\(P(Z|T) \color{green}{=} P(Z)\)</span></li>
 <li class="fragment">thereby <span class="math inline">\(P_{\text{obs}}(Y|T) \neq P_{\text{int}}(P(Y|T)) = P(Y|\text{do}(T))\)</span></li>
 <li class="fragment"><strong>seeing is not doing</strong></li>
 <li class="fragment"><strong>looking at <a href="#/intervention-as-graph-surgery---changed-distribution-1" class="quarto-xref">Equation&nbsp;1</a>, we can compute these from <span class="math inline">\(P_{\text{obs}}\)</span>!</strong> (this is what is called an <em>estimand</em>)</li>
@@ -2024,7 +1905,7 @@ P(\text{outcome}|\text{do}(\text{hospital})) &amp;= 95 * 0.74 + 80 * 0.26 = 91.1
 \end{align}\]</span></p>
 </div>
 <ul>
-<li class="fragment"><strong>conclusion</strong>: sending all deliveries to the hospital leads to better outcomes</li>
+<li class="fragment"><strong>conclusion</strong>: sending all deliveries to the hospital leads to better neonatal outcomes</li>
 </ul>
 </section>
 <section id="back-to-example-2" class="slide level2 center">
@@ -2080,7 +1961,7 @@ Figure&nbsp;17: intervened DAG: what we want to know
 </div><div class="column" style="width:80%;">
 <ul>
 <li class="fragment">causal inference frameworks provide a language to express assumptions</li>
-<li class="fragment">based on these assumptions, the framework tell us whether such an inference is possible
+<li class="fragment">based on these assumptions, the framework tells us whether such an inference is possible
 <ul>
 <li class="fragment">this is often referred to as <em>is the effect identified</em></li>
 </ul></li>
@@ -2188,27 +2069,9 @@ Figure&nbsp;20: collider
 </section>
 <section id="collider-bias---tinder" class="slide level2 center">
 <h2>Collider bias - Tinder</h2>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>intelligent <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
-<span id="cb3-2"><a></a>attractive <span class="ot">=</span> <span class="fu">runif</span>(n)</span>
-<span id="cb3-3"><a></a>s <span class="ot">=</span> intelligent <span class="sc">+</span> attractive <span class="sc">&gt;</span> <span class="fl">1.</span></span>
-<span id="cb3-4"><a></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(intelligent, attractive, s)</span>
-<span id="cb3-5"><a></a>df<span class="sc">$</span>s <span class="ot">&lt;-</span> <span class="fu">factor</span>(df<span class="sc">$</span>s)</span>
-<span id="cb3-6"><a></a></span>
-<span id="cb3-7"><a></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x=</span>intelligent, <span class="at">y=</span>attractive)) <span class="sc">+</span></span>
-<span id="cb3-8"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">alpha=</span>s, <span class="at">col=</span>s)) <span class="sc">+</span> </span>
-<span id="cb3-9"><a></a>  <span class="co"># stat_smooth(method='lm', col='black', se=F, formula=y~x) +</span></span>
-<span id="cb3-10"><a></a>  <span class="co"># stat_smooth(method='lm', se=F, formula=y~x, col='black') +</span></span>
-<span id="cb3-11"><a></a>  <span class="fu">stat_smooth</span>(<span class="at">data=</span>df[df<span class="sc">$</span>s<span class="sc">==</span>T,], <span class="at">method=</span><span class="st">'lm'</span>, <span class="at">col=</span><span class="st">'darkred'</span>, <span class="at">formula=</span>y<span class="sc">~</span>x, <span class="at">se=</span>F) <span class="sc">+</span> </span>
-<span id="cb3-12"><a></a>  <span class="fu">scale_color_manual</span>(</span>
-<span id="cb3-13"><a></a>    <span class="at">breaks=</span><span class="fu">c</span>(F,T), <span class="at">values=</span><span class="fu">c</span>(<span class="st">'gray'</span>, <span class="st">'darkgreen'</span>),</span>
-<span id="cb3-14"><a></a>    <span class="at">labels=</span><span class="fu">c</span>(<span class="st">'on tinder'</span>, <span class="st">'not on tinder'</span>),</span>
-<span id="cb3-15"><a></a>    <span class="at">guide=</span><span class="fu">guide_legend</span>(</span>
-<span id="cb3-16"><a></a>      <span class="at">title=</span><span class="st">''</span></span>
-<span id="cb3-17"><a></a>      )</span>
-<span id="cb3-18"><a></a>    ) <span class="sc">+</span> </span>
-<span id="cb3-19"><a></a>  <span class="fu">scale_alpha_manual</span>(<span class="at">breaks=</span><span class="fu">c</span>(F,T), <span class="at">values=</span><span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.2</span>), <span class="at">guide=</span><span class="cn">NULL</span>) <span class="sc">+</span> </span>
-<span id="cb3-20"><a></a>  <span class="fu">theme</span>(<span class="at">axis.ticks=</span><span class="fu">element_blank</span>(), <span class="at">axis.text=</span><span class="fu">element_blank</span>()) <span class="sc">+</span> </span>
-<span id="cb3-21"><a></a>  <span class="fu">coord_equal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div>
+
+</div>
 <div class="quarto-layout-panel" data-layout="[30,70]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -2241,10 +2104,9 @@ Figure&nbsp;21: <span class="math display">\[\begin{align}
 <div id="fig-tinder" class="quarto-float quarto-figure quarto-figure-center" width="1152">
 <figure class="quarto-float quarto-float-fig">
 <div aria-describedby="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec1_files/figure-html/fig-tinder-1.png" id="fig-tinder" width="1152">
+<img data-src="lec1_files/figure-revealjs/fig-tinder-1.png" id="fig-tinder" width="1152">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;22
 </figcaption>
 </figure>
 </div>
@@ -2299,7 +2161,7 @@ Figure&nbsp;22
 <p><strong>Definition 3.3.1 (Back-Door) (for pairs of variables)</strong></p>
 <p>A set of variables <span class="math inline">\(Z\)</span> satisfies the <em>back-door</em> criterion relative to an ordered pair of variables <span class="math inline">\((X,Y)\)</span> in a DAG if:</p>
 <ol type="1">
-<li class="fragment">no node in <span class="math inline">\(Z\)</span> is a descendant of <span class="math inline">\(X\)</span> <em>(e.g.&nbsp;mediatiors)</em></li>
+<li class="fragment">no node in <span class="math inline">\(Z\)</span> is a descendant of <span class="math inline">\(X\)</span> <em>(e.g.&nbsp;mediators)</em></li>
 <li class="fragment"><span class="math inline">\(Z\)</span> blocks every path between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that contains an arrow into <span class="math inline">\(X\)</span></li>
 </ol>
 <div class="fragment">
@@ -2314,6 +2176,11 @@ Figure&nbsp;22
 <li class="fragment">Yes! When computing the effect of hospital deliveries on neonatal outcomes <a href="#/intervention-as-graph-surgery---changed-distribution-1" class="quarto-xref">Equation&nbsp;1</a></li>
 <li class="fragment">DAGs tell us what to adjust for</li>
 <li class="fragment">automatic algorithms tell use whether an estimand exists and what it is</li>
+<li class="fragment">several point-and-click websites for making DAGs that implement these algorithms:
+<ul>
+<li class="fragment"><a href="https://dagitty.net">dagitty.net</a></li>
+<li class="fragment"><a href="https://causalfusion.net">causalfusion.net</a></li>
+</ul></li>
 </ul>
 </section>
 <section id="how-about-positivity" class="slide level2 center">
@@ -2332,7 +2199,7 @@ Figure&nbsp;22
 <div class="quarto-auto-generated-content">
 <p><img src="umcu_blue.png" class="slide-logo"></p>
 <div class="footer footer-default">
-
+<p>Wouter van Amsterdam — WvanAmsterdam — vanamsterdam.github.io</p>
 </div>
 </div>
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
@@ -2554,6 +2421,44 @@ Pearl, Judea. 2009. <em>Causality</em>. Cambridge University Press.
         ]
       });
     </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

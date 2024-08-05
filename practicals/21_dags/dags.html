@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.56">
+<meta name="generator" content="quarto-1.5.54">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -60,6 +60,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
@@ -75,11 +76,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
-  "location": "sidebar",
+  "location": "navbar",
   "copy-button": false,
   "collapse-after": 3,
-  "panel-placement": "start",
-  "type": "textbox",
+  "panel-placement": "end",
+  "type": "overlay",
   "limit": 50,
   "keyboard-shortcut": [
     "f",
@@ -137,9 +138,34 @@ window.Quarto = {
 <link rel="stylesheet" href="../../styles.css">
 </head>
 
-<body>
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Causal Inference Summerschool</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
 <!-- content -->
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
@@ -169,7 +195,7 @@ window.Quarto = {
     </div>
     
   
-  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -177,7 +203,7 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#exercise-making-a-dag-an-specifying-the-correct-adjustment-set" id="toc-exercise-making-a-dag-an-specifying-the-correct-adjustment-set" class="nav-link active" data-scroll-target="#exercise-making-a-dag-an-specifying-the-correct-adjustment-set"><span class="header-section-number">1</span> Exercise: making a DAG an specifying the correct adjustment set</a>
+  <li><a href="#exercise-making-a-dag-and-specifying-the-correct-adjustment-set" id="toc-exercise-making-a-dag-and-specifying-the-correct-adjustment-set" class="nav-link active" data-scroll-target="#exercise-making-a-dag-and-specifying-the-correct-adjustment-set"><span class="header-section-number">1</span> Exercise: making a DAG and specifying the correct adjustment set</a>
   <ul class="collapse">
   <li><a href="#birthweight-data" id="toc-birthweight-data" class="nav-link" data-scroll-target="#birthweight-data"><span class="header-section-number">1.1</span> Birthweight data:</a></li>
   <li><a href="#create-a-dag" id="toc-create-a-dag" class="nav-link" data-scroll-target="#create-a-dag"><span class="header-section-number">1.2</span> Create a DAG</a>
@@ -186,27 +212,26 @@ window.Quarto = {
   <li><a href="#are-there-variables-that-may-be-missing-in-the-data-but-are-relevant" id="toc-are-there-variables-that-may-be-missing-in-the-data-but-are-relevant" class="nav-link" data-scroll-target="#are-there-variables-that-may-be-missing-in-the-data-but-are-relevant"><span class="header-section-number">1.2.2</span> Are there variables that may be missing in the data but are relevant?</a></li>
   <li><a href="#with-your-dag-can-the-causal-effect-be-estimated" id="toc-with-your-dag-can-the-causal-effect-be-estimated" class="nav-link" data-scroll-target="#with-your-dag-can-the-causal-effect-be-estimated"><span class="header-section-number">1.2.3</span> With your DAG, can the causal effect be estimated?</a></li>
   </ul></li>
-  <li><a href="#do-some-analyses" id="toc-do-some-analyses" class="nav-link" data-scroll-target="#do-some-analyses"><span class="header-section-number">1.3</span> Do some analyses</a></li>
+  <li><a href="#analyse-the-data" id="toc-analyse-the-data" class="nav-link" data-scroll-target="#analyse-the-data"><span class="header-section-number">1.3</span> Analyse the data</a></li>
   <li><a href="#assume-a-dag" id="toc-assume-a-dag" class="nav-link" data-scroll-target="#assume-a-dag"><span class="header-section-number">1.4</span> Assume a DAG</a></li>
   </ul></li>
-  <li><a href="#confounder-adjustment-with-daggity" id="toc-confounder-adjustment-with-daggity" class="nav-link" data-scroll-target="#confounder-adjustment-with-daggity"><span class="header-section-number">2</span> Confounder adjustment with Daggity</a>
+  <li><a href="#dag-assumptions-conditional-independencies-and-strength-of-assumptions" id="toc-dag-assumptions-conditional-independencies-and-strength-of-assumptions" class="nav-link" data-scroll-target="#dag-assumptions-conditional-independencies-and-strength-of-assumptions"><span class="header-section-number">2</span> DAG assumptions: conditional independencies and strength of assumptions</a>
   <ul class="collapse">
-  <li><a href="#step-1-installing-and-loading-required-packages" id="toc-step-1-installing-and-loading-required-packages" class="nav-link" data-scroll-target="#step-1-installing-and-loading-required-packages"><span class="header-section-number">2.0.1</span> Step 1: Installing and Loading Required Packages</a></li>
-  <li><a href="#step-2-creating-and-visualizing-a-dag" id="toc-step-2-creating-and-visualizing-a-dag" class="nav-link" data-scroll-target="#step-2-creating-and-visualizing-a-dag"><span class="header-section-number">2.1</span> Step 2: Creating and Visualizing a DAG</a>
+  <li><a href="#non-coding-questions" id="toc-non-coding-questions" class="nav-link" data-scroll-target="#non-coding-questions"><span class="header-section-number">2.1</span> Non-coding questions</a>
   <ul class="collapse">
-  <li><a href="#step-3-simulating-data" id="toc-step-3-simulating-data" class="nav-link" data-scroll-target="#step-3-simulating-data"><span class="header-section-number">2.1.1</span> Step 3: Simulating Data</a></li>
-  <li><a href="#step-4-analyzing-the-data" id="toc-step-4-analyzing-the-data" class="nav-link" data-scroll-target="#step-4-analyzing-the-data"><span class="header-section-number">2.1.2</span> Step 4: Analyzing the Data</a></li>
-  <li><a href="#step-5-causal-inference-using-dags" id="toc-step-5-causal-inference-using-dags" class="nav-link" data-scroll-target="#step-5-causal-inference-using-dags"><span class="header-section-number">2.1.3</span> Step 5: Causal Inference Using DAGs</a></li>
-  <li><a href="#step-6-estimating-the-causal-effect" id="toc-step-6-estimating-the-causal-effect" class="nav-link" data-scroll-target="#step-6-estimating-the-causal-effect"><span class="header-section-number">2.1.4</span> Step 6: Estimating the Causal Effect</a></li>
-  <li><a href="#step-7-drawing-conclusions" id="toc-step-7-drawing-conclusions" class="nav-link" data-scroll-target="#step-7-drawing-conclusions"><span class="header-section-number">2.1.5</span> Step 7: Drawing Conclusions</a></li>
+  <li><a href="#strength-of-assumptions" id="toc-strength-of-assumptions" class="nav-link" data-scroll-target="#strength-of-assumptions"><span class="header-section-number">2.1.1</span> Strength of Assumptions</a></li>
+  <li><a href="#rcts" id="toc-rcts" class="nav-link" data-scroll-target="#rcts"><span class="header-section-number">2.1.2</span> RCTs</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#dag-assumptions-conditional-independencies-and-strength-of-assumptions" id="toc-dag-assumptions-conditional-independencies-and-strength-of-assumptions" class="nav-link" data-scroll-target="#dag-assumptions-conditional-independencies-and-strength-of-assumptions"><span class="header-section-number">3</span> DAG assumptions: conditional independencies and strength of assumptions</a>
+  <li><a href="#bonus-confounder-adjustment-with-daggity" id="toc-bonus-confounder-adjustment-with-daggity" class="nav-link" data-scroll-target="#bonus-confounder-adjustment-with-daggity"><span class="header-section-number">3</span> Bonus: Confounder adjustment with Daggity</a>
   <ul class="collapse">
-  <li><a href="#non-coding-questions" id="toc-non-coding-questions" class="nav-link" data-scroll-target="#non-coding-questions"><span class="header-section-number">3.1</span> Non-coding questions</a>
+  <li><a href="#creating-and-visualizing-a-dag" id="toc-creating-and-visualizing-a-dag" class="nav-link" data-scroll-target="#creating-and-visualizing-a-dag"><span class="header-section-number">3.1</span> Creating and Visualizing a DAG</a>
   <ul class="collapse">
-  <li><a href="#strength-of-assumptions" id="toc-strength-of-assumptions" class="nav-link" data-scroll-target="#strength-of-assumptions"><span class="header-section-number">3.1.1</span> Strength of Assumptions</a></li>
-  <li><a href="#rcts" id="toc-rcts" class="nav-link" data-scroll-target="#rcts"><span class="header-section-number">3.1.2</span> RCTs</a></li>
+  <li><a href="#simulating-data" id="toc-simulating-data" class="nav-link" data-scroll-target="#simulating-data"><span class="header-section-number">3.1.1</span> Simulating Data</a></li>
+  <li><a href="#analyzing-the-data" id="toc-analyzing-the-data" class="nav-link" data-scroll-target="#analyzing-the-data"><span class="header-section-number">3.1.2</span> Analyzing the Data</a></li>
+  <li><a href="#causal-inference-using-dags" id="toc-causal-inference-using-dags" class="nav-link" data-scroll-target="#causal-inference-using-dags"><span class="header-section-number">3.1.3</span> Causal Inference Using DAGs</a></li>
+  <li><a href="#estimating-the-causal-effect" id="toc-estimating-the-causal-effect" class="nav-link" data-scroll-target="#estimating-the-causal-effect"><span class="header-section-number">3.1.4</span> Estimating the Causal Effect</a></li>
+  <li><a href="#drawing-conclusions" id="toc-drawing-conclusions" class="nav-link" data-scroll-target="#drawing-conclusions"><span class="header-section-number">3.1.5</span> Drawing Conclusions</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -231,48 +256,25 @@ window.Quarto = {
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(pkg, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">install.packages</span>(pkg, <span class="at">repos=</span>cran_repo)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing package into '/Users/oryan/Library/R/arm64/4.4/library'
-(as 'lib' is unspecified)</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-The downloaded binary packages are in
-    /var/folders/hp/k66j516s6r51wvhj_6q25n500000gq/T//Rtmp2bPzAJ/downloaded_packages</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing package into '/Users/oryan/Library/R/arm64/4.4/library'
-(as 'lib' is unspecified)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>also installing the dependency 'insight'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-The downloaded binary packages are in
-    /var/folders/hp/k66j516s6r51wvhj_6q25n500000gq/T//Rtmp2bPzAJ/downloaded_packages</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Load packages</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(purrr)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(broom)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dagitty)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(marginaleffects)</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(data.table)</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"practicals"</span>, <span class="st">"21_dags"</span>, <span class="st">"_makedatas.R"</span>))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>datas <span class="ot">&lt;-</span> <span class="fu">make_datas</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>({</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Load packages</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(purrr)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(broom)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dagitty)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(dplyr)</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(marginaleffects)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">library</span>(data.table)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(here<span class="sc">::</span><span class="fu">here</span>(<span class="st">"practicals"</span>, <span class="st">"21_dags"</span>, <span class="st">"_makedatas.R"</span>))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>datas <span class="ot">&lt;-</span> <span class="fu">make_datas</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<section id="exercise-making-a-dag-an-specifying-the-correct-adjustment-set" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Exercise: making a DAG an specifying the correct adjustment set</h1>
+<section id="exercise-making-a-dag-and-specifying-the-correct-adjustment-set" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Exercise: making a DAG and specifying the correct adjustment set</h1>
 <p>In this example we’ll practice creating a DAG, and we’ll see how using the wrong DAG leads to the wrong analysis and wrong answers.</p>
 <p>Our question is “what is the effect of maternal smoking during pregnancy on neonatal death within 3 months” (expressed as a difference in percentage risk for smoking / no smoking)</p>
 <section id="birthweight-data" class="level2" data-number="1.1">
@@ -282,14 +284,14 @@ The downloaded binary packages are in
 <ul>
 <li><code>ageover35</code>: Indicator mother’s age over 35 years (0 = age &lt;= 35, 1 = age &gt;35)</li>
 <li><code>smoking</code>: Smoking status during pregnancy (0 = no, 1 = yes)</li>
-<li><code>lbwt</code>: Los birth weight in grams (&lt;2500grams)</li>
+<li><code>lbwt</code>: Low birth weight (0 = &gt;=2500grams, 1 = &lt; 2500grams)</li>
 <li><code>death</code>: Neonatal death within 3 months (0 = no, 1 = yes)</li>
 </ul>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>birthw <span class="ot">&lt;-</span> datas[[<span class="st">"birthw"</span>]]</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(birthw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birthw <span class="ot">&lt;-</span> datas[[<span class="st">"birthw"</span>]]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(birthw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div data-pagedtable="false">
@@ -300,7 +302,6 @@ The downloaded binary packages are in
 </div>
 </div>
 <p>The data can alternatively be downloaded here: <a href="datas/birthw.csv">birthw.csv</a></p>
-<p>:::</p>
 </section>
 <section id="create-a-dag" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="create-a-dag"><span class="header-section-number">1.2</span> Create a DAG</h2>
@@ -317,19 +318,23 @@ The downloaded binary packages are in
 <p>Use e.g.&nbsp;<a href="https://dagitty.net">dagitty.net</a> to create your DAG and see if there are ways to estimate the causal effect.</p>
 </section>
 </section>
-<section id="do-some-analyses" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="do-some-analyses"><span class="header-section-number">1.3</span> Do some analyses</h2>
-<p>Let’s try some analyses.</p>
-<p>To translate a logistic regression model into differences in probabilities we use the <code>avg_comparisons</code> function from the <code>marginaleffects</code> package.</p>
+<section id="analyse-the-data" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="analyse-the-data"><span class="header-section-number">1.3</span> Analyse the data</h2>
+<p>Let’s try some analyses on the data. We’ll fit different logistic regression models with different covariates (independent variables). Specifically, fit a model with:</p>
+<ol type="1">
+<li>all observed covariates (<code>fit_allobs</code>)</li>
+<li>only the somking variable (<code>fit_marginal</code>)</li>
+</ol>
+<p>These models give us estimates of (log) odds ratios for the independent variables. To translate a logistic regression model into differences in probabilities we use the <code>avg_comparisons</code> function from the <code>marginaleffects</code> package.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(marginaleffects)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fit_allobs <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>., <span class="at">data=</span>birthw, <span class="at">family=</span><span class="st">"binomial"</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>fit_marginal <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>smoking, <span class="at">data=</span>birthw, <span class="at">family=</span><span class="st">"binomial"</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit_allobs, <span class="at">variables=</span><span class="st">"smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">require</span>(marginaleffects)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fit_allobs <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>., <span class="at">data=</span>birthw, <span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fit_marginal <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>smoking, <span class="at">data=</span>birthw, <span class="at">family=</span><span class="st">"binomial"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit_allobs, <span class="at">variables=</span><span class="st">"smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -343,7 +348,7 @@ Type:  response </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit_marginal, <span class="at">variables=</span><span class="st">"smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(fit_marginal, <span class="at">variables=</span><span class="st">"smoking"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -354,7 +359,7 @@ Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.
 Type:  response </code></pre>
 </div>
 </div>
-<p>These effect estimates are quite different. How could this be explained? Which effect estimate do you think is more credible?</p>
+<p>The effect estimates of <code>fit_allobs</code> and <code>fit_marginal</code> are quite different, they have different signs. How could this be explained? Which effect estimate do you think is more credible?</p>
 </section>
 <section id="assume-a-dag" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="assume-a-dag"><span class="header-section-number">1.4</span> Assume a DAG</h2>
@@ -390,7 +395,7 @@ Figure&nbsp;1: DAG for smoking and death
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-How does this DAG change the analysis?
+How does this DAG change the analysis? (tip: enter it in dagitty.net)
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -427,7 +432,7 @@ Figure&nbsp;2: birthweight DAG 2
 </div>
 <p>Given the DAG in <a href="#fig-dagsmoke2" class="quarto-xref">Figure&nbsp;2</a>, see the following regression model</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>smoking<span class="sc">+</span>ht<span class="sc">+</span>ageover35, <span class="at">data=</span>birthw, <span class="at">family=</span>binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(death<span class="sc">~</span>smoking<span class="sc">+</span>ht<span class="sc">+</span>ageover35, <span class="at">data=</span>birthw, <span class="at">family=</span>binomial)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-simple callout-note no-icon callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
@@ -447,202 +452,8 @@ Assuming no parametric form bias, will this lead to an unbiased causal effect es
 </div>
 </section>
 </section>
-<section id="confounder-adjustment-with-daggity" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Confounder adjustment with Daggity</h1>
-<p>In this exercise we will use the dagitty package for creating and manipulating DAGs.</p>
-<section id="step-1-installing-and-loading-required-packages" class="level3" data-number="2.0.1">
-<h3 data-number="2.0.1" class="anchored" data-anchor-id="step-1-installing-and-loading-required-packages"><span class="header-section-number">2.0.1</span> Step 1: Installing and Loading Required Packages</h3>
-</section>
-<section id="step-2-creating-and-visualizing-a-dag" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="step-2-creating-and-visualizing-a-dag"><span class="header-section-number">2.1</span> Step 2: Creating and Visualizing a DAG</h2>
-<p>Let’s create a DAG for the pregnancy example:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the DAG</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag {</span></span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="st">  pregnancy_risk -&gt; hospital_delivery</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="st">  pregnancy_risk -&gt; neonatal_outcome</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="st">  hospital_delivery -&gt; neonatal_outcome</span></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span>)</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the DAG</span></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Plot coordinates for graph not supplied! Generating coordinates, see ?coordinates for how to set your own.</code></pre>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="dags_files/figure-html/makedag-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>This DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.</p>
-<section id="step-3-simulating-data" class="level3" data-number="2.1.1">
-<h3 data-number="2.1.1" class="anchored" data-anchor-id="step-3-simulating-data"><span class="header-section-number">2.1.1</span> Step 3: Simulating Data</h3>
-<p>We will simulate data based on the DAG structure:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate variables</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>pregnancy_risk <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span>)  <span class="co"># 30% high risk</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>hospital_delivery <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> pregnancy_risk)  <span class="co"># 50% baseline + 30% if high risk</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>neonatal_outcome <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.8</span> <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> pregnancy_risk <span class="sc">+</span> <span class="fl">0.15</span> <span class="sc">*</span> hospital_delivery)  <span class="co"># outcome affected by both</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame</span></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(pregnancy_risk, hospital_delivery, neonatal_outcome)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-</div>
-</section>
-<section id="step-4-analyzing-the-data" class="level3" data-number="2.1.2">
-<h3 data-number="2.1.2" class="anchored" data-anchor-id="step-4-analyzing-the-data"><span class="header-section-number">2.1.2</span> Step 4: Analyzing the Data</h3>
-<p>Check the relationships in the data:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code> pregnancy_risk  hospital_delivery neonatal_outcome
- Min.   :0.000   Min.   :0.000     Min.   :0.000   
- 1st Qu.:0.000   1st Qu.:0.000     1st Qu.:1.000   
- Median :0.000   Median :1.000     Median :1.000   
- Mean   :0.295   Mean   :0.586     Mean   :0.806   
- 3rd Qu.:1.000   3rd Qu.:1.000     3rd Qu.:1.000   
- Max.   :1.000   Max.   :1.000     Max.   :1.000   </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(hospital_delivery), <span class="at">fill =</span> <span class="fu">factor</span>(neonatal_outcome))) <span class="sc">+</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span> pregnancy_risk) <span class="sc">+</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hospital Delivery"</span>, <span class="at">y =</span> <span class="st">"Proportion"</span>, <span class="at">fill =</span> <span class="st">"Neonatal Outcome"</span>) <span class="sc">+</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="dags_files/figure-html/checks-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="step-5-causal-inference-using-dags" class="level3" data-number="2.1.3">
-<h3 data-number="2.1.3" class="anchored" data-anchor-id="step-5-causal-inference-using-dags"><span class="header-section-number">2.1.3</span> Step 5: Causal Inference Using DAGs</h3>
-<p>Let’s use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify adjustment set using DAGitty</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"hospital_delivery"</span>, <span class="at">outcome =</span> <span class="st">"neonatal_outcome"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{ pregnancy_risk }</code></pre>
-</div>
-</div>
-<p>The output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.</p>
-</section>
-<section id="step-6-estimating-the-causal-effect" class="level3" data-number="2.1.4">
-<h3 data-number="2.1.4" class="anchored" data-anchor-id="step-6-estimating-the-causal-effect"><span class="header-section-number">2.1.4</span> Step 6: Estimating the Causal Effect</h3>
-<p>Estimate the causal effect using a regression model:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a regression model</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(neonatal_outcome <span class="sc">~</span> hospital_delivery <span class="sc">+</span> pregnancy_risk, <span class="at">family =</span> binomial, <span class="at">data =</span> df)</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the model</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-glm(formula = neonatal_outcome ~ hospital_delivery + pregnancy_risk, 
-    family = binomial, data = df)
-
-Coefficients:
-                  Estimate Std. Error z value Pr(&gt;|z|)    
-(Intercept)         1.7830     0.1407  12.675  &lt; 2e-16 ***
-hospital_delivery   1.0073     0.1998   5.042 4.61e-07 ***
-pregnancy_risk     -2.2336     0.1987 -11.239  &lt; 2e-16 ***
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-(Dispersion parameter for binomial family taken to be 1)
-
-    Null deviance: 983.94  on 999  degrees of freedom
-Residual deviance: 834.27  on 997  degrees of freedom
-AIC: 840.27
-
-Number of Fisher Scoring iterations: 5</code></pre>
-</div>
-</div>
-</section>
-<section id="step-7-drawing-conclusions" class="level3" data-number="2.1.5">
-<h3 data-number="2.1.5" class="anchored" data-anchor-id="step-7-drawing-conclusions"><span class="header-section-number">2.1.5</span> Step 7: Drawing Conclusions</h3>
-<p>Interpret the model’s output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.</p>
-<div class="callout callout-style-simple callout-note no-icon callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Is this odds ratio a correct estimate of the causal effect?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>answer: no</p>
-<p>hint: compare the structural equation used in generating the data with the statistical analysis</p>
-<p>This linear probability structural equation is not well-approximated by a linear logistic model (i.e.&nbsp;without interaction terms). We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using <code>avg_comparisons</code> from package <code>marginaleffects</code>.</p>
-<p>The correct estimate is given by:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(model, <span class="at">variables=</span><span class="st">"hospital_delivery"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S
- hospital_delivery mean(1) - mean(0)    0.133     0.0253 5.26   &lt;0.001 22.7
-  2.5 % 97.5 %
- 0.0837  0.183
-
-Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
-Type:  response </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(neonatal_outcome<span class="sc">~</span>hospital_delivery<span class="sc">*</span>pregnancy_risk, <span class="at">family=</span>binomial, <span class="at">data=</span>df)</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(full_model, <span class="at">variables=</span><span class="st">"hospital_delivery"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S
- hospital_delivery mean(1) - mean(0)    0.121     0.0261 4.63   &lt;0.001 18.0
-  2.5 % 97.5 %
- 0.0696  0.172
-
-Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
-Type:  response </code></pre>
-</div>
-</div>
-</div>
-</div>
-</section>
-</section>
-</section>
-<section id="dag-assumptions-conditional-independencies-and-strength-of-assumptions" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> DAG assumptions: conditional independencies and strength of assumptions</h1>
+<section id="dag-assumptions-conditional-independencies-and-strength-of-assumptions" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> DAG assumptions: conditional independencies and strength of assumptions</h1>
 <p>DAGs imply (conditional) indepencies. These can be checked with data.</p>
 <p>See the DAGs in <a href="#fig-dags1" class="quarto-xref">Figure&nbsp;3</a>.</p>
 <div id="fig-dags1" class="quarto-layout-panel">
@@ -693,7 +504,7 @@ Figure&nbsp;3
 </figure>
 </div>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -702,7 +513,7 @@ What independencies are implied by the DAGs?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>answer:</p>
 <ul>
@@ -727,20 +538,20 @@ Assume linear models with Gaussian error terms for all variables, how would you 
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df1))</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df1))</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df2))</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df2))</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df3))</span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df1))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df1))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df2))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df2))</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>df3))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>df3))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </div>
 </div>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -749,7 +560,7 @@ The datasets are downloadable here:
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <table class="caption-top table">
 <thead>
@@ -780,21 +591,21 @@ The datasets are downloadable here:
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dfnames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"df1"</span>, <span class="st">"df2"</span>, <span class="st">"df3"</span>)</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>fits_marginal    <span class="ot">&lt;-</span> <span class="fu">map</span>(dfnames, <span class="cf">function</span>(dfname) <span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>datas[[dfname]]))</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>fits_conditional <span class="ot">&lt;-</span> <span class="fu">map</span>(dfnames, <span class="cf">function</span>(dfname) <span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>datas[[dfname]]))</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fits_marginal) <span class="ot">&lt;-</span> dfnames</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fits_conditional) <span class="ot">&lt;-</span> dfnames</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>results_marginal <span class="ot">&lt;-</span> <span class="fu">map</span>(fits_marginal, broom<span class="sc">::</span>tidy) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>(<span class="at">idcol=</span><span class="st">"dataset"</span>)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>results_conditional <span class="ot">&lt;-</span> <span class="fu">map</span>(fits_conditional, broom<span class="sc">::</span>tidy) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>(<span class="at">idcol=</span><span class="st">"dataset"</span>)</span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> results_marginal,</span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conditional =</span> results_conditional</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>), <span class="at">idcol=</span><span class="st">"analysis"</span>)</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>results_df[, rformula<span class="sc">:</span><span class="er">=</span><span class="fu">ifelse</span>(analysis<span class="sc">==</span><span class="st">"marginal"</span>, <span class="st">"lm(y~x)"</span>, <span class="st">"lm(y~x+z)"</span>)]</span>
-<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a><span class="fu">dcast</span>(results_df[term<span class="sc">%in%</span><span class="fu">c</span>(<span class="st">"x"</span>)], dataset <span class="sc">~</span> rformula, <span class="at">value.var=</span><span class="st">"p.value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dfnames <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"df1"</span>, <span class="st">"df2"</span>, <span class="st">"df3"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fits_marginal    <span class="ot">&lt;-</span> <span class="fu">map</span>(dfnames, <span class="cf">function</span>(dfname) <span class="fu">lm</span>(y<span class="sc">~</span>x, <span class="at">data=</span>datas[[dfname]]))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>fits_conditional <span class="ot">&lt;-</span> <span class="fu">map</span>(dfnames, <span class="cf">function</span>(dfname) <span class="fu">lm</span>(y<span class="sc">~</span>x<span class="sc">+</span>z, <span class="at">data=</span>datas[[dfname]]))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fits_marginal) <span class="ot">&lt;-</span> dfnames</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fits_conditional) <span class="ot">&lt;-</span> dfnames</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>results_marginal <span class="ot">&lt;-</span> <span class="fu">map</span>(fits_marginal, broom<span class="sc">::</span>tidy) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>(<span class="at">idcol=</span><span class="st">"dataset"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>results_conditional <span class="ot">&lt;-</span> <span class="fu">map</span>(fits_conditional, broom<span class="sc">::</span>tidy) <span class="sc">|&gt;</span> <span class="fu">rbindlist</span>(<span class="at">idcol=</span><span class="st">"dataset"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>results_df <span class="ot">&lt;-</span> <span class="fu">rbindlist</span>(<span class="fu">list</span>(</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> results_marginal,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">conditional =</span> results_conditional</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>), <span class="at">idcol=</span><span class="st">"analysis"</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>results_df[, rformula<span class="sc">:</span><span class="er">=</span><span class="fu">ifelse</span>(analysis<span class="sc">==</span><span class="st">"marginal"</span>, <span class="st">"lm(y~x)"</span>, <span class="st">"lm(y~x+z)"</span>)]</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">dcast</span>(results_df[term<span class="sc">%in%</span><span class="fu">c</span>(<span class="st">"x"</span>)], dataset <span class="sc">~</span> rformula, <span class="at">value.var=</span><span class="st">"p.value"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div id="tbl-indeptests" class="cell quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -814,7 +625,7 @@ Table&nbsp;1: P-values for coefficient of variable x in linear regression model
 </div>
 </div>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -823,7 +634,7 @@ What is the conclusion regarding what dataset corresponds to what DAG?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>answer:</p>
 <ul>
@@ -834,10 +645,10 @@ What is the conclusion regarding what dataset corresponds to what DAG?
 </div>
 </div>
 </div>
-<section id="non-coding-questions" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="non-coding-questions"><span class="header-section-number">3.1</span> Non-coding questions</h2>
-<section id="strength-of-assumptions" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="strength-of-assumptions"><span class="header-section-number">3.1.1</span> Strength of Assumptions</h3>
+<section id="non-coding-questions" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="non-coding-questions"><span class="header-section-number">2.1</span> Non-coding questions</h2>
+<section id="strength-of-assumptions" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="strength-of-assumptions"><span class="header-section-number">2.1.1</span> Strength of Assumptions</h3>
 <div id="fig-3dags" class="quarto-layout-panel">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-3dags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -886,16 +697,16 @@ Figure&nbsp;4
 </figure>
 </div>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-What is the correct ordering of strength of assumptions in the above DAGs, starting with the strongest assumption
+What is the correct ordering of the strength of assumptions in the above DAGs, starting with the strongest assumption
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-10" class="callout-10-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>answer: <a href="#fig-dagb" class="quarto-xref">Figure&nbsp;4 (b)</a> &gt; <a href="#fig-dagc" class="quarto-xref">Figure&nbsp;4 (c)</a> &gt; <a href="#fig-daga" class="quarto-xref">Figure&nbsp;4 (a)</a></p>
 <p><a href="#fig-dagb" class="quarto-xref">Figure&nbsp;4 (b)</a> is stronger than <a href="#fig-dagc" class="quarto-xref">Figure&nbsp;4 (c)</a> as in the latter, it could be that the effects through <span class="math inline">\(W\)</span> are all absent (remember that the presence of an arrow from A to B implies a <strong>possible</strong> effect of A on B)</p>
@@ -905,8 +716,8 @@ What is the correct ordering of strength of assumptions in the above DAGs, start
 </div>
 </div>
 </section>
-<section id="rcts" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="rcts"><span class="header-section-number">3.1.2</span> RCTs</h3>
+<section id="rcts" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="rcts"><span class="header-section-number">2.1.2</span> RCTs</h3>
 <p>According to the DAG framework, why are RCTs especially fit for causal questions?</p>
 <ol type="1">
 <li>they are often infeasible and unethical</li>
@@ -915,7 +726,7 @@ What is the correct ordering of strength of assumptions in the above DAGs, start
 <li>randomization balances confounders</li>
 </ol>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -924,7 +735,7 @@ Which answers are true?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div id="callout-10" class="callout-10-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>answer: 2.</p>
 <p>See also <a href="../../lectures/day2-scms/lec1.html#sec-def-intervention">the DAG lecture</a></p>
@@ -935,6 +746,202 @@ Which answers are true?
 <li>RCTs are often critiqued as having <em>poor</em> external validity, because they may recruit non-random subpopulations from the target population</li>
 <li>This is a subtle point, but RCTs have no confounders as there are no common causes of the treatment and the outcome. Variables that are confounders in observational studies are prognostic factors in RCTs, as they (by definition of being a confounder in an observational study) influence the outcome, but not the treatment in the RCT. Randomization balances the distribution of prognostic factors between treatment arms <em>in expectation</em>. In a particular RCT, observed (and unobserved) prognostic factors will always have some random variation between treatment arms. This does not reduce the validity of the RCT in terms of bias. This variation is reflected in the standard error of the estimate. In some cases, adjusting for known prognostic factors in RCTs may reduce the variance of the treatment estimate (i.e.&nbsp;narrowing the confidence interval), but this is an entire discussion on its own.</li>
 </ol>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="bonus-confounder-adjustment-with-daggity" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Bonus: Confounder adjustment with Daggity</h1>
+<p>In this exercise we will use the dagitty package for creating and manipulating DAGs.</p>
+<section id="creating-and-visualizing-a-dag" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="creating-and-visualizing-a-dag"><span class="header-section-number">3.1</span> Creating and Visualizing a DAG</h2>
+<p>Let’s create a DAG for the pregnancy example:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the DAG</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>dag <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">"dag {</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="st">  pregnancy_risk -&gt; hospital_delivery</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="st">  pregnancy_risk -&gt; neonatal_outcome</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="st">  hospital_delivery -&gt; neonatal_outcome</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="st">}"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the DAG</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(dag)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stderr">
+<pre><code>Plot coordinates for graph not supplied! Generating coordinates, see ?coordinates for how to set your own.</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="dags_files/figure-html/makedag-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.</p>
+<section id="simulating-data" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="simulating-data"><span class="header-section-number">3.1.1</span> Simulating Data</h3>
+<p>We will simulate data based on the DAG structure:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate variables</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>pregnancy_risk <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.3</span>)  <span class="co"># 30% high risk</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>hospital_delivery <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span> <span class="sc">+</span> <span class="fl">0.3</span> <span class="sc">*</span> pregnancy_risk)  <span class="co"># 50% baseline + 30% if high risk</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>neonatal_outcome <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.8</span> <span class="sc">-</span> <span class="fl">0.3</span> <span class="sc">*</span> pregnancy_risk <span class="sc">+</span> <span class="fl">0.15</span> <span class="sc">*</span> hospital_delivery)  <span class="co"># outcome affected by both</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data frame</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(pregnancy_risk, hospital_delivery, neonatal_outcome)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="analyzing-the-data" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="analyzing-the-data"><span class="header-section-number">3.1.2</span> Analyzing the Data</h3>
+<p>Check the relationships in the data:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary statistics</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> pregnancy_risk  hospital_delivery neonatal_outcome
+ Min.   :0.000   Min.   :0.000     Min.   :0.000   
+ 1st Qu.:0.000   1st Qu.:0.000     1st Qu.:1.000   
+ Median :0.000   Median :1.000     Median :1.000   
+ Mean   :0.295   Mean   :0.586     Mean   :0.806   
+ 3rd Qu.:1.000   3rd Qu.:1.000     3rd Qu.:1.000   
+ Max.   :1.000   Max.   :1.000     Max.   :1.000   </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the data</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(hospital_delivery), <span class="at">fill =</span> <span class="fu">factor</span>(neonatal_outcome))) <span class="sc">+</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"fill"</span>) <span class="sc">+</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span> pregnancy_risk) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hospital Delivery"</span>, <span class="at">y =</span> <span class="st">"Proportion"</span>, <span class="at">fill =</span> <span class="st">"Neonatal Outcome"</span>) <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="dags_files/figure-html/checks-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="causal-inference-using-dags" class="level3" data-number="3.1.3">
+<h3 data-number="3.1.3" class="anchored" data-anchor-id="causal-inference-using-dags"><span class="header-section-number">3.1.3</span> Causal Inference Using DAGs</h3>
+<p>Let’s use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify adjustment set using DAGitty</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">adjustmentSets</span>(dag, <span class="at">exposure =</span> <span class="st">"hospital_delivery"</span>, <span class="at">outcome =</span> <span class="st">"neonatal_outcome"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>{ pregnancy_risk }</code></pre>
+</div>
+</div>
+<p>The output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.</p>
+</section>
+<section id="estimating-the-causal-effect" class="level3" data-number="3.1.4">
+<h3 data-number="3.1.4" class="anchored" data-anchor-id="estimating-the-causal-effect"><span class="header-section-number">3.1.4</span> Estimating the Causal Effect</h3>
+<p>Estimate the causal effect using a regression model:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a regression model</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">glm</span>(neonatal_outcome <span class="sc">~</span> hospital_delivery <span class="sc">+</span> pregnancy_risk, <span class="at">family =</span> binomial, <span class="at">data =</span> df)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Summarize the model</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = neonatal_outcome ~ hospital_delivery + pregnancy_risk, 
+    family = binomial, data = df)
+
+Coefficients:
+                  Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)         1.7830     0.1407  12.675  &lt; 2e-16 ***
+hospital_delivery   1.0073     0.1998   5.042 4.61e-07 ***
+pregnancy_risk     -2.2336     0.1987 -11.239  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 983.94  on 999  degrees of freedom
+Residual deviance: 834.27  on 997  degrees of freedom
+AIC: 840.27
+
+Number of Fisher Scoring iterations: 5</code></pre>
+</div>
+</div>
+</section>
+<section id="drawing-conclusions" class="level3" data-number="3.1.5">
+<h3 data-number="3.1.5" class="anchored" data-anchor-id="drawing-conclusions"><span class="header-section-number">3.1.5</span> Drawing Conclusions</h3>
+<p>Interpret the model’s output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(model, <span class="at">variables=</span><span class="st">"hospital_delivery"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S
+ hospital_delivery mean(1) - mean(0)    0.133     0.0253 5.26   &lt;0.001 22.7
+  2.5 % 97.5 %
+ 0.0837  0.183
+
+Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
+Type:  response </code></pre>
+</div>
+</div>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Is this odds ratio a correct estimate of the causal effect?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>answer: no</p>
+<p>hint: compare the structural equation used in generating the data with the statistical analysis</p>
+<p>This linear probability structural equation is not well-approximated by a linear logistic model (i.e.&nbsp;without interaction terms). We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using <code>avg_comparisons</code> from package <code>marginaleffects</code>.</p>
+<p>The correct estimate is given by:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>full_model <span class="ot">&lt;-</span> <span class="fu">glm</span>(neonatal_outcome<span class="sc">~</span>hospital_delivery<span class="sc">*</span>pregnancy_risk, <span class="at">family=</span>binomial, <span class="at">data=</span>df)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_comparisons</span>(full_model, <span class="at">variables=</span><span class="st">"hospital_delivery"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+              Term          Contrast Estimate Std. Error    z Pr(&gt;|z|)    S
+ hospital_delivery mean(1) - mean(0)    0.121     0.0261 4.63   &lt;0.001 18.0
+  2.5 % 97.5 %
+ 0.0696  0.172
+
+Columns: term, contrast, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high, predicted_lo, predicted_hi, predicted 
+Type:  response </code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
