@@ -13,6 +13,12 @@ format:
     callout-icon: false
 ---
 
+<!--## practical 2-->
+
+  <!--- causal ladder: what Q is this?-->
+  <!--- give data of hierarchy and answer the Q-->
+  <!--- give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)-->
+
 
 In this practical you'll learn more about identification and counterfactuals using the Structural Causal Model approach, and meta-learners
 

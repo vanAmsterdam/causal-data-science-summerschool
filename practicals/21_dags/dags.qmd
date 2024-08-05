@@ -22,6 +22,8 @@ This lab will guide you through practical examples of drawing and analyzing DAGs
 ```{r}
 #| label: setup
 #| eval: true
+#| output: false
+
 # Install necessary packages if not already installed
 required_pkgs <- c("dagitty", "ggplot2", "broom", "purrr", "dplyr", "data.table", "marginaleffects")
 cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
@@ -49,7 +51,7 @@ datas <- make_datas()
 ```
 
 
-# Exercise: making a DAG an specifying the correct adjustment set
+# Exercise: making a DAG and specifying the correct adjustment set
 
 In this example we'll practice creating a DAG, and we'll see how using the wrong DAG leads to the wrong analysis and wrong answers.
 
@@ -63,17 +65,17 @@ The `birthw` dataset contains the following variables:
 
 - `ageover35`: Indicator mother's age over 35 years (0 = age <= 35, 1 = age >35)
 - `smoking`: Smoking status during pregnancy (0 = no, 1 = yes)
-- `lbwt`: Los birth weight in grams (<2500grams)
+- `lbwt`: Low birth weight (0 = >=2500grams, 1 = < 2500grams)
 - `death`: Neonatal death within 3 months (0 = no, 1 = yes)
 
 ```{r}
+#| echo: true
+#| collapse: false
 birthw <- datas[["birthw"]]
 head(birthw)
 ```
 
 The data can alternatively be downloaded here: [birthw.csv](datas/birthw.csv)
-
-:::
 
 ## Create a DAG
 
@@ -89,10 +91,16 @@ If so, add them to the DAG, and indicate that they are unobserved
 
 Use e.g. [dagitty.net](https://dagitty.net) to create your DAG and see if there are ways to estimate the causal effect.
 
-## Do some analyses
+## Analyse the data
 
-Let's try some analyses.
+Let's try some analyses on the data.
+We'll fit different logistic regression models with different covariates (independent variables).
+Specifically, fit a model with:
 
+1. all observed covariates (`fit_allobs`)
+2. only the somking variable (`fit_marginal`)
+
+These models give us estimates of (log) odds ratios for the independent variables.
 To translate a logistic regression model into differences in probabilities we use the `avg_comparisons` function from the `marginaleffects` package.
 
 ```{r}
@@ -105,7 +113,7 @@ avg_comparisons(fit_allobs, variables="smoking")
 avg_comparisons(fit_marginal, variables="smoking")
 ```
 
-These effect estimates are quite different. How could this be explained?
+The effect estimates of `fit_allobs` and `fit_marginal` are quite different, they have different signs. How could this be explained?
 Which effect estimate do you think is more credible?
 
 ## Assume a DAG
@@ -122,7 +130,7 @@ In this DAG, there is another variable `gene` that influences both `lbwt` and `d
 
 :::{.callout-tip collapse="true"}
 
-## How does this DAG change the analysis?
+## How does this DAG change the analysis? (tip: enter it in dagitty.net)
 
 answer: the `smoking`-`death` relationship has no confounders, the marginal estimate is correct.
 Adjusting for `lbwt` 'washes-out' part of `smoking`'s effect because `lbwt` is a mediator.
@@ -152,122 +160,6 @@ fit2 <- glm(death~smoking+ht+ageover35, data=birthw, family=binomial)
 ## Assuming no parametric form bias, will this lead to an unbiased causal effect estimate?
 
 answer: yes this is a correct analysis. `lbwt` is still a collider, but it does not open any new back-door paths because `gene` no longer has a direct effect on `death` and all variables other than `smoking` that do have such an arrow are in the conditioning set (`ageover35`,`ht`) so these paths are blocked
-
-:::
-
-# Confounder adjustment with Daggity
-
-In this exercise we will use the dagitty package for creating and manipulating DAGs.
-
-### Step 1: Installing and Loading Required Packages
-
-## Step 2: Creating and Visualizing a DAG
-
-
-Let's create a DAG for the pregnancy example:
-
-```{r}
-#| label: makedag
-
-# Define the DAG
-dag <- dagitty("dag {
-  pregnancy_risk -> hospital_delivery
-  pregnancy_risk -> neonatal_outcome
-  hospital_delivery -> neonatal_outcome
-}")
-
-# Plot the DAG
-plot(dag)
-```
-
-This DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.
-
-### Step 3: Simulating Data
-
-We will simulate data based on the DAG structure:
-
-```{r}
-#| label: sims
-
-set.seed(123)
-
-n <- 1000
-
-# Simulate variables
-pregnancy_risk <- rbinom(n, 1, 0.3)  # 30% high risk
-hospital_delivery <- rbinom(n, 1, 0.5 + 0.3 * pregnancy_risk)  # 50% baseline + 30% if high risk
-neonatal_outcome <- rbinom(n, 1, 0.8 - 0.3 * pregnancy_risk + 0.15 * hospital_delivery)  # outcome affected by both
-
-# Create a data frame
-df <- data.table(pregnancy_risk, hospital_delivery, neonatal_outcome)
-```
-
-### Step 4: Analyzing the Data
-
-Check the relationships in the data:
-
-```{r}
-#| label: checks
-
-# Summary statistics
-summary(df)
-
-# Plot the data
-ggplot(df, aes(x = factor(hospital_delivery), fill = factor(neonatal_outcome))) +
-  geom_bar(position = "fill") +
-  facet_grid(~ pregnancy_risk) +
-  labs(x = "Hospital Delivery", y = "Proportion", fill = "Neonatal Outcome") +
-  theme_minimal()
-```
-
-### Step 5: Causal Inference Using DAGs
-
-Let's use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:
-
-```{r}
-#| label: adjustmentset
-
-# Identify adjustment set using DAGitty
-adjustmentSets(dag, exposure = "hospital_delivery", outcome = "neonatal_outcome")
-```
-
-The output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.
-
-### Step 6: Estimating the Causal Effect
-
-Estimate the causal effect using a regression model:
-
-```{r}
-#| label: estimate
-# Fit a regression model
-model <- glm(neonatal_outcome ~ hospital_delivery + pregnancy_risk, family = binomial, data = df)
-
-# Summarize the model
-summary(model)
-```
-
-### Step 7: Drawing Conclusions
-
-Interpret the model's output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.
-
-:::{.callout-note}
-
-## Is this odds ratio a correct estimate of the causal effect?
-
-answer: no
-
-hint: compare the structural equation used in generating the data with the statistical analysis
-
-This linear probability structural equation is not well-approximated by a linear logistic model (i.e. without interaction terms).
-We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using `avg_comparisons` from package `marginaleffects`.
-
-The correct estimate is given by:
-
-```{r}
-avg_comparisons(model, variables="hospital_delivery")
-full_model <- glm(neonatal_outcome~hospital_delivery*pregnancy_risk, family=binomial, data=df)
-avg_comparisons(full_model, variables="hospital_delivery")
-```
 
 :::
 
@@ -389,7 +281,7 @@ answer:
 :::
 
 ::: {.callout-tip collapse="true"}
-## What is the correct ordering of strength of assumptions in the above DAGs, starting with the strongest assumption
+## What is the correct ordering of the strength of assumptions in the above DAGs, starting with the strongest assumption
 
 answer: @fig-dagb > @fig-dagc > @fig-daga
 
@@ -425,3 +317,121 @@ Context:
 4. This is a subtle point, but RCTs have no confounders as there are no common causes of the treatment and the outcome. Variables that are confounders in observational studies are prognostic factors in RCTs, as they (by definition of being a confounder in an observational study) influence the outcome, but not the treatment in the RCT. Randomization balances the distribution of prognostic factors between treatment arms *in expectation*. In a particular RCT, observed (and unobserved) prognostic factors will always have some random variation between treatment arms. This does not reduce the validity of the RCT in terms of bias. This variation is reflected in the standard error of the estimate. In some cases, adjusting for known prognostic factors in RCTs may reduce the variance of the treatment estimate (i.e. narrowing the confidence interval), but this is an entire discussion on its own.
 
 :::
+
+# Bonus: Confounder adjustment with Daggity
+
+In this exercise we will use the dagitty package for creating and manipulating DAGs.
+
+## Creating and Visualizing a DAG
+
+
+Let's create a DAG for the pregnancy example:
+
+```{r}
+#| label: makedag
+
+# Define the DAG
+dag <- dagitty("dag {
+  pregnancy_risk -> hospital_delivery
+  pregnancy_risk -> neonatal_outcome
+  hospital_delivery -> neonatal_outcome
+}")
+
+# Plot the DAG
+plot(dag)
+```
+
+This DAG assumes that pregnancy risk influences both the likelihood of hospital delivery and neonatal outcomes, and that hospital delivery affects neonatal outcomes.
+
+### Simulating Data
+
+We will simulate data based on the DAG structure:
+
+```{r}
+#| label: sims
+
+set.seed(123)
+
+n <- 1000
+
+# Simulate variables
+pregnancy_risk <- rbinom(n, 1, 0.3)  # 30% high risk
+hospital_delivery <- rbinom(n, 1, 0.5 + 0.3 * pregnancy_risk)  # 50% baseline + 30% if high risk
+neonatal_outcome <- rbinom(n, 1, 0.8 - 0.3 * pregnancy_risk + 0.15 * hospital_delivery)  # outcome affected by both
+
+# Create a data frame
+df <- data.table(pregnancy_risk, hospital_delivery, neonatal_outcome)
+```
+
+### Analyzing the Data
+
+Check the relationships in the data:
+
+```{r}
+#| label: checks
+
+# Summary statistics
+summary(df)
+
+# Plot the data
+ggplot(df, aes(x = factor(hospital_delivery), fill = factor(neonatal_outcome))) +
+  geom_bar(position = "fill") +
+  facet_grid(~ pregnancy_risk) +
+  labs(x = "Hospital Delivery", y = "Proportion", fill = "Neonatal Outcome") +
+  theme_minimal()
+```
+
+### Causal Inference Using DAGs
+
+Let's use the DAG to determine what to condition on to estimate the causal effect of hospital delivery on neonatal outcomes:
+
+```{r}
+#| label: adjustmentset
+
+# Identify adjustment set using DAGitty
+adjustmentSets(dag, exposure = "hospital_delivery", outcome = "neonatal_outcome")
+```
+
+The output will suggest which variables to condition on to estimate the causal effect correctly. In this case, we need to condition on pregnancy_risk.
+
+### Estimating the Causal Effect
+
+Estimate the causal effect using a regression model:
+
+```{r}
+#| label: estimate
+# Fit a regression model
+model <- glm(neonatal_outcome ~ hospital_delivery + pregnancy_risk, family = binomial, data = df)
+
+# Summarize the model
+summary(model)
+```
+
+### Drawing Conclusions
+
+Interpret the model's output to understand the effect of hospital delivery on neonatal outcomes, controlling for pregnancy risk.
+
+```{r}
+avg_comparisons(model, variables="hospital_delivery")
+```
+
+:::{.callout-note collapse="true"}
+
+## Is this odds ratio a correct estimate of the causal effect?
+
+answer: no
+
+hint: compare the structural equation used in generating the data with the statistical analysis
+
+This linear probability structural equation is not well-approximated by a linear logistic model (i.e. without interaction terms).
+We can model the outcome without making parametric assumptions by including an interaction term, and then extract the risk difference using `avg_comparisons` from package `marginaleffects`.
+
+The correct estimate is given by:
+
+```{r}
+full_model <- glm(neonatal_outcome~hospital_delivery*pregnancy_risk, family=binomial, data=df)
+avg_comparisons(full_model, variables="hospital_delivery")
+```
+
+:::
+

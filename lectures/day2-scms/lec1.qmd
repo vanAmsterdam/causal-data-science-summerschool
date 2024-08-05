@@ -53,7 +53,7 @@ Qs:
 
 ## Today's lectures
 
-- introduce new framework based on
+- introduce 1.5 new framework based on
   - causal Directed Acyclic Graphs (DAGs)
   - Structral Causal Models (SCMs)
 - counterfactuals and Pearl's Causal Hierarchy of questions
@@ -1044,6 +1044,9 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$ {#eq-backdooradjustment}
 - Yes! When computing the effect of hospital deliveries on neonatal outcomes @eq-estimand
 - DAGs tell us what to adjust for
 - automatic algorithms tell use whether an estimand exists and what it is
+- several point-and-click websites for making DAGs that implement these algorithms:
+  - [dagitty.net](https://dagitty.net)
+  - [causalfusion.net](https://causalfusion.net)
 
 ## How about positivity
 
