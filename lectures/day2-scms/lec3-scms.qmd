@@ -86,17 +86,17 @@ Qs:
 
 ## Why SCMs?
 
-With DAGs we can:
-
-- express (non-parametric) prior knowledge
-- understand that seeing $\neq$ doing
-- know what variables to condition on for estimating treatment effect
-- DAGs and RCTs do not cover all causal questions
-- SCMs go a level deeper than DAGs
-- DAGs naturally 'arise' from SCMs
-- some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification
-- understand 'identifyability'
-- SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality
+- With DAGs we can:
+    - express (non-parametric) prior knowledge
+    - understand that seeing $\neq$ doing
+    - know what variables to condition on for estimating treatment effect
+- However,
+    - DAGs and RCTs do not cover all causal questions
+    - SCMs go a level deeper than DAGs
+    - DAGs naturally 'arise' from SCMs
+    - some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification
+    - understand 'identifyability'
+    - SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality
 
 ---
 
@@ -108,18 +108,9 @@ With DAGs we can:
 - interventions are submodels
 - bonus queries:
     - counterfactuals
-    - probability of necessity, probability of sufficiency
-    <!--- actual causality (Joe Halpern)-->
 - Pearl Causal Hierarchy
 - other uses of DAGs: missing data, selection
 - reflections on DAGs, limitations
-
-## practical 2
-
-  - causal ladder: what Q is this?
-  - give data of hierarchy and answer the Q
-  - give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)
-
 
 # Structural Causal Models: definitions
 
@@ -149,7 +140,7 @@ Together these define a *Structural Causal Model* [see definition 7.1.1 in @pear
 #| label: scm1
 #| execute: false
 #| echo: true
-#| code-line-numbers: "1-3|5-7|9-11|13-18|20"
+#| code-line-numbers: "1-3|4-6|7-9|11-16|18"
 #| output-location: fragment
 
 f_surgery <- function(u_surgery) { # pa_surgery = {}
@@ -191,7 +182,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![](scm1_01.png){.fragment}
+![](figs/scm1_01.png){.fragment}
 ::::
 :::
 
@@ -215,7 +206,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 ```
 ::::
 ::::{.column width="50%"}
-![](scm1_02.png)
+![](figs/scm1_02.png)
 ::::
 :::
 
@@ -245,7 +236,7 @@ scm1 <- function(u_surgery, u_los, u_survival) {
 
 . . .
 
-`scm1` and the DAG are equivalent (they describe the same knowledge of the world)
+`scm1` (without specifying the `f_`s) and the DAG are equivalent (they describe the same knowledge of the world)
 
 for the remainder, we assume recursiveness
 
@@ -474,7 +465,8 @@ we define $Q$ to be identifiable from $F_M$ if $Q(M_1) = Q(M_2)$ whenever $F_{M_
 
 ## Idenfitication in pictures
 
-Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)
+<!--Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)-->
+Someone killed the priest (†), we want to know who-dunnit ($=Q$)
 
 . . . 
 
@@ -486,7 +478,7 @@ Based on prior knowledge on *5 suspects* (all the SCMs compatible with our DAG)
 
 . . .
 
-If we had full data, we would have know it was $M_3$
+If we had full data, we would know it was $M_3$
 
 
 ## Idenfitication in pictures
@@ -534,7 +526,7 @@ The backdoor adjustment in this DAG means the correct estimand is:
 
 :::: {#fig-seeing}
 
-![](figs/scm1_03.png)
+![](figs/scm1_03.png){height=250}
 
 \begin{align}
   P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T)
@@ -544,7 +536,7 @@ The backdoor adjustment in this DAG means the correct estimand is:
 
 :::: {#fig-doing}
 
-![](figs/scm1_04.png)
+![](figs/scm1_04.png){height=250}
 
 \begin{align}
   P(Y|T) &= \sum_{z} P(Y|T,z)P(Z=z|T) \\
@@ -566,35 +558,56 @@ $^2$ because in the intervened DAG, $Z$ is independent of $T$
 
 The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity $P(y | \hat{x})$ can be computed uniquely from any positive probability of the observed variables – that is, if $P_{M_1}(y|\hat{x}) = P_{M_2}(y|\hat{x})$ for every pair of models $M_1$ and $M_2$ with $P_{M_1}(v) = P_{M_2}(v) > 0$ and $G(M_1) = G(M_2) = G$. -->
 
+## Another path to identification: parametric assumptions
+
+- for example:
+    - assumption 1: $\mathbb{M}_1$, all SCMs with same DAG
+    - assumption 2: $\mathbb{M}_2$ SCMs with linear functions and Gaussian error terms
+    - assumption 1+2: $\mathbb{M} = \mathbb{M_1} \cap \mathbb{M_2}$ (DAG + linear gaussian)
+- many more effects are identified in this setting
+- 'works' with unobserved confounding, positivity violations
+- caveats:
+    - much harder to determine identifyability (no backdoor-rule)
+    - prefer weaker assumptions over stronger assumption
+
 
 # Defining counterfactuals and the causal Hierarchy (of questions)
 
 ## Counterfactuals
 
 - all of the above can be achieved with DAGs, but we haven't used SCMs *super-power* yet: counterfactuals
-- e.g. *What is the expected survival if we keep all patients in the hospital for 7 days?
+- RCT / DAG questions: *What is the expected survival if we keep all patients in the hospital for 7 days?*
 
 
 ## Take it one level higher: counterfactuals
 
 ::: {layout-ncol="2"}
 
+:::: {.column}
 For patient Adam we had this data:
+
 - surgery duration: 4 hours
 - length of stay: 3 days
 - survival: 4 years
 
+::::
+
+:::: {.column}
+
 For patient Zoe we had this data:
+
 - surgery duration: 4 hours
 - length of stay: 3 days
 - survival: 7.5 years
+
+::::
 
 :::
 
 - we do not observe Adam's/Zoe's `U`
 - What would the expected survival have been had Adam/Zoe been kept in the hospital for 7 days?
 
-## Adam versus Zeno
+## Adam versus Zoe
 
 - Average causal effects in subgroup with `surgery=4`: 
   - 3-days LOS: `r v3df[round(surgery)==4, round(mean(survival),1)]`
@@ -632,7 +645,7 @@ ggplot(vdfm2, aes(x=value, fill=los3_surgery4)) +
 
 - what do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?
 
-## Now comes the SCM super-power
+## Computing counterfactuals with SCMs
 
 - Given our information on the structural equation for `survival`:
   $$\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}$$
@@ -688,16 +701,16 @@ If you have data to solve the upper, you can solve the lower ranks too [@bareinb
 - not from RCTs
 - from assumptions
 - can get bounds from combinations of RCT data and observational data
-- caveat: some researchers think the hierarchy is upside down because you go further away from data and closer to unverifiable assumptions the 'higher' you get
+- caveat: some say the hierarchy is upside down because you go further away from data and closer to unverifiable assumptions the 'higher' you get
 
 ## Not covered but also possible:
 
 - DAGs:
   - *soft intervention*: don't set treatment to fixed value but replace function with other function of variables
+  - express patterns for missing data by including missingness indicators
 - SCMs:
   - probability of sufficiency
   - probability of necessity
-  - individual causal effects
 
 ## References
 

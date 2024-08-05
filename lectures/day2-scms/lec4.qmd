@@ -135,7 +135,7 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
                &\class{fragment}{= \beta_t}
   \end{align}
 
-- i.e. the ATE collapses to the the regression parameter for $t$ in a linear regression model of $y$ on $t,z$
+- i.e. the ATE collapses to the the regression parameter $\beta_t$ in a linear regression model of $y$ on $t,z$
 
 ## General estimators for the ATE and the CATE (meta-learners) {#sec-metalearners}
 
@@ -151,7 +151,7 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
     \mu(t,w) &= E[Y|T=t,W=w] \\
     \tau(w)  &= \mu(1,w) - \mu(0,w)
   \end{align}
-- (many other variants combinations): this is a whole literature)
+- (many other variants combinations: this is a whole literature)
 
 ## Intuitive way-pointers:
 

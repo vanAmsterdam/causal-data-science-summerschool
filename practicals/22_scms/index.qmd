@@ -1,5 +1,5 @@
 ---
-title: "Practical: Structural Causal Model"
+title: "Practical: Structural Causal Models and Meta-learners"
 subtitle: "Identification and Hierarchy of Questions"
 author: "Wouter van Amsterdam"
 eval: false
@@ -12,6 +12,12 @@ format:
     callout-appearance: simple
     callout-icon: false
 ---
+
+<!--## practical 2-->
+
+  <!--- causal ladder: what Q is this?-->
+  <!--- give data of hierarchy and answer the Q-->
+  <!--- give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)-->
 
 
 In this practical you'll learn more about identification and counterfactuals using the Structural Causal Model approach, and meta-learners
@@ -85,7 +91,7 @@ answer: $$\text{ATE} = E[Y|\text{do}(X=1)] - E[Y|\text{do}(X=0)]$${#eq-ate}
 
 ::: {.callout-note collapse="true"}
 
-## can we estimate this target query based on the DAG, using the observed data 
+## we did not measure $U$, can we estimate this target query based on the DAG, using the observed data 
 
 answer: no, there is an open back-door path through $U$ which we cannot block as we did not observe that variable
 
@@ -101,7 +107,8 @@ answer: the endogenous variables have the same parents, so the DAG is the same. 
 
 :::
 
-We can estimate three features of the observed distribution: $P(Y=1|X=0),P(Y=1|X=1),P(Y=1)$.
+We can estimate four features of the observed distribution: $P(Y=1|X=0),P(Y=1|X=1),P(Y=1),P(X=1)$.
+Observe that for `data1` and `data2`, these are approximately the same (up to sampling variation)
 
 ::: {.callout-tip collapse="true"}
 
@@ -114,10 +121,12 @@ We can estimate three features of the observed distribution: $P(Y=1|X=0),P(Y=1|X
 mean(data1[data1$x==0,"y"])
 mean(data1[data1$x==1,"y"])
 mean(data1[,"y"])
+mean(data1[,"x"])
 
 mean(data2[data2$x==0,"y"])
 mean(data2[data2$x==1,"y"])
 mean(data2[,"y"])
+mean(data2[,"x"])
 
 ```
 
@@ -129,6 +138,7 @@ mean(data2[,"y"])
 
 ```{r}
 #| label: estimate-u
+#| eval: true
 
 fit1 <- glm(y~x*u, data=data1, family=binomial)
 fit2 <- glm(y~x*u, data=data2, family=binomial)
