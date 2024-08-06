@@ -42,7 +42,7 @@ Learn causal inference and causal data science!
 |---------------|-----------|----------------------------------------------------------|-|
 | 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |[pdf](lectures/day3-tte/LectureDay3.pdf) |
 | 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
-| 11:00 - 12:00 | practical | Target Trials in Practice I         | |
+| 11:00 - 12:00 | practical | Target Trials in Practice I         |[html](practicals/31_tte/Practical.html) |
 | 12:30 - 13:30 | LUNCH     |                                     | |
 | 13:30 - 14:15 | Lecture   | Target Trials Emulation II          | |
 | 14:30 - 15:00 | Lecture   | Target Trials Emulation III       | |
