@@ -366,7 +366,7 @@ Wouter van Amsterdam
 <li class="fragment"><a href="#/what-is-prediction" id="/toc-what-is-prediction">What is prediction?</a></li>
 <li class="fragment"><a href="#/a.-prediction-model-used-for-a-causal-task" id="/toc-a.-prediction-model-used-for-a-causal-task">2a. Prediction model used for a causal task</a></li>
 <li class="fragment"><a href="#/selffulfilling" id="/toc-selffulfilling">When accurate prediction models yield harmful self-fulfilling prophecies</a></li>
-<li class="fragment"><a href="#/how-to-evaluate-the-effect-of-a-new-treatment-policy" id="/toc-how-to-evaluate-the-effect-of-a-new-treatment-policy">How to evaluate the effect of a new treatment policy?</a></li>
+<li class="fragment"><a href="#/sec-modeleval" id="/toc-sec-modeleval">How to evaluate the effect of a new treatment policy?</a></li>
 <li class="fragment"><a href="#/prediction-has-a-causal-interpretation" id="/toc-prediction-has-a-causal-interpretation">1. Prediction has a causal interpretation</a></li>
 <li class="fragment"><a href="#/b.-improving-non-causal-prediction-models-with-causality" id="/toc-b.-improving-non-causal-prediction-models-with-causality">2b. improving non-causal prediction models with causality</a></li>
 </ul>
@@ -679,7 +679,7 @@ Wouter van Amsterdam
 </ol>
 </section></section>
 <section>
-<section id="how-to-evaluate-the-effect-of-a-new-treatment-policy" class="title-slide slide level1 center">
+<section id="sec-modeleval" class="title-slide slide level1 center">
 <h1>How to evaluate the effect of a new treatment policy?</h1>
 
 </section>
@@ -911,6 +911,7 @@ Wouter van Amsterdam
 <li>front-door analysis</li>
 </ul>
 </div></li>
+<li class="fragment"><p>not covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g.&nbsp;blood pressure control with multiple follow-up visits)</p></li>
 </ul>
 </section>
 <section id="evaluation-of-prediction-under-intervention-models" class="slide level2 center">
@@ -1008,8 +1009,9 @@ Wouter van Amsterdam
 <section id="sec-is" class="slide level2 nonincremental center">
 <h2>Proof of importance sampling unbiasedness</h2>
 <p>assuming <span class="math inline">\(x\)</span> is discrete, otherwise replace sums with integrals for continuous <span class="math inline">\(x\)</span></p>
-<p>want to compute the expected value of <span class="math inline">\(g(x)\)</span> over distribution <span class="math inline">\(p \sim q\)</span>, but have samples from other distribution <span class="math inline">\(x \sim q\)</span></p>
+<p>want to compute the expected value of <span class="math inline">\(g(x)\)</span> over distribution <span class="math inline">\(p\)</span>, but we have samples from another distribution <span class="math inline">\(x \sim q\)</span></p>
 <p><span class="math display">\[E_{x \sim q} \left[ \frac{p(x)}{q(x)} g(x) \right] = \sum_x q(x) \left( \frac{p(x)}{q(x)} g(x) \right) = \sum_x p(x) g(x) = E_{x \sim p} \left[g(x) \right]\]</span></p>
+<p>this assumes <span class="math inline">\(q(x)&gt;0\)</span> whenever <span class="math inline">\(p(x)&gt;0\)</span> for the ratio <span class="math inline">\(p/q\)</span> to be defined</p>
 </section>
 <section id="references" class="slide level2 smaller scrollable">
 <h2>References</h2>

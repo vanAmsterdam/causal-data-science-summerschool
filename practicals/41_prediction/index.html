@@ -113,20 +113,9 @@ window.Quarto = {
     <span class="navbar-title">Causal Inference Summerschool</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
-  <span class="navbar-toggler-icon"></span>
-</button>
-          <div class="collapse navbar-collapse" id="navbarCollapse">
-            <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link" href="../../index.html"> 
-<span class="menu-text">Home</span></a>
-  </li>  
-</ul>
-          </div> <!-- /navcollapse -->
-            <div class="quarto-navbar-tools">
+        <div class="quarto-navbar-tools tools-end">
 </div>
+          <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -167,7 +156,13 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#validation-of-prediction-models" id="toc-validation-of-prediction-models" class="nav-link active" data-scroll-target="#validation-of-prediction-models"><span class="header-section-number">1</span> Validation of prediction models</a></li>
+  <li><a href="#correct-interpretation-of-prediction-models" id="toc-correct-interpretation-of-prediction-models" class="nav-link active" data-scroll-target="#correct-interpretation-of-prediction-models"><span class="header-section-number">1</span> Correct interpretation of prediction models</a></li>
+  <li><a href="#validation-of-prediction-models" id="toc-validation-of-prediction-models" class="nav-link" data-scroll-target="#validation-of-prediction-models"><span class="header-section-number">2</span> Validation of prediction models</a>
+  <ul class="collapse">
+  <li><a href="#pre-and-post-deployment-validation-of-prediction-models" id="toc-pre-and-post-deployment-validation-of-prediction-models" class="nav-link" data-scroll-target="#pre-and-post-deployment-validation-of-prediction-models"><span class="header-section-number">2.1</span> Pre and post-deployment validation of prediction models</a></li>
+  <li><a href="#selecting-models-for-decision-support" id="toc-selecting-models-for-decision-support" class="nav-link" data-scroll-target="#selecting-models-for-decision-support"><span class="header-section-number">2.2</span> Selecting models for decision support</a></li>
+  </ul></li>
+  <li><a href="#other-uses-of-causality-in-prediction-modeling" id="toc-other-uses-of-causality-in-prediction-modeling" class="nav-link" data-scroll-target="#other-uses-of-causality-in-prediction-modeling"><span class="header-section-number">3</span> Other uses of causality in prediction modeling</a></li>
   </ul>
 </nav>
     </div>
@@ -178,14 +173,213 @@ window.Quarto = {
 
 
 
-<section id="validation-of-prediction-models" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Validation of prediction models</h1>
-<p>Researchers built a prediction model that aims to predict the expected outcome conditional on features <span class="math inline">\(X=\{\)</span>age,bmi<span class="math inline">\(\}\)</span> when intervening on treatment <span class="math inline">\(T=\)</span>statin. They have an validation set of 1 million patients. Assume this DAG:</p>
+<section id="correct-interpretation-of-prediction-models" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Correct interpretation of prediction models</h1>
+<p>Researchers built a prediction model <span class="math inline">\(f\)</span> that aims to predict the risk of a heart attack (<span class="math inline">\(=Y\)</span>) conditional on features <span class="math inline">\(X=\{\)</span>age,bmi<span class="math inline">\(\}\)</span> when intervening on treatment <span class="math inline">\(T=\)</span>statin (assumed to be a binary variable). Assume that the model was fit on a sufficiently large training set without parametric form bias. In addition, assume this DAG:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="tikzs/dag-bmi.png" class="img-fluid figure-img"></p>
 <figcaption>dag-bmi</figcaption>
 </figure>
+</div>
+<p>These nubmers are produces by the model:</p>
+<ol type="a">
+<li><span class="math inline">\(f(\text{statin}=1,\text{age}=50,\text{bmi}=20)=10\)</span>%</li>
+<li><span class="math inline">\(f(\text{statin}=0,\text{age}=50,\text{bmi}=20)=15\)</span>%</li>
+<li><span class="math inline">\(f(\text{statin}=1,\text{age}=50,\text{bmi}=25)=20\)</span>%</li>
+<li><span class="math inline">\(f(\text{statin}=0,\text{age}=50,\text{bmi}=25)=18\)</span>%</li>
+<li><span class="math inline">\(f(\text{statin}=1,\text{age}=55,\text{bmi}=25)=23\)</span>%</li>
+<li><span class="math inline">\(f(\text{statin}=0,\text{age}=55,\text{bmi}=25)=21\)</span>%</li>
+</ol>
+<p>Read the following statements:</p>
+<ol type="1">
+<li>for a patient of age=50 and bmi=25 who is not using a statin, the causal effect of reducing bmi by 5 points is a risk reduction of 18-15=3%</li>
+<li>for a patient of age=50 and bmi=20 who is not using a statin, the causal effect of starting a statin is a risk reduction of 15-10=5%</li>
+<li>for a patient of age=50, reducing bmi from 25 to 20 causes the effect of statins to become smaller on an absolute risk scale.</li>
+<li>for a patient with a bmi of 25, the causal effect of aging by 5 years is an increase in risk of 3%</li>
+</ol>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Which statements are correct?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>answer: 2 is correct.</p>
+<ol type="1">
+<li>is incorrect as this is not the causal effect due to the unobserved confounder <span class="math inline">\(u\)</span> (age,statin) is not a sufficient adjustment set for the effect of bmi on heart attack.</li>
+<li>From the DAG we see that causal effect of statin is identified, as adjustment set (age,bmi) satistifies the backdoor rule (all backdoor paths are closed).</li>
+<li>is incorrect because the change in effect of statin for different levels of bmi does not in itself have a causal interpretation The total causal effect for age <em>could</em> be estimated from the data using adjustment set (bmi), but statin is a mediator from age to heart attack so (bmi,statin), which is used by <span class="math inline">\(f\)</span>, is not a valid adjustment set, so 4 is incorrect.</li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="validation-of-prediction-models" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Validation of prediction models</h1>
+<section id="pre-and-post-deployment-validation-of-prediction-models" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="pre-and-post-deployment-validation-of-prediction-models"><span class="header-section-number">2.1</span> Pre and post-deployment validation of prediction models</h2>
+<p>Researchers built a prediction model to identify patients with a high risk of developing sepsis in the hospital, a life-threatening disease. The prediction model uses the patient’s age, temperature and and blood pressure, and had good discriminative performance in the training data. The model is deployed, doctors are alerted of high risk patients and are able to prevent 90% of sepsis cases in this high risk group compared to before deployment of the model, so it is a glaring success. Post-deployment, a follow-up study is conducted to test if the model is still predicting accurately.</p>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Given the above information, what will this follow-up study find in terms of model discrimination, will it go up, down, or remain the same, and why?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: discrimination has gone down.</p>
+<p>Reason: pre-deployment, the model had good discrimation which means that the risk of sepsis is markedly higher in the ‘high risk’ group compared to the low risk group. Deploying the model lead to better treatment of the high risk group, substantively reducing the risk of sepsis. Now, the ‘high risk’ and ‘low risk’ groups are much closer together in terms of rates of sepsis. As a consequence, the discriminative performance of the model has gone down.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Given the previous answer, should the researchers be worried? Is retraining the model needed?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: Decreased disrimination is a sign of a succesful deployment, as the goal was to reduce the risk in the high-risk patients.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What is the best study design to test whether deploying such a model leads to better patient outcomes?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: a cluster randomized trial, where some (groups of) doctors are randomized to have access to the model and others are not</p>
+<p>see also the <a href="../../lectures/day41-prediction/index.html#sec-modeleval">lecture</a></p>
+</div>
+</div>
+</div>
+</section>
+<section id="selecting-models-for-decision-support" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="selecting-models-for-decision-support"><span class="header-section-number">2.2</span> Selecting models for decision support</h2>
+<p>Researchers from the Netherlands developed two models for 10-year cardiovascular disease: Zrisk and Brisk. The intended use of the models is to better prescribe an expensive cholesterol lowering drug: <em>go-lesterol</em>. Both models use go-lesterol as an input variable, but each has a different set of other co-variates. Both models were trained on the same large observational dataset, and were tested in two external studies:</p>
+<ul>
+<li>A Nationwide registry in Sweden on the entire population (10 million people, 100.000 cases of heart attack during 5-year follow-up)</li>
+<li>An RCT with 2000 participants where go-lesterol was assigned randomly, 10 year follow-up and 50 heart attack cases</li>
+</ul>
+<p>The results on AUC (a measure of discrimination between 0.5 and 1, where higher means better) are a bit puzzling:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>study</th>
+<th>Zrisk</th>
+<th>Brisk</th>
+<th>p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sweden</td>
+<td>0.7</td>
+<td>0.85</td>
+<td>&lt;0.00001</td>
+</tr>
+<tr class="even">
+<td>RCT</td>
+<td>0.72</td>
+<td>0.65</td>
+<td>0.032</td>
+</tr>
+</tbody>
+</table>
+<p>Assume that Sweden and the Netherlands are comparable in terms of health care and heart attack rates.</p>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Based on this information, what model had the best AUC in the training data?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: Brisk.</p>
+<p>The training data and the Sweden study come from the same distribution as by assumption the countries are comparable (note also that in both studies the treatment is not assigned by randomization). The training dataset was large, so on sufficiently large sample from the same distribution, both models will demonstrate the same performance</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What model would you recommend for decision support?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: Zrisk. The goal of decision support models that include the targeted treatment (go-lesterol in this example) is to predict accurately under the hypothetical intervention of assigning that treatment. This means that the RCT samples from the target distribution, whereas the Swedish registry study does not.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+What other studies can you perform to decide on the previous question?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Answer: a (cluster) RCT where either Brisk or Zrisk is used. Hypothetical study design: require doctors to fill in information on both covariate sets so that the Zrisk and Brisk scores can both be computed. On a per-patient basis, randomly report the result from Zrisk or Brisk, without reporting what model provided the risk-estimate (this design assumes that the Zrisk and Brisk models are sufficiently complex that the doctors will not be able to guess which model is providing the prediction). After sufficient follow-up time, measure whether Zrisk or Brisk has lower rates of heart attacks.</p>
+<p>Also possible: use Zrisk and Brisk as potential policies in the RCT, subset the patients to either those whose randomly allocated treatment is concordant with Zrisk or Brisk, and calculate which subgroup has the lowest rate of heart attacks.</p>
+<p>see also the <a href="../../lectures/day41-prediction/index.html#sec-policyeval">lecture</a></p>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="other-uses-of-causality-in-prediction-modeling" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Other uses of causality in prediction modeling</h1>
+<p>Researchers developed a deep learning model that detects heart attacks on an ECGs. They used ECGs from both the emergency room as well as out-patient clinic ECGs. The emergency room has a different type of ECG machine than the out-patient clinic, and heart attacks are much more frequent in the emergency room than in the out-patient clinic. By conducting model interpretability studies, researchers found that the deep learning model can recognize whether an ECG is from the out-patient clinic or the emergency room, and in fact uses this information in its prediction. This finding is explained to the cardiologist, who says that the model is not ‘robust’, that this should be fixed or the model cannot be used.</p>
+<div class="callout callout-style-simple callout-tip no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+You are a data-scientist with causal training, what is your reply?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Answer: <em>it depends</em>. Indeed, the model uses non-causal (or ‘spurious’) information to create a prediction. This will create problems when this information is unreliable, for example because the ECG-machines may be swapped between the emergency room and out-patient clinic at any time. However, as long as the same ECG-machines stay in place, there is no fundamental issue in using this information in the prediction. In fact, including where the ECG was made (emergency vs out-patient) would be a very good feature to include in any prediction model for heart attacks, be it a deep learning model or any other prediction model type.</p>
+</div>
+</div>
 </div>
 
 
