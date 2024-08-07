@@ -52,9 +52,9 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Causal Perspectives on Prediction Modeling I  | |
+| 09:00 - 09:45 | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) |
 | 10:00 - 10:45 | Lecture   | Causal Perspectives on Prediction Modeling II | |
-| 11:00 - 12:00 | practical | Causal Perspectives on Prediction Modeling    | |
+| 11:00 - 12:00 | practical | Causal Perspectives on Prediction Modeling    | [html](practicals/41_prediction/index.html)|
 | 12:00 - 13:30 | LUNCH     |                                               | |
 | 13:30 - 14:15 | Lecture   | Causal Structure Learning I                   | |
 | 14:30 - 15:00 | Lecture   | Causal Structure Learning II                  | |
