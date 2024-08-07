@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day1-potentialoutcomes/empty.html</loc>
-    <lastmod>2024-08-07T11:18:33.913Z</lastmod>
-  </url>
-  <url>
-    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day2-scms/lec4.html</loc>
-    <lastmod>2024-08-07T11:18:34.041Z</lastmod>
-  </url>
-  <url>
-    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/index.html</loc>
-    <lastmod>2024-08-07T11:18:33.913Z</lastmod>
-  </url>
-  <url>
     <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/practicals/21_dags/dags.html</loc>
-    <lastmod>2024-08-07T11:18:34.137Z</lastmod>
+    <lastmod>2024-08-05T19:06:12.486Z</lastmod>
   </url>
   <url>
     <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/practicals/00_setup/setup.html</loc>
-    <lastmod>2024-08-07T11:18:34.105Z</lastmod>
+    <lastmod>2024-08-05T08:12:01.393Z</lastmod>
   </url>
   <url>
-    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/practicals/drafts/draft.html</loc>
-    <lastmod>2024-08-07T11:18:34.149Z</lastmod>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day2-scms/lec4.html</loc>
+    <lastmod>2024-08-05T19:06:12.484Z</lastmod>
   </url>
   <url>
     <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day2-scms/lec3-scms.html</loc>
-    <lastmod>2024-08-07T11:18:34.033Z</lastmod>
+    <lastmod>2024-08-05T19:06:12.475Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day41-prediction/index.html</loc>
+    <lastmod>2024-08-07T16:11:58.439Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/index.html</loc>
+    <lastmod>2024-08-07T16:11:58.255Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day1-potentialoutcomes/empty.html</loc>
+    <lastmod>2024-08-05T08:12:01.275Z</lastmod>
   </url>
   <url>
     <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/lectures/day2-scms/lec1.html</loc>
-    <lastmod>2024-08-07T11:18:34.025Z</lastmod>
+    <lastmod>2024-08-05T19:06:12.462Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/practicals/41_prediction/index.html</loc>
+    <lastmod>2024-08-07T08:58:15.008Z</lastmod>
+  </url>
+  <url>
+    <loc>https://vanAmsterdam.github.io/causal-data-science-summerschool/practicals/drafts/draft.html</loc>
+    <lastmod>2024-08-05T08:12:01.419Z</lastmod>
   </url>
 </urlset>

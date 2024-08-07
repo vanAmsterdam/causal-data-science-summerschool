@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.5.54">
+
+  <meta name="author" content="Wouter van Amsterdam">
+  <meta name="dcterms.date" content="2024-08-08">
+  <title>Causal Inference and Causal Data Science Summerschool – Causal perspectives on prediction modeling</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    padding-bottom: 0.5rem;
+    margin-bottom: 0;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Causal perspectives on prediction modeling</h1>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Wouter van Amsterdam 
+</div>
+</div>
+</div>
+
+  <p class="date">2024-08-08</p>
+</section><section id="TOC">
+<nav role="doc-toc"> 
+<h2 id="toc-title">Table of contents</h2>
+<ul>
+<li class="fragment"><a href="#/what-is-prediction" id="/toc-what-is-prediction">What is prediction?</a></li>
+<li class="fragment"><a href="#/a.-prediction-model-used-for-a-causal-task" id="/toc-a.-prediction-model-used-for-a-causal-task">2a. Prediction model used for a causal task</a></li>
+<li class="fragment"><a href="#/selffulfilling" id="/toc-selffulfilling">When accurate prediction models yield harmful self-fulfilling prophecies</a></li>
+<li class="fragment"><a href="#/how-to-evaluate-the-effect-of-a-new-treatment-policy" id="/toc-how-to-evaluate-the-effect-of-a-new-treatment-policy">How to evaluate the effect of a new treatment policy?</a></li>
+<li class="fragment"><a href="#/prediction-has-a-causal-interpretation" id="/toc-prediction-has-a-causal-interpretation">1. Prediction has a causal interpretation</a></li>
+<li class="fragment"><a href="#/b.-improving-non-causal-prediction-models-with-causality" id="/toc-b.-improving-non-causal-prediction-models-with-causality">2b. improving non-causal prediction models with causality</a></li>
+</ul>
+</nav>
+</section>
+<section id="recap-causal-questions" class="slide level2 center">
+<h2>Recap: causal questions</h2>
+<ul>
+<li class="fragment">questions of <em>association</em> are of the kind:
+<ul>
+<li class="fragment">what is the probability of <span class="math inline">\(Y\)</span> (potentially: after observing <span class="math inline">\(X\)</span>)?, e.g.:
+<ul>
+<li class="fragment">what is the chance of rain tomorrow given that is was dry today?</li>
+<li class="fragment">what is the chance a patient with lung cancer lives more than 10% after diagnosis?</li>
+</ul></li>
+<li class="fragment">these <em>hands behind your back and passively observe the world</em>-questions</li>
+</ul></li>
+<li class="fragment"><em>causal</em> questions are of the kind:
+<ul>
+<li class="fragment">how would <span class="math inline">\(Y\)</span> change when we intervene on <span class="math inline">\(T\)</span>?, e.g.:
+<ul>
+<li class="fragment">if we would send all pregant women to the hospital for delivery, what would happen with neonatal outcomes?</li>
+<li class="fragment">if we start a marketing campain, by how much would our revenue increase?</li>
+</ul></li>
+<li class="fragment">these tell us what would happen if we changed something</li>
+</ul></li>
+</ul>
+</section>
+<section>
+<section id="what-is-prediction" class="title-slide slide level1 center">
+<h1>What is prediction?</h1>
+
+</section>
+<section id="examples-of-prediction-tasks" class="slide level2 center">
+<h2>Examples of prediction tasks</h2>
+<p>observe an <span class="math inline">\(X\)</span>, want to know what to expect for <span class="math inline">\(Y\)</span></p>
+<p><span class="fragment" data-fragment-index="1">1. X = patient caughs, Y = patient has lung cancer</span></p>
+<p><span class="fragment" data-fragment-index="2">2. X = ECG, Y = patient has heart attack</span></p>
+<p><span class="fragment" data-fragment-index="3">3. X = CT-scan, Y = patient dies within 2 years</span></p>
+<div class="r-stack">
+<div class="fragment fade-in-then-out" data-fragment-index="2">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/ecg.jpg" height="400"></p>
+<figcaption>Renziehausen (2024). ECG normalized-2.jpgCoronary spasm - a cause of acute coronary syndrome with ST-segment elevation and refractory cardiogenic shock - a case report. figshare. Figure. https://doi.org/10.6084/m9.figshare.26045203.v1</figcaption>
+</figure>
+</div>
+</div>
+<div class="fragment fade-in-then-out" data-fragment-index="3">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/ctlung.jpg" height="400"></p>
+<figcaption>M Sherigar, Jagannath; Finnegan, Joseen; McManus, Damien; F Lioe, Tong; AJ Spence, Roy (2011). CT Scan of chest showing one of the lung nodules. figshare. Figure. https://doi.org/10.6084/m9.figshare.16069.v1</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="prediction-typical-approach" class="slide level2 center">
+<h2>Prediction: typical approach</h2>
+<ol type="1">
+<li class="fragment">define population, find a cohort</li>
+<li class="fragment">measure <span class="math inline">\(X\)</span> at <em>prediction baseline</em></li>
+<li class="fragment">measure <span class="math inline">\(Y\)</span>
+<ol type="a">
+<li class="fragment">cross-sectional (e.g.&nbsp;diagnosis)</li>
+<li class="fragment">longitudinal follow-up (e.g.&nbsp;survival)</li>
+</ol></li>
+<li class="fragment">use a statistical learning technique (e.g.&nbsp;regression, machine learning), fit model <span class="math inline">\(f\)</span> to observed <span class="math inline">\(\{x_i,y_i\}\)</span> with a criterion / loss function</li>
+<li class="fragment">evaluate prediction performance with e.g.&nbsp;discrimination, calibration, <span class="math inline">\(R^2\)</span></li>
+</ol>
+</section>
+<section id="curve-fitting" class="slide level2 center">
+<h2>Curve fitting</h2>
+</section>
+<section id="prediction-typical-estimand" class="slide level2 center">
+<h2>Prediction: typical estimand</h2>
+<p>Let <span class="math inline">\(f\)</span> depend on parameter <span class="math inline">\(\theta\)</span>, prediction typically aims for:</p>
+<p><span class="math display">\[f_{\theta}(x) \to E[Y|X=x]\]</span></p>
+<ul>
+<li class="fragment">when <span class="math inline">\(Y\)</span> is binary:
+<ul>
+<li class="fragment">probability of a heart attack in 10 years, given age and cholesterol</li>
+<li class="fragment">probability of lung cancer, given symptoms and CT-scan</li>
+<li class="fragment">typical evaluation metrics:
+<ul>
+<li class="fragment">discrimination: sensitivity, specificity, AUC</li>
+<li class="fragment">calibration</li>
+</ul></li>
+</ul></li>
+</ul>
+</section>
+<section id="causal-inference-typical-approach" class="slide level2 center">
+<h2>Causal inference: typical approach</h2>
+<ol type="1">
+<li class="fragment">define target population and targeted treatment comparison</li>
+<li class="fragment">run randomized controlled trial, randomizing treatment allocation (when possible)</li>
+<li class="fragment">measure patient outcomes</li>
+<li class="fragment">estimate parameter that summarizes <em>average treatment effect</em> (ATE)</li>
+</ol>
+<div class="fragment">
+<p>typical estimand:</p>
+<p><span class="math display">\[E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\]</span></p>
+</div>
+</section>
+<section id="causal-inference-versus-prediction" class="slide level2 center">
+<h2>Causal inference versus prediction</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>prediction</p>
+<ul>
+<li class="fragment">typical estimand <span class="math inline">\(E[Y|X]\)</span></li>
+<li class="fragment">typical study: longitudinal cohort</li>
+<li class="fragment">typical interpretation: <span class="math inline">\(X\)</span> predicts <span class="math inline">\(Y\)</span></li>
+<li class="fragment">primary use: know what <span class="math inline">\(Y\)</span> to expect when observing a new <span class="math inline">\(X\)</span> <em>assuming no change in joint distribution</em></li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p>causal inference</p>
+<ul>
+<li class="fragment">typical estimand <span class="math inline">\(E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\)</span></li>
+<li class="fragment">typical study: RCT (or observational causal inference study)</li>
+<li class="fragment">typical interpretation: <em>causal effect</em> of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span></li>
+<li class="fragment">primary use: know what change in <span class="math inline">\(Y\)</span> to expect when <em>changing the treatment policy</em></li>
+</ul>
+</div></div>
+</section>
+<section id="what-do-we-mean-with-treatment-policy" class="slide level2 center">
+<h2>What do we mean with treatment policy?</h2>
+<p>A treatment policy <span class="math inline">\(\pi\)</span> is a procedure for determining the treatment</p>
+<p>Assuming <span class="math inline">\(T\)</span> is binary, <span class="math inline">\(\pi\)</span> can be:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\pi = 0.5\)</span> (a 1/1 RCT)</li>
+<li class="fragment">give blood pressure pill to patients with hypertension:</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[\pi(blood pressure) = \begin{cases}
+  1, &amp;blood pressure &gt; 140mmHg\\
+  0, &amp;\text{otherwise}
+  \end{cases}\]</span></span></p>
+<ul>
+<li class="fragment">give statins to patients with more than 10% predicted risk of heart attack:</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[\pi(X) = \begin{cases}
+  1, &amp;f(X) &gt; 0.1\\
+  0, &amp;\text{otherwise}
+  \end{cases}\]</span></span></p>
+<ul>
+<li class="fragment">the propensity score can be seen as a (non-deterministic) treatment policy</li>
+</ul>
+</section>
+<section id="where-can-prediction-and-causality-meet" class="slide level2 center">
+<h2>Where can prediction and causality meet?</h2>
+<ol type="1">
+<li class="fragment">prediction has a causal interpretation</li>
+<li class="fragment">prediction does not have a causal interpretation:
+<ol type="a">
+<li class="fragment">but is used for a causal task (e.g.&nbsp;treatment decision making)</li>
+<li class="fragment">but predictions can be improved with causal thinking in terms of e.g.:</li>
+</ol>
+<ul>
+<li class="fragment">interpretability, robustness, ‘spurious correlations’, generalization, fairness, selection bias</li>
+</ul></li>
+</ol>
+</section></section>
+<section>
+<section id="a.-prediction-model-used-for-a-causal-task" class="title-slide slide level1 center">
+<h1>2a. Prediction model used for a causal task</h1>
+
+</section>
+<section class="slide level2 center">
+
+
+<img data-src="figs/8q8oy7_meme_crossover.jpg" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="using-prediction-models-for-decision-making-is-often-thought-of-as-a-good-idea" class="slide level2 center">
+<h2>Using prediction models for decision making is often thought of as a good idea</h2>
+<p>For example:</p>
+<ol type="1">
+<li class="fragment">give chemotherapy to cancer patients with high predicted risk of recurrence</li>
+<li class="fragment">give statins to patients with a high risk of a heart attack</li>
+</ol>
+<div class="fragment">
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>TRIPOD+AI on prediction models <span class="citation" data-cites="collinsTRIPODAIStatement2024">(<a href="#/references" role="doc-biblioref" onclick="">Collins et al. 2024</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p>“Their primary use is to support clinical decision making, such as … <strong>initiate treatment or lifestyle changes.</strong>”</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2 center">
+
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>This may lead to bad situations when:</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li class="fragment">ignoring the treatments patients may have had during training / validation of prediction model</li>
+<li class="fragment">only considering measures of predictive accuracy as sufficient evidence for safe deployment</li>
+</ol>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="selffulfilling" class="title-slide slide level1 center">
+<h1>When accurate prediction models yield harmful self-fulfilling prophecies</h1>
+
+</section>
+<section class="slide level2 center">
+
+<div class="r-stack">
+<p><img data-src="figs/rt_example1.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example2.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example3.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example4.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example5.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example6.png" class="fragment" style="height:24cm"></p>
+<p><img data-src="figs/rt_example.png" class="fragment" style="height:24cm"></p>
+</div>
+</section>
+<section id="building-models-for-decision-support-without-regards-for-the-historic-treatment-policy-is-a-bad-idea" class="slide level2 center">
+<h2>Building models for decision support without regards for the historic treatment policy is a bad idea</h2>
+<div class="r-stack">
+<p><img data-src="figs/policy_changea1.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changea3.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changeax.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changeb2.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changebx.png" class="fragment" style="width:100.0%"></p>
+</div>
+</section>
+<section class="slide level2 center">
+
+<p><span class="r-fit-text">The question is not “is my model accurate before / after deployment”,</span></p>
+<p><span class="r-fit-text fragment">but did deploying the model improve patient outcomes?</span></p>
+</section>
+<section id="treatment-naive-prediction-models" class="slide level2 center">
+<h2>Treatment-naive prediction models</h2>
+<div class="r-stack">
+<p><img data-src="figs/txnaive1.png"></p>
+<p><img data-src="figs/txnaive2b.png" class="fragment"></p>
+</div>
+<p><span class="math display">\[\begin{align}
+    E[Y|X] \class{fragment}{= E[E_{t~\sim \pi_0(X)}[Y|X,t]]}
+\end{align}\]</span></p>
+</section>
+<section class="slide level2 center">
+
+<p><span class="r-fit-text">Is this obvious?</span></p>
+<!--::: {.callout-tip}-->
+<!--It may seem obvious that you should not ignore historical treatments in your prediction models, if you want to improve treatment decisions, but many of these models are published daily, and some guidelines even allow for implementing these models based on predictve performance only-->
+<!--:::-->
+</section>
+<section id="prediction-modeling-is-very-popular-in-medical-research" class="slide level2 center">
+<h2>Prediction modeling is very popular in medical research</h2>
+
+<img data-src="figs/predmodelsoverview.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="recommended-validation-practices-and-reporting-guidelines-do-not-protect-against-harm" class="slide level2 center">
+<h2>Recommended validation practices and reporting guidelines do not protect against harm</h2>
+<h3 id="because-they-do-not-evaluate-the-policy-change">because they do not evaluate the policy change</h3>
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/ajcc_title.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/tripod_ai.png" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="bigger-data-does-not-protect-against-harmful-prediction-models" class="slide level2 center">
+<h2>Bigger data does not protect against harmful prediction models</h2>
+
+<img data-src="figs/biggerdata.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="more-flexible-models-do-not-protect-against-harmful-prediction-models" class="slide level2 center">
+<h2>More flexible models do not protect against harmful prediction models</h2>
+
+<!-- TODO make mindthegap background image -->
+<img data-src="figs/morelayers.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section class="slide level2 center">
+
+
+<img data-src="figs/mindthegap.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="section" class="slide level2 center" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<div style="margin-top: 200px; font-size: 3em; color: red;">
+<p>What to do?</p>
+</div>
+</section>
+<section id="section-1" class="slide level2 center" data-auto-animate="true">
+<h2 data-id="quarto-animate-title"></h2>
+<div style="margin-top: 100px">
+<p>What to do?</p>
+</div>
+<ol type="1">
+<li class="fragment">Evaluate policy change (cluster randomized controlled trial)</li>
+<li class="fragment">Build models that are likely to have value for decision making</li>
+</ol>
+</section></section>
+<section>
+<section id="how-to-evaluate-the-effect-of-a-new-treatment-policy" class="title-slide slide level1 center">
+<h1>How to evaluate the effect of a new treatment policy?</h1>
+
+</section>
+<section id="deploying-a-model-is-an-intervention-that-changes-the-way-treatment-decisions-are-made" class="slide level2 center">
+<h2>Deploying a model is an intervention that changes the way treatment decisions are made</h2>
+
+<img data-src="figs/policy_changebx.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="how-do-we-learn-about-the-effect-of-an-intervention" class="slide level2 center">
+<h2>How do we learn about the effect of an intervention?</h2>
+<p>With causal inference!</p>
+<ul>
+<li class="fragment">for using a decision support model, the unit of intervention is usually <em>the doctor</em></li>
+<li class="fragment">randomly assign <em>doctors</em> to have access to the model or not</li>
+<li class="fragment">measure differences in <strong>treatment decisions</strong> and <strong>patient outcomes</strong></li>
+<li class="fragment">this called a cluster RCT</li>
+<li class="fragment">if using model improves outcomes, use that one</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Using cluster RCTs to evaluated models for decision making is not a new idea <span class="citation" data-cites="cooperEvaluationMachinelearningMethods1997">(<a href="#/references" role="doc-biblioref" onclick="">Cooper et al. 1997</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p>“As one possibility, suppose that a trial is performed in which clinicians are randomized either to have or not to have access to such a decision aid in making decisions about where to treat patients who present with pneumonia.”</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>What we don’t learn</strong></p>
+</div>
+<div class="callout-content">
+<p>was the model predicting anything sensible?</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="calculating-the-effect-of-a-policy-from-existing-data" class="slide level2 center">
+<h2>Calculating the effect of a policy from existing data</h2>
+<ul>
+<li class="fragment">we have data where <span class="math inline">\(t \sim \pi_0(X)\)</span></li>
+<li class="fragment">we want to know the expected value of <span class="math inline">\(Y\)</span> when instead <span class="math inline">\(t \sim \pi_1(X)\)</span></li>
+<li class="fragment">how to compute this? with importance sampling!</li>
+<li class="fragment">importance sampling:
+<ul>
+<li class="fragment"><p>want to compute the expected value of function <span class="math inline">\(g(x)\)</span> over a distribution <span class="math inline">\(\color{green}{p}\)</span>: <span class="math inline">\(E_{x \sim \color{green}{p}}[g(x)]\)</span></p></li>
+<li class="fragment"><p>instead, we are given samples from a different distribution <span class="math inline">\(x \sim \color{red}{q}\)</span></p></li>
+<li class="fragment"><p>if we know <span class="math inline">\(\color{green}{p}(x)\)</span> and <span class="math inline">\(\color{red}{q}(x)\)</span>, we can do:</p>
+<p><span class="math display">\[E_{x \sim \color{red}{q}(x)} \left[ \frac{\color{green}{p}(x)}{\color{red}{q}(x)} g(x) \right]\]</span></p></li>
+<li class="fragment"><p>where <span class="math inline">\(\frac{\color{green}{p}(x)}{\color{red}{q}(x)}\)</span> are the <em>importance weights</em> (for a proof see <a href="#/sec-is" class="quarto-xref">Section&nbsp;6.6</a>)</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="special-cases-for-importance-sampling-and-policy-evaluation" class="slide level2 center">
+<h2>Special cases for importance sampling and policy evaluation</h2>
+<ol type="1">
+<li class="fragment">propensity score reweighting:
+<ul>
+<li class="fragment">target distribution <span class="math inline">\(p(t|x)=p(t)\)</span> (as in RCT)</li>
+<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span> (the propensity score)</li>
+<li class="fragment">this is why propensity score reweighting mimics an RCT</li>
+</ul></li>
+</ol>
+</section>
+<section id="special-cases-for-importance-sampling-and-policy-evaluation-1" class="slide level2 center">
+<h2>Special cases for importance sampling and policy evaluation</h2>
+<ol start="2" type="1">
+<li class="fragment">have historic RCT data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>
+<ul>
+<li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
+<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = 0.5\)</span></li>
+<li class="fragment">note: when <span class="math inline">\(\pi_1(x)\)</span> is deterministic (e.g.&nbsp;give the treatment when <span class="math inline">\(f(x) &gt; 0.1\)</span>), we get the following:
+<ol type="a">
+<li class="fragment">when randomized treatment is concordant with <span class="math inline">\(\pi_1\)</span>, keep the patient (weight = 1), otherwise, remove from the data (weight = 0)</li>
+<li class="fragment">calculate average outcomes in the kept patients</li>
+</ol></li>
+<li class="fragment">this way, multiple alternative policies may be evaluated</li>
+</ul></li>
+<li class="fragment">have historic observational data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>:
+<ul>
+<li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
+<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span></li>
+<li class="fragment">we need to estimate <span class="math inline">\(q\)</span> (i.e.&nbsp;the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)</li>
+</ul></li>
+</ol>
+</section>
+<section class="slide level2 center">
+
+<p>How to build prediction models for decision support?</p>
+</section></section>
+<section>
+<section id="prediction-has-a-causal-interpretation" class="title-slide slide level1 center">
+<h1>1. Prediction has a causal interpretation</h1>
+
+</section>
+<section id="what-can-we-mean-with-predictions-having-a-causal-interpretation" class="slide level2 center">
+<h2>What can we mean with predictions having a causal interpretation?</h2>
+<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
+<div>
+
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="column quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ol type="1">
+<li class="fragment"><span class="math inline">\(X\)</span> is an ancestor of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2,z_3\}\)</span>)</li>
+<li class="fragment"><span class="math inline">\(X\)</span> is a direct cause of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2\}\)</span>)</li>
+<li class="fragment"><span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1\}\)</span>), i.e.:</li>
+</ol>
+<div class="fragment">
+<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
+</div>
+<ol start="4" type="1">
+<li class="fragment"><span class="math inline">\(f: \mathbb{T} \times \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X\)</span> (<span class="math inline">\(T=\{z_1\},X=\{z_2,z_3,w\}\)</span>:</li>
+</ol>
+<div class="fragment">
+<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
+</div>
+</div><div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="tikzs/dag-preds.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation-3.-all-covariates-are-causal" class="slide level2 center">
+<h2>interpretation 3. all covariates are <em>causal</em></h2>
+<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
+<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
+<ul>
+<li class="fragment">this is almost never true (i.e.&nbsp;back-door rule holds for <strong>all</strong> variables)</li>
+<li class="fragment">too often this is assumed / interpreted this way (<em>table 2 fallacy</em> in health care literature)</li>
+</ul>
+</section>
+<section id="example-of-table-2-fallacy-when-mis-using-qrisk" class="slide level2 center">
+<h2>Example of table 2 fallacy when mis-using Qrisk</h2>
+<p><a href="https://www.qrisk.org">Qrisk3</a>: a risk prediction model for cardiovascular events in the coming 10-years. Widely used in the United Kingdom for deciding which patients should get statins</p>
+
+<img data-src="figs/qrisk3-screenshot.png" class="r-stretch"></section>
+<section id="qrisk3---risks" class="slide level2 center">
+<h2>Qrisk3 - risks:</h2>
+<p>can go wrong when:</p>
+<ul>
+<li class="fragment">e.g.&nbsp;fill in current length and weight
+<ul>
+<li class="fragment">reduce weight by 5 kgs</li>
+<li class="fragment">interpret difference as ‘effect of weight loss’</li>
+</ul></li>
+<li class="fragment">check or un-check blood pressure medication
+<ul>
+<li class="fragment">observe that with blood pressure medication, risk is higher</li>
+</ul></li>
+</ul>
+</section>
+<section id="what-else-could-go-wrong" class="slide level2 center">
+<h2>What else could go wrong?</h2>
+<ul>
+<li class="fragment">Qrisk3 states it is validated, but validated for what?</li>
+<li class="fragment">Qrisk3 is validated for non-use!</li>
+</ul>
+</section>
+<section id="interpretation-4.-some-covariates-are-causal" class="slide level2 center">
+<h2>interpretation 4. some covariates are <em>causal</em></h2>
+<h3 id="or-prediction-under-intervention">or: prediction-under-intervention</h3>
+<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
+<p><img data-src="tikzs/policy.png" height="500"></p>
+<ul>
+<li class="fragment">interpretation: <em>what is the expected value of <span class="math inline">\(Y\)</span> if we were to assign treatment <span class="math inline">\(t\)</span> by intervention, given that we know <span class="math inline">\(X=x\)</span> in this patient</em></li>
+</ul>
+</section>
+<section class="slide level2 center">
+
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>using <em>treatment naive</em> prediction models for decision support</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/8q8oy7_meme_crossover.jpg" class="quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div><div class="column" style="width:50%;">
+<p>prediction-under-intervention</p>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="figs/peanutbutter_chocolatesprinkles.jpg" class="fragment quarto-figure quarto-figure-center"></p>
+</figure>
+</div>
+</div></div>
+</section>
+<section id="estimand-for-prediction-under-intervention-models" class="slide level2 center">
+<h2>Estimand for prediction-under-intervention models</h2>
+<p>What is the estimand?</p>
+<ul>
+<li class="fragment">prediction: <span class="math inline">\(E[Y|X]\)</span></li>
+<li class="fragment">average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\)</span></li>
+<li class="fragment">conditional average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1),X] - E[Y|\text{do}(T=0),X]\)</span></li>
+<li class="fragment">prediction-under-intervention: <span class="math inline">\(E[Y|\text{do}(T=t),X]\)</span></li>
+</ul>
+<p><span class="fragment">note:</span></p>
+<ul>
+<li class="fragment">from prediction-under-intervention models, the CATE can be derived</li>
+<li class="fragment">in these models and the CATE: <span class="math inline">\(T\)</span> has a causal interpretation, <span class="math inline">\(X\)</span> does not!
+<ul>
+<li class="fragment">i.e.&nbsp;<span class="math inline">\(X\)</span> does not <em>cause</em> the effect of treatment to be different</li>
+</ul></li>
+</ul>
+</section>
+<section id="developing-prediction-under-intervention-models" class="slide level2 center">
+<h2>Developing prediction-under-intervention models</h2>
+<ul>
+<li class="fragment"><p>requires causal inference assumptions or RCTs</p></li>
+<li class="fragment"><p>single RCTs often not big enough, or did not measure the right <span class="math inline">\(X\)</span>s</p></li>
+<li class="fragment"><p>when <span class="math inline">\(X\)</span> is not a sufficient adjustment set, but <span class="math inline">\(X+L\)</span> is, can use e.g.&nbsp;propensity score methods</p></li>
+<li class="fragment"><p>assumption of no unobserved confounding often hard to justify in observational data</p></li>
+<li class="fragment"><p>but there’s more between heaven (RCT) and earth (confounder adjustment)</p>
+<div>
+<ul>
+<li>proxy-variable methods <span class="citation" data-cites="miaoIdentifyingCausalEffects2018 vanamsterdamIndividualTreatmentEffect2022">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Miao, Geng, and Tchetgen Tchetgen 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam et al. 2022</a>)</span></li>
+<li>constant relative treatment effect assumption <span class="citation" data-cites="alaaMachineLearningGuide2021 vanamsterdamConditionalAverageTreatment2023 candidodosreisUpdatedPREDICTBreast2017">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Alaa et al. 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam and Ranganath 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Candido dos Reis et al. 2017</a>)</span></li>
+<li>diff-in-diff</li>
+<li>instrumental variable analysis <span class="citation" data-cites="waldFittingStraightLines1940 puliGeneralControlFunctions2021 hartfordDeepIVFlexible2017">(<a href="#/references" role="doc-biblioref" onclick="">Wald 1940</a>; <a href="#/references" role="doc-biblioref" onclick="">Puli and Ranganath 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">Hartford et al. 2017</a>)</span></li>
+<li>front-door analysis</li>
+</ul>
+</div></li>
+</ul>
+</section>
+<section id="evaluation-of-prediction-under-intervention-models" class="slide level2 center">
+<h2>Evaluation of prediction-under-intervention models</h2>
+<ul>
+<li class="fragment">prediction accuracy can be tested in RCTs, or in observational data with specialized methods accounting for confounding <span class="citation" data-cites="keoghPredictionInterventionsEvaluation2024">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Keogh and van Geloven 2024</a>)</span></li>
+<li class="fragment">in confounded observational data, typical metrics (e.g.&nbsp;AUC or calibration) are not sufficient as we want to predict well in data from <em>other distribution than observed data</em> (i.e.&nbsp;other treatment decisions)</li>
+<li class="fragment">a new <em>policy</em> can be evaluated in historic RCTs <span class="citation" data-cites="karmaliBloodPressureloweringTreatment2018">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Karmali et al. 2018</a>)</span></li>
+<li class="fragment">ultimate test is cluster RCT</li>
+<li class="fragment">if not perfect, likely a better recipe than <em>treatment-naive</em> models</li>
+</ul>
+</section></section>
+<section>
+<section id="b.-improving-non-causal-prediction-models-with-causality" class="title-slide slide level1 center">
+<h1>2b. improving non-causal prediction models with causality</h1>
+<ul>
+<li class="fragment">interpretability</li>
+<li class="fragment">robustness / ‘spurious correlations’ / generalization</li>
+<li class="fragment">fairness</li>
+<li class="fragment">selection bias</li>
+</ul>
+</section>
+<section id="interpretability" class="slide level2 center">
+<h2>Interpretability</h2>
+<ul>
+<li class="fragment">end-users (e.g.&nbsp;doctors) often want to understand <em>why</em> a prediction model returns a certain prediction</li>
+<li class="fragment">this has two possible interpretations:
+<ol type="a">
+<li class="fragment">explain the model (i.e.&nbsp;the computations)</li>
+<li class="fragment">explain the world (i.e.&nbsp;why is this patient at high risk of a certain outcome)</li>
+</ol></li>
+<li class="fragment"><ol start="2" type="a">
+<li class="fragment">often has a causal connotation, though achieving this is may be unfeasible as you need causal assumptions on all covariates (rember table 2 fallacy)</li>
+</ol></li>
+</ul>
+</section>
+<section id="robustness-spurious-correlations-generalization" class="slide level2 center">
+<h2>Robustness / spurious correlations / generalization</h2>
+<ul>
+<li class="fragment">prediction models are developed in some data, but are intended to be used elsewhere (in location, time, other)</li>
+<li class="fragment">in causal language, shifts in distributions can be denoted as interventions on specific nodes</li>
+<li class="fragment">prediction models that include (direct) causes may be more robust to changes as the chain between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is shorter</li>
+<li class="fragment">some machine learning algorithms like deep learning are very good at detecting ‘background’ signals, e.g.:
+<ul>
+<li class="fragment">detect the scanner type from a CT-scanner
+<ul>
+<li class="fragment">if hospital A has scanner type 1 and hospital B has scanner type 2</li>
+<li class="fragment">and the outcome rates differ between the hospitals, models may (mis)use the scanner type to predict the outcome</li>
+<li class="fragment">what will the model predict in hospital C? or when A or B buy a scanner of different type?</li>
+</ul></li>
+<li class="fragment">may be preventable with causality</li>
+</ul></li>
+</ul>
+</section>
+<section id="fairness" class="slide level2 center">
+<h2>Fairness</h2>
+<ul>
+<li class="fragment">in the historic distribution, outcomes may be affected by unequal treatment of certain demographic groups</li>
+<li class="fragment">instead of perpetuating inequities, we may want to design models that diminish them</li>
+<li class="fragment">this means intervening in the distribution (= a causal task)</li>
+<li class="fragment">causality has a strong vocabulary for formalizing fairness</li>
+<li class="fragment">actually achieving fairness is highly non-trivial, not in the least part due to unclear definitions</li>
+<li class="fragment">chosing to not include sensitive attributes in a prediction model is often not gauranteed to improve fairness</li>
+</ul>
+</section>
+<section id="selection-bias" class="slide level2 center">
+<h2>Selection bias</h2>
+<ul>
+<li class="fragment">have samples from some selected subpopulation
+<ul>
+<li class="fragment">university hospital</li>
+<li class="fragment">older men</li>
+</ul></li>
+<li class="fragment">want to generalize to another subpopulation
+<ul>
+<li class="fragment">general practitioner</li>
+<li class="fragment">younger women</li>
+</ul></li>
+<li class="fragment">use DAGs to express the difference between source and target population</li>
+<li class="fragment">calculate e.g.&nbsp;expected performance on target population with techniques like importance sampling</li>
+</ul>
+</section>
+<section id="wrap-up" class="slide level2 center">
+<h2>Wrap-up</h2>
+<ul>
+<li class="fragment">predictions can have causal interpretations</li>
+<li class="fragment">prediction-under-intervention: causal with respect to treatment (not covariates)</li>
+<li class="fragment">mis-use of non-causal models for causal tasks (e.g.&nbsp;prediction model for treatment decisions) is perilous
+<ul>
+<li class="fragment">always think about the policy change and its effect on outcomes</li>
+</ul></li>
+<li class="fragment">evaluate policy changes with cluster RCTs, or historic RCTs and importance sampling</li>
+</ul>
+</section>
+<section id="sec-is" class="slide level2 nonincremental center">
+<h2>Proof of importance sampling unbiasedness</h2>
+<p>assuming <span class="math inline">\(x\)</span> is discrete, otherwise replace sums with integrals for continuous <span class="math inline">\(x\)</span></p>
+<p>want to compute the expected value of <span class="math inline">\(g(x)\)</span> over distribution <span class="math inline">\(p \sim q\)</span>, but have samples from other distribution <span class="math inline">\(x \sim q\)</span></p>
+<p><span class="math display">\[E_{x \sim q} \left[ \frac{p(x)}{q(x)} g(x) \right] = \sum_x q(x) \left( \frac{p(x)}{q(x)} g(x) \right) = \sum_x p(x) g(x) = E_{x \sim p} \left[g(x) \right]\]</span></p>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+
+<div class="quarto-auto-generated-content">
+<p><img src="../umcu_blue.png" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-alaaMachineLearningGuide2021" class="csl-entry" role="listitem">
+Alaa, Ahmed M., Deepti Gurdasani, Adrian L. Harris, Jem Rashbass, and Mihaela van der Schaar. 2021. <span>“Machine Learning to Guide the Use of Adjuvant Therapies for Breast Cancer.”</span> <em>Nature Machine Intelligence</em>, June, 1–11. <a href="https://doi.org/gk6bh7">https://doi.org/gk6bh7</a>.
+</div>
+<div id="ref-vanamsterdamConditionalAverageTreatment2023" class="csl-entry" role="listitem">
+Amsterdam, Wouter A. C. van, and Rajesh Ranganath. 2023. <span>“Conditional Average Treatment Effect Estimation with Marginally Constrained Models.”</span> <em>Journal of Causal Inference</em> 11 (1): 20220027. <a href="https://doi.org/10.1515/jci-2022-0027">https://doi.org/10.1515/jci-2022-0027</a>.
+</div>
+<div id="ref-vanamsterdamIndividualTreatmentEffect2022" class="csl-entry" role="listitem">
+Amsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, Gijs A. Bartholomeus, Aahlad Manas Puli, Pim A. de Jong, Tim Leiner, Anne S. R. van Lindert, Marinus J. C. Eijkemans, and Rajesh Ranganath. 2022. <span>“Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage <span>III</span> Non-Small Cell Lung Cancer.”</span> <em>Scientific Reports</em> 12 (1, 1): 5848. <a href="https://doi.org/10.1038/s41598-022-09775-9">https://doi.org/10.1038/s41598-022-09775-9</a>.
+</div>
+<div id="ref-candidodosreisUpdatedPREDICTBreast2017" class="csl-entry" role="listitem">
+Candido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, David Greenberg, Jem Rashbass, Marjanka K. Schmidt, Alexandra J. van den Broek, et al. 2017. <span>“An Updated <span>PREDICT</span> Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.”</span> <em>Breast Cancer Research</em> 19 (1): 58. <a href="https://doi.org/gbhgpq">https://doi.org/gbhgpq</a>.
+</div>
+<div id="ref-collinsTRIPODAIStatement2024" class="csl-entry" role="listitem">
+Collins, Gary S., Karel G. M. Moons, Paula Dhiman, Richard D. Riley, Andrew L. Beam, Ben Van Calster, Marzyeh Ghassemi, et al. 2024. <span>“<span>TRIPOD</span>+<span>AI</span> Statement: Updated Guidance for Reporting Clinical Prediction Models That Use Regression or Machine Learning Methods.”</span> <em>BMJ</em> 385 (April): e078378. <a href="https://doi.org/10.1136/bmj-2023-078378">https://doi.org/10.1136/bmj-2023-078378</a>.
+</div>
+<div id="ref-cooperEvaluationMachinelearningMethods1997" class="csl-entry" role="listitem">
+Cooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, John Aronis, Bruce G. Buchanan, Richard Caruana, Michael J. Fine, et al. 1997. <span>“An Evaluation of Machine-Learning Methods for Predicting Pneumonia Mortality.”</span> <em>Artificial Intelligence in Medicine</em> 9 (2): 107–38. <a href="https://doi.org/10.1016/S0933-3657(96)00367-3">https://doi.org/10.1016/S0933-3657(96)00367-3</a>.
+</div>
+<div id="ref-hartfordDeepIVFlexible2017" class="csl-entry" role="listitem">
+Hartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. <span>“Deep <span>IV</span>: <span>A Flexible Approach</span> for <span>Counterfactual Prediction</span>.”</span> In <em>International <span>Conference</span> on <span>Machine Learning</span></em>, 1414–23. PMLR. <a href="https://proceedings.mlr.press/v70/hartford17a.html">https://proceedings.mlr.press/v70/hartford17a.html</a>.
+</div>
+<div id="ref-karmaliBloodPressureloweringTreatment2018" class="csl-entry" role="listitem">
+Karmali, Kunal N., Donald M. Lloyd-Jones, Joep van der Leeuw, David C. Goff Jr, Salim Yusuf, Alberto Zanchetti, Paul Glasziou, et al. 2018. <span>“Blood Pressure-Lowering Treatment Strategies Based on Cardiovascular Risk Versus Blood Pressure: <span>A</span> Meta-Analysis of Individual Participant Data.”</span> <em>PLOS Medicine</em> 15 (3): e1002538. <a href="https://doi.org/10.1371/journal.pmed.1002538">https://doi.org/10.1371/journal.pmed.1002538</a>.
+</div>
+<div id="ref-keoghPredictionInterventionsEvaluation2024" class="csl-entry" role="listitem">
+Keogh, Ruth H., and Nan van Geloven. 2024. <span>“Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.”</span> January 10, 2024. <a href="https://doi.org/10.48550/arXiv.2304.10005">https://doi.org/10.48550/arXiv.2304.10005</a>.
+</div>
+<div id="ref-miaoIdentifyingCausalEffects2018" class="csl-entry" role="listitem">
+Miao, Wang, Zhi Geng, and Eric J Tchetgen Tchetgen. 2018. <span>“Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.”</span> <em>Biometrika</em> 105 (4): 987–93. <a href="https://doi.org/10.1093/biomet/asy038">https://doi.org/10.1093/biomet/asy038</a>.
+</div>
+<div id="ref-puliGeneralControlFunctions2021" class="csl-entry" role="listitem">
+Puli, Aahlad Manas, and Rajesh Ranganath. 2021. <span>“General <span>Control Functions</span> for <span>Causal Effect Estimation</span> from <span>Instrumental Variables</span>.”</span> <a href="http://arxiv.org/abs/1907.03451">http://arxiv.org/abs/1907.03451</a>.
+</div>
+<div id="ref-waldFittingStraightLines1940" class="csl-entry" role="listitem">
+Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</span> If <span>Both Variables</span> Are <span>Subject</span> to <span>Error</span>.”</span> <em>The Annals of Mathematical Statistics</em> 11 (3): 284–300. <a href="https://doi.org/10.1214/aoms/1177731868">https://doi.org/10.1214/aoms/1177731868</a>.
+</div>
+</div>
+</section></section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const onCopySuccess = function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      }
+      const getTextToCopy = function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+        text: getTextToCopy
+      });
+      clipboard.on('success', onCopySuccess);
+      if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+        // For code content inside modals, clipBoardJS needs to be initialized with a container option
+        // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+        const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+          text: getTextToCopy,
+          container: window.document.getElementById('quarto-embedded-source-code-modal')
+        });
+        clipboardModal.on('success', onCopySuccess);
+      }
+        var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+        var mailtoRegex = new RegExp(/^mailto:/);
+          var filterRegex = new RegExp("https:\/\/vanAmsterdam\.github\.io\/causal-data-science-summerschool\/");
+        var isInternal = (href) => {
+            return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+        }
+        // Inspect non-navigation links and adorn them if external
+     	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+        for (var i=0; i<links.length; i++) {
+          const link = links[i];
+          if (!isInternal(link.href)) {
+            // undo the damage that might have been done by quarto-nav.js in the case of
+            // links that we want to consider external
+            if (link.dataset.originalHref !== undefined) {
+              link.href = link.dataset.originalHref;
+            }
+          }
+        }
+      function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+        const config = {
+          allowHTML: true,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start',
+        };
+        if (contentFn) {
+          config.content = contentFn;
+        }
+        if (onTriggerFn) {
+          config.onTrigger = onTriggerFn;
+        }
+        if (onUntriggerFn) {
+          config.onUntrigger = onUntriggerFn;
+        }
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note) {
+            return note.innerHTML;
+          } else {
+            return "";
+          }
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>
