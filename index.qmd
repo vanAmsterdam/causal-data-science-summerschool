@@ -58,7 +58,7 @@ Learn causal inference and causal data science!
 | 12:00 - 13:30 | LUNCH     |                                               | |
 | 13:30 - 14:15 | Lecture   | Causal Structure Learning I                   |[pdf](lectures/day4-datascience/Day4_p2.pdf) |
 | 14:30 - 15:00 | Lecture   | Causal Structure Learning II                  | |
-| 15:15 - 16:30 | practical | Causal Structure Learning                     |
+| 15:15 - 16:30 | practical | Causal Structure Learning                     |[html](practicals/42_discovery/day4_p2.html)
 
 ### Day 5: Advanced Topics in Causal Inference
 
