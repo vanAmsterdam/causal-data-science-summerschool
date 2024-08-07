@@ -196,9 +196,9 @@ answer:
 
 ### step 1. abduction: infer John's u
 
-John's expected survival time with the program (which he had) was 35 years.
+John's expected survival time with the program (which he had) was 40 years.
 He lived for 10 years.
-We can infer that his $u=-25$
+We can infer that his $u=-30$
 
 ### step 2. action: modify the treatment
 
@@ -206,11 +206,13 @@ We update his treatment status to 'no weight-loss-program', the formula is now t
 
 ### step 3. predict:
 
-Given John's $u=-25$ and his other observed values, we can now calculate that his expected survival time was $5$ years if he would not have taken the weight-loss program.
+Given John's $u=-30$ and his other observed values, we can now calculate that his expected survival time was $5$ years if he would not have taken the weight-loss program.
 
 ### 
 
 :::
+
+## TODO: add example where treatment effect depends on U
 
 # Meta-learners
 
