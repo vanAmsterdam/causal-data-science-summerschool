@@ -335,7 +335,7 @@ What to do?
 1.  Evaluate policy change (cluster randomized controlled trial)
 2.  Build models that are likely to have value for decision making
 
-# How to evaluate the effect of a new treatment policy?
+# How to evaluate the effect of a new treatment policy?{#sec-modeleval}
 
 ## Deploying a model is an intervention that changes the way treatment decisions are made
 
@@ -388,7 +388,7 @@ was the model predicting anything sensible?
    - observed distribution $q(t|x) = \pi_0(x)$ (the propensity score)
    - this is why propensity score reweighting mimics an RCT
 
-## Special cases for importance sampling and policy evaluation
+## Special cases for importance sampling and policy evaluation{#sec-policyeval}
 
 2. have historic RCT data, want to evaluate new policy $\pi_1$
    - target distribution $p(t|x)=\pi_1(x)$
@@ -536,6 +536,8 @@ What is the estimand?
 
   :::
 
+- not covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g. blood pressure control with multiple follow-up visits)
+
 ## Evaluation of prediction-under-intervention models
 
 - prediction accuracy can be tested in RCTs, or in observational data with specialized methods accounting for confounding [e.g. @keoghPredictionInterventionsEvaluation2024]
@@ -598,14 +600,17 @@ What is the estimand?
 - mis-use of non-causal models for causal tasks (e.g. prediction model for treatment decisions) is perilous
   - always think about the policy change and its effect on outcomes
 - evaluate policy changes with cluster RCTs, or historic RCTs and importance sampling
+- causal thinking may improve other aspects of non-causal prediction models such as robustness, fairness, generalization
 
 ## Proof of importance sampling unbiasedness{#sec-is .nonincremental}
 
 assuming $x$ is discrete, otherwise replace sums with integrals for continuous $x$
 
-want to compute the expected value of $g(x)$ over distribution $p \sim q$, but have samples from other distribution $x \sim q$
+want to compute the expected value of $g(x)$ over distribution $p$, but we have samples from another distribution $x \sim q$
 
 
 $$E_{x \sim q} \left[ \frac{p(x)}{q(x)} g(x) \right] = \sum_x q(x) \left( \frac{p(x)}{q(x)} g(x) \right) = \sum_x p(x) g(x) = E_{x \sim p} \left[g(x) \right]$$
+
+this assumes $q(x)>0$ whenever $p(x)>0$ for the ratio $p/q$ to be defined
 
 ## References
