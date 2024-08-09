@@ -10,6 +10,8 @@ Dates: Aug 5th - Aug 10th 2024
 
 Learn causal inference and causal data science!
 
+Please fill in the participante evaluation form [here](https://forms.gle/k8aUfkYUi6iCSQ2f8)
+
 ## Schedule
 
 ### Day 1: Intro & Potential Outcomes
@@ -64,9 +66,9 @@ Learn causal inference and causal data science!
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   |[pdf](lectures/day5/Day5_Part1.pdf) |
-| 10:00 - 10:45 | Lecture  | When traditional methods fail                                         |[pdf](lectures/day5/Day5_Part2.pdf)  |
-| 11:00 - 12:00 | Lecture  | Causal Inference in Quasi-Experimental and Policy Evaluation settings |[pdf](lectures/day5/Day5_PolicyEvaluation.pdf)  |
+| 09:00 - 09:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   |[pdf](lectures/day5/Day5_Part1.pdf) [ppt](lectures/day5/Day5_Part1.pptx)|
+| 10:00 - 10:45 | Lecture  | When traditional methods fail                                         |[pdf](lectures/day5/Day5_Part2.pdf)  [ppt](lectures/day5/Day5_Part2.pptx)|
+| 11:00 - 12:00 | Lecture  | Causal Inference in Quasi-Experimental and Policy Evaluation settings |[pdf](lectures/day5/Day5_PolicyEvaluation.pdf)  [ppt](lectures/day5/Day5_Part2.pptx)|
 | 12.00 - 12.45 |          | Q&A and borrel                                                        | |
 
 ## Instructors
