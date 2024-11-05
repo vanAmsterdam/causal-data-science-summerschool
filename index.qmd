@@ -80,7 +80,7 @@ Please fill in the participante evaluation form [here](https://forms.gle/k8aUfkY
 ## Links
 
 - Course home on [utrechtsummerschool.nl](https://utrechtsummerschool.nl/courses/healthcare/introduction-to-causal-inference-and-causal-data-science)
-- Github repository for the materials of this course [https://github.com/vanAmsterdam/causal-data-science-summerschool]
+- Github repository for the materials of this course [https://github.com/vanAmsterdam/causal-data-science-summerschool](https://github.com/vanAmsterdam/causal-data-science-summerschool)
 
 ## License & disclaimer
 
