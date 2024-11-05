@@ -532,8 +532,8 @@
     "text": "Special cases for importance sampling and policy evaluation\n\npropensity score reweighting:\n\ntarget distribution \\(p(t|x)=p(t)\\) (as in RCT)\nobserved distribution \\(q(t|x) = \\pi_0(x)\\) (the propensity score)\nthis is why propensity score reweighting mimics an RCT"
   },
   {
-    "objectID": "lectures/day41-prediction/index.html#special-cases-for-importance-sampling-and-policy-evaluation-1",
-    "href": "lectures/day41-prediction/index.html#special-cases-for-importance-sampling-and-policy-evaluation-1",
+    "objectID": "lectures/day41-prediction/index.html#sec-policyeval",
+    "href": "lectures/day41-prediction/index.html#sec-policyeval",
     "title": "Causal perspectives on prediction modeling",
     "section": "Special cases for importance sampling and policy evaluation",
     "text": "Special cases for importance sampling and policy evaluation\n\nhave historic RCT data, want to evaluate new policy \\(\\pi_1\\)\n\ntarget distribution \\(p(t|x)=\\pi_1(x)\\)\nobserved distribution \\(q(t|x) = 0.5\\)\nnote: when \\(\\pi_1(x)\\) is deterministic (e.g. give the treatment when \\(f(x) &gt; 0.1\\)), we get the following:\n\nwhen randomized treatment is concordant with \\(\\pi_1\\), keep the patient (weight = 1), otherwise, remove from the data (weight = 0)\ncalculate average outcomes in the kept patients\n\nthis way, multiple alternative policies may be evaluated\n\nhave historic observational data, want to evaluate new policy \\(\\pi_1\\):\n\ntarget distribution \\(p(t|x)=\\pi_1(x)\\)\nobserved distribution \\(q(t|x) = \\pi_0(x)\\)\nwe need to estimate \\(q\\) (i.e. the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)"
@@ -634,7 +634,7 @@
     "href": "lectures/day41-prediction/index.html#wrap-up",
     "title": "Causal perspectives on prediction modeling",
     "section": "Wrap-up",
-    "text": "Wrap-up\n\npredictions can have causal interpretations\nprediction-under-intervention: causal with respect to treatment (not covariates)\nmis-use of non-causal models for causal tasks (e.g. prediction model for treatment decisions) is perilous\n\nalways think about the policy change and its effect on outcomes\n\nevaluate policy changes with cluster RCTs, or historic RCTs and importance sampling"
+    "text": "Wrap-up\n\npredictions can have causal interpretations\nprediction-under-intervention: causal with respect to treatment (not covariates)\nmis-use of non-causal models for causal tasks (e.g. prediction model for treatment decisions) is perilous\n\nalways think about the policy change and its effect on outcomes\n\nevaluate policy changes with cluster RCTs, or historic RCTs and importance sampling\ncausal thinking may improve other aspects of non-causal prediction models such as robustness, fairness, generalization"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#sec-is",
@@ -662,14 +662,14 @@
     "href": "index.html#course-objectives",
     "title": "Causal Inference and Causal Data Science Summerschool",
     "section": "Course objectives",
-    "text": "Course objectives\nLearn causal inference and causal data science!"
+    "text": "Course objectives\nLearn causal inference and causal data science!\nPlease fill in the participante evaluation form here"
   },
   {
     "objectID": "index.html#schedule",
     "href": "index.html#schedule",
     "title": "Causal Inference and Causal Data Science Summerschool",
     "section": "Schedule",
-    "text": "Schedule\n\nDay 1: Intro & Potential Outcomes\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:30\nLecture\nCausal Inference: What, Why, and How\npdf\n\n\n09:30 - 10:45\nLecture\nIntro to Potential Outcomes I\n\n\n\n11:00 - 12:15\nPractical\nCausal assumptions\nhtml\n\n\n12:30 - 13:15\nLUNCH\n\n\n\n\n13:15 - 14:00\nLecture\nIntro to Potential Outcomes II\n\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods I: Stratification, Matching and Propensity Scores\n\n\n\n15:15 - 16:30\nPractical\nAdjustment Methods I\nhtml\n\n\n\n\n\nDay 2: DAGs and SCMs\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to DAGs I\nhtml pdf\n\n\n09:45 - 10:45\nLecture\nIntro to DAGs II\n\n\n\n11:00 - 12:00\npractical\nDrawing and Using DAGs I\nhtml\n\n\n12:00 - 13:00\nLUNCH\n\n\n\n\n13:00 - 14:00\nLecture\nStructural Causal Models\nhtml pdf\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods II: Regression and Outcome Adjustment\nhtml pdf\n\n\n15:15 - 16:30\npractical\nSCMs and meta-learners\nhtml\n\n\n\n\n\nDay 3: Target Trial Emulation\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to Trials and Target Trials I\npdf\n\n\n10:00 - 10:45\nLecture\nTarget Trials Emulation I\n\n\n\n11:00 - 12:00\npractical\nTarget Trials in Practice I\nhtml\n\n\n12:30 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nTarget Trials Emulation II\n\n\n\n14:30 - 15:00\nLecture\nTarget Trials Emulation III\n\n\n\n15:15 - 16:30\npractical\nTarget Trials in practice II\n\n\n\n\n\n\nDay 4: Causal Data Science\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nCausal Perspectives on Prediction Modeling I\nhtml pdf\n\n\n10:00 - 10:45\nLecture\nCausal Perspectives on Prediction Modeling II\n\n\n\n11:00 - 12:00\npractical\nCausal Perspectives on Prediction Modeling\nhtml\n\n\n12:00 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nCausal Structure Learning I\npdf\n\n\n14:30 - 15:00\nLecture\nCausal Structure Learning II\n\n\n\n15:15 - 16:30\npractical\nCausal Structure Learning\nhtml\n\n\n\n\n\nDay 5: Advanced Topics in Causal Inference\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nMediation, Instrumental Variables and DAGs in Longitudinal settings\npdf\n\n\n10:00 - 10:45\nLecture\nWhen traditional methods fail\npdf\n\n\n11:00 - 12:00\nLecture\nCausal Inference in Quasi-Experimental and Policy Evaluation settings\npdf\n\n\n12.00 - 12.45\n\nQ&A and borrel"
+    "text": "Schedule\n\nDay 1: Intro & Potential Outcomes\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:30\nLecture\nCausal Inference: What, Why, and How\npdf\n\n\n09:30 - 10:45\nLecture\nIntro to Potential Outcomes I\n\n\n\n11:00 - 12:15\nPractical\nCausal assumptions\nhtml\n\n\n12:30 - 13:15\nLUNCH\n\n\n\n\n13:15 - 14:00\nLecture\nIntro to Potential Outcomes II\n\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods I: Stratification, Matching and Propensity Scores\n\n\n\n15:15 - 16:30\nPractical\nAdjustment Methods I\nhtml\n\n\n\n\n\nDay 2: DAGs and SCMs\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to DAGs I\nhtml pdf\n\n\n09:45 - 10:45\nLecture\nIntro to DAGs II\n\n\n\n11:00 - 12:00\npractical\nDrawing and Using DAGs I\nhtml\n\n\n12:00 - 13:00\nLUNCH\n\n\n\n\n13:00 - 14:00\nLecture\nStructural Causal Models\nhtml pdf\n\n\n14:15 - 15:00\nLecture\nAdjustment Methods II: Regression and Outcome Adjustment\nhtml pdf\n\n\n15:15 - 16:30\npractical\nSCMs and meta-learners\nhtml\n\n\n\n\n\nDay 3: Target Trial Emulation\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nIntro to Trials and Target Trials I\npdf\n\n\n10:00 - 10:45\nLecture\nTarget Trials Emulation I\n\n\n\n11:00 - 12:00\npractical\nTarget Trials in Practice I\nhtml\n\n\n12:30 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nTarget Trials Emulation II\n\n\n\n14:30 - 15:00\nLecture\nTarget Trials Emulation III\n\n\n\n15:15 - 16:30\npractical\nTarget Trials in practice II\n\n\n\n\n\n\nDay 4: Causal Data Science\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nCausal Perspectives on Prediction Modeling I\nhtml pdf\n\n\n10:00 - 10:45\nLecture\nCausal Perspectives on Prediction Modeling II\n\n\n\n11:00 - 12:00\npractical\nCausal Perspectives on Prediction Modeling\nhtml\n\n\n12:00 - 13:30\nLUNCH\n\n\n\n\n13:30 - 14:15\nLecture\nCausal Structure Learning I\npdf\n\n\n14:30 - 15:00\nLecture\nCausal Structure Learning II\n\n\n\n15:15 - 16:30\npractical\nCausal Structure Learning\nhtml\n\n\n\n\n\nDay 5: Advanced Topics in Causal Inference\n\n\n\ntime\nactivity\ncontent\nlink\n\n\n\n\n09:00 - 09:45\nLecture\nMediation, Instrumental Variables and DAGs in Longitudinal settings\npdf ppt\n\n\n10:00 - 10:45\nLecture\nWhen traditional methods fail\npdf ppt\n\n\n11:00 - 12:00\nLecture\nCausal Inference in Quasi-Experimental and Policy Evaluation settings\npdf ppt\n\n\n12.00 - 12.45\n\nQ&A and borrel"
   },
   {
     "objectID": "index.html#instructors",
@@ -683,7 +683,7 @@
     "href": "index.html#links",
     "title": "Causal Inference and Causal Data Science Summerschool",
     "section": "Links",
-    "text": "Links\n\nCourse home on utrechtsummerschool.nl"
+    "text": "Links\n\nCourse home on utrechtsummerschool.nl\nGithub repository for the materials of this course [https://github.com/vanAmsterdam/causal-data-science-summerschool]"
   },
   {
     "objectID": "index.html#license-disclaimer",
@@ -781,14 +781,14 @@
     "href": "lectures/day2-scms/lec1.html#making-dags-for-our-examples",
     "title": "Causal Directed Acylic Graphs",
     "section": "Making DAGs for our examples:",
-    "text": "Making DAGs for our examples:\nThe pregnancy DAG\n\n\n\n\n\n\n\n\n\n\nassumptions:\n\nwomen with high risk of bad neonatal outcomes (pregnancy risk) are referred to the hospital for delivery\nhospital deliveries lead to better outcomes for babies as more emergency treatments possible\nboth pregnancy risk and hospital delivery cause neonatal outcome\n\nthe other variable pregnancy risk is a common cause of the treatment (hospital delivery) and the outcome (this is what’s called a confounder)"
+    "text": "Making DAGs for our examples:\nThe pregnancy DAG\n\n\n\n\n\n\nFigure 2\n\n\n\n\nassumptions:\n\nwomen with high risk of bad neonatal outcomes (pregnancy risk) are referred to the hospital for delivery\nhospital deliveries lead to better outcomes for babies as more emergency treatments possible\nboth pregnancy risk and hospital delivery cause neonatal outcome\n\nthe other variable pregnancy risk is a common cause of the treatment (hospital delivery) and the outcome (this is what’s called a confounder)"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#making-dags-for-our-examples-1",
     "href": "lectures/day2-scms/lec1.html#making-dags-for-our-examples-1",
     "title": "Causal Directed Acylic Graphs",
     "section": "Making DAGs for our examples:",
-    "text": "Making DAGs for our examples:\nThe hernia DAG\n\n\n\n\n\n\n\n\n\n\nassumptions:\n\npatients admitted to the hospital keep more bed rest than those who remain at home\nbed rest leads to lower recovery times thus less walking patients after 1 week\n\nthe other variable bed rest is a mediator between the treatment (hospitalized) and the outcome"
+    "text": "Making DAGs for our examples:\nThe hernia DAG\n\n\n\n\n\n\nFigure 3\n\n\n\n\nassumptions:\n\npatients admitted to the hospital keep more bed rest than those who remain at home\nbed rest leads to lower recovery times thus less walking patients after 1 week\n\nthe other variable bed rest is a mediator between the treatment (hospitalized) and the outcome"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#causal-dags-to-the-rescue",
@@ -984,7 +984,7 @@
     "href": "lectures/day2-scms/lec1.html#collider-bias---tinder",
     "title": "Causal Directed Acylic Graphs",
     "section": "Collider bias - Tinder",
-    "text": "Collider bias - Tinder\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) collider\n\n\n\n\n\nFigure 21: \\[\\begin{align}\n    \\text{intelligent} &\\sim U[0,1] \\\\\n    \\text{attractive}  &\\sim U[0,1] \\\\\n    \\text{on tinder}   &= I_{\\text{intelligent} + \\text{attractive} &lt; 1}\n\\end{align}\\]"
+    "text": "Collider bias - Tinder\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n(a) collider\n\n\n\n\n\nFigure 21: \\[\\begin{align}\n    \\text{intelligent} &\\sim U[0,1] \\\\\n    \\text{attractive}  &\\sim U[0,1] \\\\\n    \\text{on tinder}   &= I_{\\text{intelligent} + \\text{attractive} &lt; 1}\n\\end{align}\\]\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 22"
   },
   {
     "objectID": "lectures/day2-scms/lec1.html#conditioning-on-a-collider-creates-dependence-of-its-parents",
