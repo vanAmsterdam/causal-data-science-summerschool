@@ -2,7 +2,7 @@
 title: "Causal Inference and Causal Data Science Summerschool"
 ---
 
-Dates: Aug 5th - Aug 10th 2024
+Dates: July 7-11 2025
 
 **please have a look at the setup-document [here](practicals/00_setup/setup.html) *before* the first day and make sure you have a working R installation with the required packages**
 
