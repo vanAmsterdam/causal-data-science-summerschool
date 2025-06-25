@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Causal Inference and Causal Data Science Summerschool</title>
+<title>lec4-outline – Causal Inference and Causal Data Science Summerschool</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +23,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a98ec624fb63d9b712fc3a6f62e2b305.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-a98ec624fb63d9b712fc3a6f62e2b305.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,7 +69,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -79,7 +79,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Causal Inference Summerschool</span>
     </a>
   </div>
@@ -98,340 +98,65 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#course-objectives" id="toc-course-objectives" class="nav-link active" data-scroll-target="#course-objectives">Course objectives</a></li>
-  <li><a href="#schedule" id="toc-schedule" class="nav-link" data-scroll-target="#schedule">Schedule</a>
-  <ul class="collapse">
-  <li><a href="#day-1-intro-potential-outcomes" id="toc-day-1-intro-potential-outcomes" class="nav-link" data-scroll-target="#day-1-intro-potential-outcomes">Day 1: Intro &amp; Potential Outcomes</a></li>
-  <li><a href="#day-2-dags-and-scms" id="toc-day-2-dags-and-scms" class="nav-link" data-scroll-target="#day-2-dags-and-scms">Day 2: DAGs and SCMs</a></li>
-  <li><a href="#day-3-target-trial-emulation" id="toc-day-3-target-trial-emulation" class="nav-link" data-scroll-target="#day-3-target-trial-emulation">Day 3: Target Trial Emulation</a></li>
-  <li><a href="#day-4-causal-data-science" id="toc-day-4-causal-data-science" class="nav-link" data-scroll-target="#day-4-causal-data-science">Day 4: Causal Data Science</a></li>
-  <li><a href="#day-5-advanced-topics-in-causal-inference" id="toc-day-5-advanced-topics-in-causal-inference" class="nav-link" data-scroll-target="#day-5-advanced-topics-in-causal-inference">Day 5: Advanced Topics in Causal Inference</a></li>
-  </ul></li>
-  <li><a href="#instructors" id="toc-instructors" class="nav-link" data-scroll-target="#instructors">Instructors</a></li>
-  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
-  <li><a href="#license-disclaimer" id="toc-license-disclaimer" class="nav-link" data-scroll-target="#license-disclaimer">License &amp; disclaimer</a></li>
+  <li><a href="#how-to-do-adjustment" id="toc-how-to-do-adjustment" class="nav-link active" data-scroll-target="#how-to-do-adjustment">How to do adjustment</a></li>
+  <li><a href="#limitations-of-dags-and-scms" id="toc-limitations-of-dags-and-scms" class="nav-link" data-scroll-target="#limitations-of-dags-and-scms">Limitations of DAGs and SCMs</a></li>
+  <li><a href="#scm-vs-potential-outcomes" id="toc-scm-vs-potential-outcomes" class="nav-link" data-scroll-target="#scm-vs-potential-outcomes">SCM vs potential outcomes</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Causal Inference and Causal Data Science Summerschool</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Dates: July 7-11 2025</p>
-<p><strong>please have a look at the setup-document <a href="practicals/00_setup/setup.html">here</a> <em>before</em> the first day and make sure you have a working R installation with the required packages</strong></p>
-<section id="course-objectives" class="level2">
-<h2 class="anchored" data-anchor-id="course-objectives">Course objectives</h2>
-<p>Learn causal inference and causal data science!</p>
-<p>Please fill in the participante evaluation form <a href="https://forms.gle/k8aUfkYUi6iCSQ2f8">here</a></p>
+<section id="how-to-find-adjustment-sets" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-find-adjustment-sets">How to find adjustment sets?</h2>
 </section>
-<section id="schedule" class="level2">
-<h2 class="anchored" data-anchor-id="schedule">Schedule</h2>
-<section id="day-1-intro-potential-outcomes" class="level3">
-<h3 class="anchored" data-anchor-id="day-1-intro-potential-outcomes">Day 1: Intro &amp; Potential Outcomes</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:30</td>
-<td>Lecture</td>
-<td>Causal Inference: What, Why, and How</td>
-<td><a href="lectures/day1-potentialoutcomes/lecture_day1.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>09:30 - 10:45</td>
-<td>Lecture</td>
-<td>Intro to Potential Outcomes I</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:15</td>
-<td>Practical</td>
-<td>Causal assumptions</td>
-<td><a href="practicals/11_poutcomes/day1_practical.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:30 - 13:15</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:15 - 14:00</td>
-<td>Lecture</td>
-<td>Intro to Potential Outcomes II</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14:15 - 15:00</td>
-<td>Lecture</td>
-<td>Adjustment Methods I: Stratification, Matching and Propensity Scores</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>Practical</td>
-<td>Adjustment Methods I</td>
-<td><a href="practicals/11_poutcomes/day1_practical2.html">html</a></td>
-</tr>
-</tbody>
-</table>
+<section id="valid-adjustment-sets" class="level2">
+<h2 class="anchored" data-anchor-id="valid-adjustment-sets">Valid adjustment sets</h2>
 </section>
-<section id="day-2-dags-and-scms" class="level3">
-<h3 class="anchored" data-anchor-id="day-2-dags-and-scms">Day 2: DAGs and SCMs</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Intro to DAGs I</td>
-<td><a href="lectures/day2-scms/lec1.html">html</a> <a href="lectures/day2-scms/lec1.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>09:45 - 10:45</td>
-<td>Lecture</td>
-<td>Intro to DAGs II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Drawing and Using DAGs I</td>
-<td><a href="practicals/21_dags/dags.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:00 - 13:00</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:00 - 14:00</td>
-<td>Lecture</td>
-<td>Structural Causal Models</td>
-<td><a href="lectures/day2-scms/lec3-scms.html">html</a> <a href="lectures/day2-scms/lec3-scms.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>14:15 - 15:00</td>
-<td>Lecture</td>
-<td>Adjustment Methods II: Regression and Outcome Adjustment</td>
-<td><a href="lectures/day2-scms/lec4.html">html</a> <a href="lectures/day2-scms/lec4.pdf">pdf</a></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>SCMs and meta-learners</td>
-<td><a href="practicals/22_scms/index.html">html</a></td>
-</tr>
-</tbody>
-</table>
+<section id="valid-adjustment-sets-picking-one" class="level2">
+<h2 class="anchored" data-anchor-id="valid-adjustment-sets-picking-one">Valid adjustment sets: picking one</h2>
 </section>
-<section id="day-3-target-trial-emulation" class="level3">
-<h3 class="anchored" data-anchor-id="day-3-target-trial-emulation">Day 3: Target Trial Emulation</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Intro to Trials and Target Trials I</td>
-<td><a href="lectures/day3-tte/LectureDay3.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>Target Trials Emulation I</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Target Trials in Practice I</td>
-<td><a href="practicals/31_tte/Practical.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:30 - 13:30</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:30 - 14:15</td>
-<td>Lecture</td>
-<td>Target Trials Emulation II</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14:30 - 15:00</td>
-<td>Lecture</td>
-<td>Target Trials Emulation III</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>Target Trials in practice II</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="how-to-do-adjustment" class="level1">
+<h1>How to do adjustment</h1>
+<section id="what-not-to-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-not-to-do">What not to do</h2>
 </section>
-<section id="day-4-causal-data-science" class="level3">
-<h3 class="anchored" data-anchor-id="day-4-causal-data-science">Day 4: Causal Data Science</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Causal Perspectives on Prediction Modeling I</td>
-<td><a href="lectures/day41-prediction/index.html">html</a> <a href="lectures/day41-prediction/prediction.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>Causal Perspectives on Prediction Modeling II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Causal Perspectives on Prediction Modeling</td>
-<td><a href="practicals/41_prediction/index.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:00 - 13:30</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:30 - 14:15</td>
-<td>Lecture</td>
-<td>Causal Structure Learning I</td>
-<td><a href="lectures/day4-datascience/Day4_p2.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>14:30 - 15:00</td>
-<td>Lecture</td>
-<td>Causal Structure Learning II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>Causal Structure Learning</td>
-<td><a href="practicals/42_discovery/day4_p2.html">html</a></td>
-</tr>
-</tbody>
-</table>
+<section id="adjustment-formula" class="level2">
+<h2 class="anchored" data-anchor-id="adjustment-formula">Adjustment formula</h2>
 </section>
-<section id="day-5-advanced-topics-in-causal-inference" class="level3">
-<h3 class="anchored" data-anchor-id="day-5-advanced-topics-in-causal-inference">Day 5: Advanced Topics in Causal Inference</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Mediation, Instrumental Variables and DAGs in Longitudinal settings</td>
-<td><a href="lectures/day5/Day5_Part1.pdf">pdf</a> <a href="lectures/day5/Day5_Part1.pptx">ppt</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>When traditional methods fail</td>
-<td><a href="lectures/day5/Day5_Part2.pdf">pdf</a> <a href="lectures/day5/Day5_Part2.pptx">ppt</a></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>Lecture</td>
-<td>Causal Inference in Quasi-Experimental and Policy Evaluation settings</td>
-<td><a href="lectures/day5/Day5_PolicyEvaluation.pdf">pdf</a> <a href="lectures/day5/Day5_Part2.pptx">ppt</a></td>
-</tr>
-<tr class="even">
-<td>12.00 - 12.45</td>
-<td></td>
-<td>Q&amp;A and borrel</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="target-queries" class="level2">
+<h2 class="anchored" data-anchor-id="target-queries">Target queries</h2>
+</section>
+<section id="the-simplest-case-linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="the-simplest-case-linear-regression">The simplest case: linear regression</h2>
+</section>
+<section id="sec-metalearners" class="level2">
+<h2 class="anchored" data-anchor-id="sec-metalearners">General estimators for the ATE and the CATE (meta-learners)</h2>
+</section>
+<section id="intuitive-way-pointers" class="level2">
+<h2 class="anchored" data-anchor-id="intuitive-way-pointers">Intuitive way-pointers:</h2>
+</section>
+<section id="where-does-the-variance-come-from" class="level2 non-incremental">
+<h2 class="non-incremental anchored" data-anchor-id="where-does-the-variance-come-from">Where does the variance come from?</h2>
 </section>
 </section>
-<section id="instructors" class="level2">
-<h2 class="anchored" data-anchor-id="instructors">Instructors</h2>
-<ul>
-<li><a href="https://oisinryan.org">Oisín Ryan</a> (coordinator)</li>
-<li><a href="https://research.umcutrecht.nl/researchers/bas-penning-de-vries">Bas Penning-de Vries</a></li>
-<li><a href="https://vanamsterdam.github.io">Wouter van Amsterdam</a></li>
-</ul>
+<section id="limitations-of-dags-and-scms" class="level1">
+<h1>Limitations of DAGs and SCMs</h1>
+<section id="making-dags" class="level2">
+<h2 class="anchored" data-anchor-id="making-dags">Making DAGs</h2>
 </section>
-<section id="links" class="level2">
-<h2 class="anchored" data-anchor-id="links">Links</h2>
-<ul>
-<li>Course home on <a href="https://utrechtsummerschool.nl/courses/healthcare/introduction-to-causal-inference-and-causal-data-science">utrechtsummerschool.nl</a></li>
-<li>Github repository for the materials of this course <a href="https://github.com/vanAmsterdam/causal-data-science-summerschool">https://github.com/vanAmsterdam/causal-data-science-summerschool</a></li>
-</ul>
+<section id="a003024-the-death-of-dags" class="level2">
+<h2 class="anchored" data-anchor-id="a003024-the-death-of-dags">A003024: The death of DAGs?</h2>
 </section>
-<section id="license-disclaimer" class="level2">
-<h2 class="anchored" data-anchor-id="license-disclaimer">License &amp; disclaimer</h2>
-<p>All course materials are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.</p>
-<p><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" class="img-fluid" alt="cc"> <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" class="img-fluid" alt="by"></p>
-<p>These course materials were developed with great care. If you find any inaccuracies please contact us.</p>
+<section id="do-we-need-to-consider-all-dags" class="level2">
+<h2 class="anchored" data-anchor-id="do-we-need-to-consider-all-dags">Do we need to consider all DAGs?</h2>
+</section>
+</section>
+<section id="scm-vs-potential-outcomes" class="level1">
+<h1>SCM vs potential outcomes</h1>
 
 
 </section>

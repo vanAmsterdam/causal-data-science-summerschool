@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Causal Inference and Causal Data Science Summerschool</title>
+<title>lec1-outline – Causal Inference and Causal Data Science Summerschool</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -23,23 +23,23 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-a98ec624fb63d9b712fc3a6f62e2b305.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-a98ec624fb63d9b712fc3a6f62e2b305.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -69,7 +69,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -79,7 +79,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">Causal Inference Summerschool</span>
     </a>
   </div>
@@ -98,342 +98,170 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#course-objectives" id="toc-course-objectives" class="nav-link active" data-scroll-target="#course-objectives">Course objectives</a></li>
-  <li><a href="#schedule" id="toc-schedule" class="nav-link" data-scroll-target="#schedule">Schedule</a>
-  <ul class="collapse">
-  <li><a href="#day-1-intro-potential-outcomes" id="toc-day-1-intro-potential-outcomes" class="nav-link" data-scroll-target="#day-1-intro-potential-outcomes">Day 1: Intro &amp; Potential Outcomes</a></li>
-  <li><a href="#day-2-dags-and-scms" id="toc-day-2-dags-and-scms" class="nav-link" data-scroll-target="#day-2-dags-and-scms">Day 2: DAGs and SCMs</a></li>
-  <li><a href="#day-3-target-trial-emulation" id="toc-day-3-target-trial-emulation" class="nav-link" data-scroll-target="#day-3-target-trial-emulation">Day 3: Target Trial Emulation</a></li>
-  <li><a href="#day-4-causal-data-science" id="toc-day-4-causal-data-science" class="nav-link" data-scroll-target="#day-4-causal-data-science">Day 4: Causal Data Science</a></li>
-  <li><a href="#day-5-advanced-topics-in-causal-inference" id="toc-day-5-advanced-topics-in-causal-inference" class="nav-link" data-scroll-target="#day-5-advanced-topics-in-causal-inference">Day 5: Advanced Topics in Causal Inference</a></li>
-  </ul></li>
-  <li><a href="#instructors" id="toc-instructors" class="nav-link" data-scroll-target="#instructors">Instructors</a></li>
-  <li><a href="#links" id="toc-links" class="nav-link" data-scroll-target="#links">Links</a></li>
-  <li><a href="#license-disclaimer" id="toc-license-disclaimer" class="nav-link" data-scroll-target="#license-disclaimer">License &amp; disclaimer</a></li>
+  <li><a href="#motivating-examples" id="toc-motivating-examples" class="nav-link active" data-scroll-target="#motivating-examples">Motivating examples</a></li>
+  <li><a href="#some-math-background-probabilites-and-assumptions" id="toc-some-math-background-probabilites-and-assumptions" class="nav-link" data-scroll-target="#some-math-background-probabilites-and-assumptions">Some math background: probabilites and assumptions</a></li>
+  <li><a href="#dag-definitions" id="toc-dag-definitions" class="nav-link" data-scroll-target="#dag-definitions">DAG definitions</a></li>
+  <li><a href="#dag-rules" id="toc-dag-rules" class="nav-link" data-scroll-target="#dag-rules">DAG rules</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Causal Inference and Causal Data Science Summerschool</h1>
-</div>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
-<div class="quarto-title-meta">
 
-    
-  
-    
-  </div>
-  
-
-
-</header>
-
-
-<p>Dates: July 7-11 2025</p>
-<p><strong>please have a look at the setup-document <a href="practicals/00_setup/setup.html">here</a> <em>before</em> the first day and make sure you have a working R installation with the required packages</strong></p>
-<section id="course-objectives" class="level2">
-<h2 class="anchored" data-anchor-id="course-objectives">Course objectives</h2>
-<p>Learn causal inference and causal data science!</p>
-<p>Please fill in the participante evaluation form <a href="https://forms.gle/k8aUfkYUi6iCSQ2f8">here</a></p>
+<section id="todays-lectures" class="level2">
+<h2 class="anchored" data-anchor-id="todays-lectures">Today’s lectures</h2>
 </section>
-<section id="schedule" class="level2">
-<h2 class="anchored" data-anchor-id="schedule">Schedule</h2>
-<section id="day-1-intro-potential-outcomes" class="level3">
-<h3 class="anchored" data-anchor-id="day-1-intro-potential-outcomes">Day 1: Intro &amp; Potential Outcomes</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:30</td>
-<td>Lecture</td>
-<td>Causal Inference: What, Why, and How</td>
-<td><a href="lectures/day1-potentialoutcomes/lecture_day1.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>09:30 - 10:45</td>
-<td>Lecture</td>
-<td>Intro to Potential Outcomes I</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:15</td>
-<td>Practical</td>
-<td>Causal assumptions</td>
-<td><a href="practicals/11_poutcomes/day1_practical.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:30 - 13:15</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:15 - 14:00</td>
-<td>Lecture</td>
-<td>Intro to Potential Outcomes II</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14:15 - 15:00</td>
-<td>Lecture</td>
-<td>Adjustment Methods I: Stratification, Matching and Propensity Scores</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>Practical</td>
-<td>Adjustment Methods I</td>
-<td><a href="practicals/11_poutcomes/day1_practical2.html">html</a></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="day-2-dags-and-scms" class="level3">
-<h3 class="anchored" data-anchor-id="day-2-dags-and-scms">Day 2: DAGs and SCMs</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Intro to DAGs I</td>
-<td><a href="lectures/day2-scms/lec1.html">html</a> <a href="lectures/day2-scms/lec1.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>09:45 - 10:45</td>
-<td>Lecture</td>
-<td>Intro to DAGs II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Drawing and Using DAGs I</td>
-<td><a href="practicals/21_dags/dags.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:00 - 13:00</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:00 - 14:00</td>
-<td>Lecture</td>
-<td>Structural Causal Models</td>
-<td><a href="lectures/day2-scms/lec3-scms.html">html</a> <a href="lectures/day2-scms/lec3-scms.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>14:15 - 15:00</td>
-<td>Lecture</td>
-<td>Adjustment Methods II: Regression and Outcome Adjustment</td>
-<td><a href="lectures/day2-scms/lec4.html">html</a> <a href="lectures/day2-scms/lec4.pdf">pdf</a></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>SCMs and meta-learners</td>
-<td><a href="practicals/22_scms/index.html">html</a></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="day-3-target-trial-emulation" class="level3">
-<h3 class="anchored" data-anchor-id="day-3-target-trial-emulation">Day 3: Target Trial Emulation</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Intro to Trials and Target Trials I</td>
-<td><a href="lectures/day3-tte/LectureDay3.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>Target Trials Emulation I</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Target Trials in Practice I</td>
-<td><a href="practicals/31_tte/Practical.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:30 - 13:30</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:30 - 14:15</td>
-<td>Lecture</td>
-<td>Target Trials Emulation II</td>
-<td></td>
-</tr>
-<tr class="even">
-<td>14:30 - 15:00</td>
-<td>Lecture</td>
-<td>Target Trials Emulation III</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>Target Trials in practice II</td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="day-4-causal-data-science" class="level3">
-<h3 class="anchored" data-anchor-id="day-4-causal-data-science">Day 4: Causal Data Science</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Causal Perspectives on Prediction Modeling I</td>
-<td><a href="lectures/day41-prediction/index.html">html</a> <a href="lectures/day41-prediction/prediction.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>Causal Perspectives on Prediction Modeling II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>practical</td>
-<td>Causal Perspectives on Prediction Modeling</td>
-<td><a href="practicals/41_prediction/index.html">html</a></td>
-</tr>
-<tr class="even">
-<td>12:00 - 13:30</td>
-<td>LUNCH</td>
-<td></td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>13:30 - 14:15</td>
-<td>Lecture</td>
-<td>Causal Structure Learning I</td>
-<td><a href="lectures/day4-datascience/Day4_p2.pdf">pdf</a></td>
-</tr>
-<tr class="even">
-<td>14:30 - 15:00</td>
-<td>Lecture</td>
-<td>Causal Structure Learning II</td>
-<td></td>
-</tr>
-<tr class="odd">
-<td>15:15 - 16:30</td>
-<td>practical</td>
-<td>Causal Structure Learning</td>
-<td><a href="practicals/42_discovery/day4_p2.html">html</a></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="day-5-advanced-topics-in-causal-inference" class="level3">
-<h3 class="anchored" data-anchor-id="day-5-advanced-topics-in-causal-inference">Day 5: Advanced Topics in Causal Inference</h3>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>time</th>
-<th>activity</th>
-<th>content</th>
-<th>link</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>09:00 - 09:45</td>
-<td>Lecture</td>
-<td>Mediation, Instrumental Variables and DAGs in Longitudinal settings</td>
-<td><a href="lectures/day5/Day5_Part1.pdf">pdf</a> <a href="lectures/day5/Day5_Part1.pptx">ppt</a></td>
-</tr>
-<tr class="even">
-<td>10:00 - 10:45</td>
-<td>Lecture</td>
-<td>When traditional methods fail</td>
-<td><a href="lectures/day5/Day5_Part2.pdf">pdf</a> <a href="lectures/day5/Day5_Part2.pptx">ppt</a></td>
-</tr>
-<tr class="odd">
-<td>11:00 - 12:00</td>
-<td>Lecture</td>
-<td>Causal Inference in Quasi-Experimental and Policy Evaluation settings</td>
-<td><a href="lectures/day5/Day5_PolicyEvaluation.pdf">pdf</a> <a href="lectures/day5/Day5_Part2.pptx">ppt</a></td>
-</tr>
-<tr class="even">
-<td>12.00 - 12.45</td>
-<td></td>
-<td>Q&amp;A and borrel</td>
-<td></td>
-</tr>
-</tbody>
-</table>
+<section id="causal-inference-frameworks" class="level2">
+<h2 class="anchored" data-anchor-id="causal-inference-frameworks">Causal inference frameworks</h2>
+<section id="what-are-they-for" class="level3">
+<h3 class="anchored" data-anchor-id="what-are-they-for">What are they for?</h3>
 </section>
 </section>
-<section id="instructors" class="level2">
-<h2 class="anchored" data-anchor-id="instructors">Instructors</h2>
-<ul>
-<li><a href="https://oisinryan.org">Oisín Ryan</a> (coordinator)</li>
-<li><a href="https://research.umcutrecht.nl/researchers/bas-penning-de-vries">Bas Penning-de Vries</a></li>
-<li><a href="https://vanamsterdam.github.io">Wouter van Amsterdam</a></li>
-</ul>
+<section id="causal-inference-frameworks-1" class="level2">
+<h2 class="anchored" data-anchor-id="causal-inference-frameworks-1">Causal inference frameworks</h2>
+<section id="why-learn-more-than-one" class="level3">
+<h3 class="anchored" data-anchor-id="why-learn-more-than-one">Why learn more than one?</h3>
 </section>
-<section id="links" class="level2">
-<h2 class="anchored" data-anchor-id="links">Links</h2>
-<ul>
-<li>Course home on <a href="https://utrechtsummerschool.nl/courses/healthcare/introduction-to-causal-inference-and-causal-data-science">utrechtsummerschool.nl</a></li>
-<li>Github repository for the materials of this course <a href="https://github.com/vanAmsterdam/causal-data-science-summerschool">https://github.com/vanAmsterdam/causal-data-science-summerschool</a></li>
-</ul>
 </section>
-<section id="license-disclaimer" class="level2">
-<h2 class="anchored" data-anchor-id="license-disclaimer">License &amp; disclaimer</h2>
-<p>All course materials are licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY-4.0</a>.</p>
-<p><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" class="img-fluid" alt="cc"> <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" class="img-fluid" alt="by"></p>
-<p>These course materials were developed with great care. If you find any inaccuracies please contact us.</p>
+<section id="lecture-1-2-topics" class="level2">
+<h2 class="anchored" data-anchor-id="lecture-1-2-topics">Lecture 1 &amp; 2 topics</h2>
+</section>
+<section id="motivating-examples" class="level1">
+<h1>Motivating examples</h1>
+<section id="example-task-are-hospital-deliveries-good-for-babies" class="level2">
+<h2 class="anchored" data-anchor-id="example-task-are-hospital-deliveries-good-for-babies">Example task: are hospital deliveries good for babies?</h2>
+</section>
+<section id="observed-data" class="level2">
+<h2 class="anchored" data-anchor-id="observed-data">Observed data</h2>
+</section>
+<section id="new-question-hernia" class="level2">
+<h2 class="anchored" data-anchor-id="new-question-hernia">New question: hernia</h2>
+</section>
+<section id="observed-data-2" class="level2">
+<h2 class="anchored" data-anchor-id="observed-data-2">Observed data 2</h2>
+</section>
+<section id="how-to-unravel-this" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-unravel-this">How to unravel this?</h2>
+</section>
+<section id="causal-directed-acyclic-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="causal-directed-acyclic-graphs">Causal Directed Acyclic Graphs</h2>
+<section id="diagram-that-represents-our-assumptions-on-causal-relations" class="level3">
+<h3 class="anchored" data-anchor-id="diagram-that-represents-our-assumptions-on-causal-relations">diagram that represents our assumptions on causal relations</h3>
+</section>
+</section>
+<section id="making-dags-for-our-examples" class="level2">
+<h2 class="anchored" data-anchor-id="making-dags-for-our-examples">Making DAGs for our examples:</h2>
+<section id="the-pregnancy-dag" class="level3">
+<h3 class="anchored" data-anchor-id="the-pregnancy-dag">The pregnancy DAG</h3>
+</section>
+</section>
+<section id="making-dags-for-our-examples-1" class="level2">
+<h2 class="anchored" data-anchor-id="making-dags-for-our-examples-1">Making DAGs for our examples:</h2>
+<section id="the-hernia-dag" class="level3">
+<h3 class="anchored" data-anchor-id="the-hernia-dag">The hernia DAG</h3>
+</section>
+</section>
+<section id="causal-dags-to-the-rescue" class="level2">
+<h2 class="anchored" data-anchor-id="causal-dags-to-the-rescue">Causal DAGs to the rescue</h2>
+</section>
+</section>
+<section id="some-math-background-probabilites-and-assumptions" class="level1">
+<h1>Some math background: probabilites and assumptions</h1>
+<section id="why-math" class="level2">
+<h2 class="anchored" data-anchor-id="why-math">Why math???</h2>
+</section>
+<section id="marginal-joint-and-conditional-probabilites" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-joint-and-conditional-probabilites">Marginal, Joint and Conditional probabilites</h2>
+</section>
+<section id="conditional-probabilities-require-dividing-by-the-denominator-of-the-conditioning-set" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-probabilities-require-dividing-by-the-denominator-of-the-conditioning-set">conditional probabilities require dividing by the denominator of the conditioning set</h2>
+</section>
+<section id="probability-rules-and-identities" class="level2">
+<h2 class="anchored" data-anchor-id="probability-rules-and-identities">Probability rules and identities</h2>
+</section>
+<section id="marginal-and-conditional-independence" class="level2">
+<h2 class="anchored" data-anchor-id="marginal-and-conditional-independence">Marginal and conditional independence:</h2>
+</section>
+<section id="conditional-independence-in-an-example" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-independence-in-an-example">Conditional Independence in an example</h2>
+</section>
+<section id="assumption-parlance-strong-vs-weak-assumption-necessary-sufficient" class="level2">
+<h2 class="anchored" data-anchor-id="assumption-parlance-strong-vs-weak-assumption-necessary-sufficient">Assumption parlance (strong vs weak assumption, necessary, sufficient)</h2>
+</section>
+</section>
+<section id="dag-definitions" class="level1">
+<h1>DAG definitions</h1>
+<section id="dags-convey-two-types-of-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="dags-convey-two-types-of-assumptions">DAGs convey two types of assumptions:</h2>
+<section id="causal-direction-and-conditional-independence" class="level3">
+<h3 class="anchored" data-anchor-id="causal-direction-and-conditional-independence">causal direction and conditional independence</h3>
+</section>
+</section>
+<section id="dags-are-non-parametric" class="level2">
+<h2 class="anchored" data-anchor-id="dags-are-non-parametric">DAGs are ‘non-parametric’</h2>
+<section id="they-relay-what-variable-listens-to-what-but-not-in-what-way" class="level3">
+<h3 class="anchored" data-anchor-id="they-relay-what-variable-listens-to-what-but-not-in-what-way">They relay what variable ‘listens’ to what, but not in what way</h3>
+</section>
+</section>
+<section id="dags-imply-a-causal-factorization-of-the-joint-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="dags-imply-a-causal-factorization-of-the-joint-distribution">DAGs imply a causal factorization of the joint distribution</h2>
+</section>
+<section id="sec-def-intervention" class="level2">
+<h2 class="anchored" data-anchor-id="sec-def-intervention">The DAG definition of an intervention</h2>
+</section>
+<section id="intervention-as-graph-surgery---changed-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="intervention-as-graph-surgery---changed-distribution">Intervention as graph surgery - changed distribution</h2>
+</section>
+<section id="back-to-example-1" class="level2">
+<h2 class="anchored" data-anchor-id="back-to-example-1">Back to example 1</h2>
+</section>
+<section id="back-to-example-2" class="level2">
+<h2 class="anchored" data-anchor-id="back-to-example-2">Back to example 2</h2>
+</section>
+<section id="the-gist-of-observational-causal-inference" class="level2">
+<h2 class="anchored" data-anchor-id="the-gist-of-observational-causal-inference">The gist of observational causal inference</h2>
+</section>
+</section>
+<section id="dag-rules" class="level1">
+<h1>DAG rules</h1>
+<section id="basic-dag-patterns-chain" class="level2">
+<h2 class="anchored" data-anchor-id="basic-dag-patterns-chain">Basic DAG patterns: chain</h2>
+</section>
+<section id="basic-dag-patterns-fork" class="level2">
+<h2 class="anchored" data-anchor-id="basic-dag-patterns-fork">Basic DAG patterns: fork</h2>
+</section>
+<section id="basic-dag-patterns-collider" class="level2">
+<h2 class="anchored" data-anchor-id="basic-dag-patterns-collider">Basic DAG patterns: collider</h2>
+</section>
+<section id="collider-bias---tinder" class="level2">
+<h2 class="anchored" data-anchor-id="collider-bias---tinder">Collider bias - Tinder</h2>
+</section>
+<section id="conditioning-on-a-collider-creates-dependence-of-its-parents" class="level2">
+<h2 class="anchored" data-anchor-id="conditioning-on-a-collider-creates-dependence-of-its-parents">Conditioning on a collider creates dependence of its parents</h2>
+</section>
+<section id="when-life-gets-complicated-real-many-variable" class="level2">
+<h2 class="anchored" data-anchor-id="when-life-gets-complicated-real-many-variable">When life gets complicated / real: many variable</h2>
+</section>
+<section id="d-separation-directional-separation" class="level2">
+<h2 class="anchored" data-anchor-id="d-separation-directional-separation">d-separation (directional-separation)</h2>
+</section>
+<section id="d-separation-when-conditioning" class="level2">
+<h2 class="anchored" data-anchor-id="d-separation-when-conditioning">d-separation when conditioning</h2>
+</section>
+<section id="the-back-door-criterion-and-adjustment" class="level2">
+<h2 class="anchored" data-anchor-id="the-back-door-criterion-and-adjustment">The back-door criterion and adjustment</h2>
+</section>
+<section id="did-we-see-this-equation-before" class="level2">
+<h2 class="anchored" data-anchor-id="did-we-see-this-equation-before">Did we see this equation before?</h2>
+</section>
+<section id="how-about-positivity" class="level2">
+<h2 class="anchored" data-anchor-id="how-about-positivity">How about positivity</h2>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
