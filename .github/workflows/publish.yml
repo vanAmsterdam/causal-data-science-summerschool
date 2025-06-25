@@ -22,7 +22,7 @@ jobs:
 
       - name: Install R dependencies
         run: |
-          Rscript -e 'install.packages("data.table", "ggplot2", "rmarkdown", "knitr")'
+          Rscript -e 'install.packages(c("data.table", "ggplot2", "rmarkdown", "knitr"))'
 
       - name: Render and Publish
         uses: quarto-dev/quarto-actions/publish@v2
