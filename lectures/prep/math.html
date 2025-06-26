@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.7.32">
+
+  <meta name="author" content="Wouter van Amsterdam">
+  <meta name="dcterms.date" content="2025-07-07">
+  <title>Causal Inference and Causal Data Science Summerschool – Mathematics intro</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-f563837468303362081e247dddd440d0.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Mathematics intro</h1>
+  <p class="subtitle">Probabilities, Conditional Independence and Assumption Parlance</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Wouter van Amsterdam 
+</div>
+</div>
+</div>
+
+  <p class="date">2025-07-07</p>
+</section>
+<section>
+<section id="marginal-joint-and-conditional-probabilities" class="title-slide slide level1 center">
+<h1>Marginal, Joint and Conditional probabilities</h1>
+
+</section>
+<section id="setup" class="slide level2 center">
+<h2>Setup</h2>
+<p>Probability statements about <em>random events</em> <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></p>
+<ul>
+<li class="fragment"><span class="math inline">\(A\)</span>: patient dies (<span class="math inline">\(A=1\)</span>)</li>
+<li class="fragment"><span class="math inline">\(B\)</span>: patient has cancer (<span class="math inline">\(B=1\)</span>)</li>
+</ul>
+<div class="fragment">
+<p>Say we have 100 patients, we can tabulate them according to their cancer status and whether they died or not.</p>
+<table class="caption-top">
+<caption>joint probability table</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th></th>
+<th>A</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>dies</td>
+<td>lives</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>has cancer</td>
+<td>5</td>
+<td>5</td>
+<td>10</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>has no cancer</td>
+<td>10</td>
+<td>80</td>
+<td>90</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>15</td>
+<td>85</td>
+<td>100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="marginal-probabilities" class="slide level2 center">
+<h2>Marginal probabilities</h2>
+<ul>
+<li class="fragment"><em>Marginal</em> probabilities concern probabilities of <em>one</em> random event, regardless of the other random event.</li>
+<li class="fragment">We read these probabilities from the <em>margins</em> of the joint probability table.</li>
+</ul>
+<div class="quarto-layout-panel" data-layout="[60,40]">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="fragment quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">statement</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A=1)\)</span></td>
+<td style="text-align: left;"><em>marginal</em> probability that event <span class="math inline">\(A\)</span> occurs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(P(B=1)\)</span></td>
+<td style="text-align: left;"><em>marginal</em> probability that event <span class="math inline">\(B\)</span> occurs</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="r-stack quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<div class="fragment fade-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment fade-in-then-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(P(A=1) = 15 / 100\)</span></p>
+</div>
+<div class="fragment fade-in-then-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(P(B=1) = 10 / 100\)</span></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="joint-probabilities" class="slide level2 center">
+<h2>Joint Probabilities</h2>
+<ul>
+<li class="fragment">A <em>joint</em> probability concerns the probability of two random events <em>jointly</em> occurring together.</li>
+<li class="fragment">These are a based on a single cell in the joint probability table</li>
+</ul>
+<div class="quarto-layout-panel" data-layout="[60,40]">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="fragment quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">statement</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A)\)</span></td>
+<td style="text-align: left;"><em>marginal</em> probability that event <span class="math inline">\(A\)</span> occurs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(P(A=1,B=1)\)</span></td>
+<td style="text-align: left;"><em>joint</em> probability of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="r-stack quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<div class="fragment fade-in-then-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment fade-in-then-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math inline">\(P(B=1,A=1) = 5 / 100\)</span></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="conditional-probabilities" class="slide level2 center">
+<h2>Conditional probabilities</h2>
+<ul>
+<li class="fragment"><em>Conditional</em> probabilities concern the probability of one random event given that another random event has occurred.</li>
+<li class="fragment">e.g.&nbsp;<em>what is the probability that a patient dies (<span class="math inline">\(A=1\)</span>) given that they have cancer (<span class="math inline">\(B=1\)</span>)?</em></li>
+<li class="fragment">These are read from the joint probability table by looking in the row or column of the conditioning event.</li>
+</ul>
+<div class="quarto-layout-panel" data-layout="[60,40]">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="fragment quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">statement</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A)\)</span></td>
+<td style="text-align: left;"><em>marginal</em> probability that event <span class="math inline">\(A\)</span> occurs</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(P(A,B)\)</span></td>
+<td style="text-align: left;"><em>joint</em> probability of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A=1|B=1)\)</span></td>
+<td style="text-align: left;"><em>conditional</em> probability of <span class="math inline">\(A\)</span> given <span class="math inline">\(B\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="r-stack quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<div class="fragment fade-out">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;">80</td>
+<td style="text-align: left;">90</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="non-incremental">- <em>marginal</em> <span class="math inline">\(P(A=1) = 15/100\)</span></span></p>
+</div>
+<div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<p><span class="non-incremental">- <em>marginal</em> <span class="math inline">\(P(A=1) = 15/100\)</span></span></p>
+<p><span class="non-incremental">- <em>conditional</em> <span class="math inline">\(P(A=1|B=1) = 5 / 10\)</span></span></p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="probability-rules-and-identities" class="title-slide slide level1 center">
+<h1>Probability rules and identities</h1>
+
+</section>
+<section id="sum-rule" class="slide level2 center">
+<h2>Sum rule</h2>
+<p>A <em>marginal</em> probability can be computed by summing over the <em>joint probabilities</em> of all possible values of the other random event.</p>
+<div class="quarto-layout-panel" data-layout="[60,40]">
+<div class="quarto-layout-row">
+<div class="fragment quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">statement</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td style="text-align: left;">marginal is sum over joint</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;">10</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">15</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{align}
+    P(A=1) &amp;= P(A=1,B=1) + P(A=1,B=0) \\
+           &amp;= 5/100 + 10/100 \\
+           &amp; = 15/100
+\end{align}\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="product-rule" class="slide level2 center">
+<h2>Product rule</h2>
+<p>A <em>joint</em> probability can be computed by multiplying the <em>conditional probability</em> of one random event given the other random event with the <em>marginal probability</em> of the other random event.</p>
+<div class="quarto-layout-panel" data-layout="[60,40]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 60.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">statement</th>
+<th style="text-align: left;">interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td style="text-align: left;">marginal is sum over joint</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></td>
+<td style="text-align: left;">product rule</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment quarto-layout-cell" style="flex-basis: 40.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">A</th>
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">dies</td>
+<td style="text-align: left;">lives</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">has cancer</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">has no cancer</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">100</td>
+</tr>
+</tbody>
+</table>
+<p><span class="math display">\[\begin{align}
+    P(A=1,B=1) &amp;= P(A=1|B=1)P(B=1) \\
+               &amp;= 5/10 * 10/100 \\
+               &amp; = 5/100
+\end{align}\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section class="slide level2 center">
+
+<p>With these two rules and basic algebra, we can derive more identities</p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td>marginal is sum over joint</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></td>
+<td>product rule</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="product-rule---different-form" class="slide level2 center">
+<h2>Product rule - different form</h2>
+<p>a <em>conditional</em> probability can be computed by dividing the <em>joint probability</em> of the two random events by the <em>marginal probability</em> of the other random event, since<sup>1</sup></p>
+<p><span class="math display">\[
+x = y * z \implies y = \frac{x}{z}
+\]</span></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td>marginal is sum over joint</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></td>
+<td>product rule</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(P(A|B) = \frac{P(A,B)}{P(B)}\)</span></td>
+<td>conditional is joint over marginal (follows from product rule)</td>
+</tr>
+</tbody>
+</table>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><span class="math inline">\(z \neq 0\)</span></p></li></ol></aside></section>
+<section id="law-of-total-probability" class="slide level2 center">
+<h2>Law of total probability</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A) = \sum_{b} P(A,B=b)\)</span></td>
+<td>marginal is sum over joint</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></td>
+<td>product rule</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(P(A|B) = \frac{P(A,B)}{P(B)}\)</span></td>
+<td>conditional is joint over marginal (follows from product rule)</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)\)</span></td>
+<td>total probability (consequence of marginal vs joint and product rule)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="fragment">this identity can be proven quite easily using the product rule and the sum rule <a href="#/sec-proof-totalprob" class="quarto-xref">Section&nbsp;5.1</a></li>
+</ul>
+</section></section>
+<section>
+<section id="marginal-independence-and-conditional-independence" class="title-slide slide level1 center">
+<h1>Marginal independence and conditional independence</h1>
+
+</section>
+<section id="marginal-independence" class="slide level2 center">
+<h2>Marginal independence</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A,B) = P(A)P(B)\)</span></td>
+<td>(marginal) independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="fragment">knowing <span class="math inline">\(A\)</span> has no information on what to expect of <span class="math inline">\(B\)</span></li>
+<li class="fragment">If I roll a die, the result of that die (<span class="math inline">\(A\)</span>) has no information on the weather in the Netherlands (<span class="math inline">\(B\)</span>)</li>
+</ul>
+</section>
+<section id="conditional-independence" class="slide level2 center">
+<h2>Conditional independence</h2>
+<ul>
+<li class="fragment"><p>some events may not be independent in general, but they may be independent given some other event <span class="math inline">\(C\)</span>.</p></li>
+<li class="fragment"><p>statement:</p>
+<p><span class="math display">\[P(A,B|C) = P(A|C)P(B|C)\]</span></p></li>
+</ul>
+</section>
+<section id="conditional-independence-in-an-example" class="slide level2 center">
+<h2>Conditional Independence in an example</h2>
+<div class="quarto-layout-panel" data-layout="[70,30]">
+<div class="quarto-layout-row quarto-layout-valign-center">
+<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<ul>
+<li class="fragment">Charlie calls Alice and reads her script <span class="math inline">\(C\)</span>, then she calls Bob and reads him the same</li>
+<li class="fragment">A week later we ask Alice to repeat the story Charlie told her, she remembered <span class="math inline">\(A\)</span>, a noisy version of <span class="math inline">\(C\)</span></li>
+<li class="fragment">We ask Bob the same, he recounts <span class="math inline">\(B\)</span>, a different noisy version of <span class="math inline">\(C\)</span></li>
+<li class="fragment">Are <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> independent? No! <span class="math inline">\(P(A,B) \neq P(A)P(B)\)</span>
+<ul>
+<li class="fragment">If we learn <span class="math inline">\(A\)</span> from Alice, we can get a good guess about <span class="math inline">\(B\)</span> from Bob</li>
+</ul></li>
+<li class="fragment">If we knew <span class="math inline">\(C\)</span>, would hearing <span class="math inline">\(A\)</span> give us more information about <span class="math inline">\(B\)</span>?
+<ul>
+<li class="fragment">No, because all the shared information between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> is explained by <span class="math inline">\(C\)</span>, so:</li>
+<li class="fragment"><span class="math inline">\(P(A,B) \neq P(A)P(B)\)</span></li>
+<li class="fragment"><span class="math inline">\(P(A,B|C) = P(A|C)P(B|C)\)</span></li>
+</ul></li>
+<li class="fragment">Variables can be marginally dependent but conditionally independent (and vice-versa)</li>
+</ul>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="ABC.png" style="width:100.0%"></p>
+<figcaption>ABC</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="conditional-independence-stated-differently" class="slide level2 center">
+<h2>Conditional independence, stated differently</h2>
+<p><span class="math display">\[P(A|B,C) = P(A|C)\]</span></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 77%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>statement</th>
+<th>interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(P(A,B) = P(A)P(B)\)</span></td>
+<td>(marginal) independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(P(A,B|C) = P(A|C)P(B|C)\)</span></td>
+<td>conditional independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(P(A|B,C) = P(A|C)\)</span></td>
+<td>conditional independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li class="fragment">both statements of conditional independence can be shown to be equivalent (when the involved conditional probabilities are well-defined) <a href="#/sec-proof-condindep" class="quarto-xref">Section&nbsp;5.2</a></li>
+</ul>
+</section></section>
+<section>
+<section id="sec-assumptions" class="title-slide slide level1 center">
+<h1>Assumption parlance</h1>
+
+</section>
+<section id="hierarchy-of-conditions-assumptions" class="slide level2 center">
+<h2>Hierarchy of conditions / assumptions</h2>
+<ul>
+<li class="fragment">necessary assumption:
+<ul>
+<li class="fragment">A <strong>must</strong> hold for B to be true</li>
+<li class="fragment"><em>having a heart is necessary for having a heart rate</em></li>
+</ul></li>
+<li class="fragment">sufficient assumption:
+<ul>
+<li class="fragment">B is always true when A holds</li>
+<li class="fragment"><em>Being a square is sufficient to be a rectangle</em></li>
+</ul></li>
+<li class="fragment">strong assumption:
+<ul>
+<li class="fragment">requires <em>strong</em> evidence, we’d rather not make these</li>
+</ul></li>
+<li class="fragment">weak assumption:
+<ul>
+<li class="fragment">requires <em>weak</em> evidence</li>
+</ul></li>
+<li class="fragment">strong vs weak assumption are judged on relative terms
+<ul>
+<li class="fragment">if assumption A is sufficient for B, B cannot be a stronger assumption than A</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="proofs" class="title-slide slide level1 center">
+<h1>Proofs</h1>
+
+</section>
+<section id="sec-proof-totalprob" class="slide level2 center">
+<h2>Law of total (conditional) probability</h2>
+<p>We are asked to prove:</p>
+<p><span class="math display">\[P(A \mid C) = \sum_b P(A \mid B = b, C) \, P(B = b \mid C)\]</span></p>
+<p><span class="math display">\[\begin{align}
+P(A \mid C)
+&amp;= \sum_b P(A, B = b \mid C) &amp;&amp; \text{(sum rule)} \\
+&amp;= \sum_b P(A \mid B = b, C) \, P(B = b \mid C) &amp;&amp; \text{(product rule)}
+\end{align}\]</span></p>
+</section>
+<section id="sec-proof-condindep" class="slide level2 center">
+<h2>Conditional independence equivalent statements</h2>
+<p>We will prove that the conditional independence statement</p>
+<p><span class="math display">\[
+P(A \mid B, C) = P(A \mid C)
+\]</span></p>
+<p>is <strong>equivalent</strong> to</p>
+<p><span class="math display">\[
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+\]</span></p>
+<p>using basic rules of probability.</p>
+</section>
+<section id="conditional-independence-equivalent-statements" class="slide level2 center">
+<h2>Conditional independence equivalent statements</h2>
+<h3 id="proof-direction">✅ Proof (⇐ direction):</h3>
+<p>Assume</p>
+<p><span class="math display">\[
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+\]</span></p>
+<p>By the product rule,</p>
+<p><span class="math display">\[
+P(A, B \mid C) = P(A \mid B, C) \cdot P(B \mid C)
+\]</span></p>
+<p>Comparing both expressions:</p>
+<p><span class="math display">\[
+P(A \mid B, C) \cdot P(B \mid C) = P(A \mid C) \cdot P(B \mid C)
+\]</span></p>
+<p>Divide both sides by <span class="math inline">\(P(B \mid C) &gt; 0\)</span>, we get:</p>
+<p><span class="math display">\[
+P(A \mid B, C) = P(A \mid C)
+\]</span></p>
+</section>
+<section id="conditional-independence-equivalent-statements-1" class="slide level2 center">
+<h2>Conditional independence equivalent statements</h2>
+<h3 id="proof-direction-1">✅ Proof (⇒ direction):</h3>
+<p>Assume</p>
+<p><span class="math display">\[
+P(A \mid B, C) = P(A \mid C)
+\]</span></p>
+<p>Again by the product rule:</p>
+<p><span class="math display">\[
+P(A, B \mid C) = P(A \mid B, C) \cdot P(B \mid C)
+\]</span></p>
+<p>Substitute <span class="math inline">\(P(A \mid C)\)</span> for <span class="math inline">\(P(A \mid B, C)\)</span>, we get:</p>
+<p><span class="math display">\[
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+\]</span></p>
+</section>
+<section id="conditional-independence-equivalent-statements-2" class="slide level2 center">
+<h2>Conditional independence equivalent statements</h2>
+<h3 id="conclusion">✅ Conclusion:</h3>
+<p><span class="math display">\[
+P(A \mid B, C) = P(A \mid C) \quad \Longleftrightarrow \quad P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+\]</span></p>
+<p>as required.</p>
+
+
+</section></section>
+
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<p><img src="../day2-scms/umcu_blue.png" class="slide-logo"></p>
+<div class="footer footer-default">
+
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': true,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1920,
+
+        height: 1080,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+            const codeEl = trigger.previousElementSibling.cloneNode(true);
+            for (const childEl of codeEl.children) {
+              if (isCodeAnnotation(childEl)) {
+                childEl.remove();
+              }
+            }
+            return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp("https:\/\/vanAmsterdam\.github\.io\/causal-data-science-summerschool\/");
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
