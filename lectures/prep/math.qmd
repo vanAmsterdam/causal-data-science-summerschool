@@ -1,6 +1,6 @@
 ---
-title: Math
-subtitle: Probabilities
+title: Mathematics intro
+subtitle: Probabilities, Conditional Independence and Assumption Parlance
 author: Wouter van Amsterdam
 date: 2025-07-07
 format: 
@@ -20,16 +20,17 @@ format:
         logo: ../day2-scms/umcu_blue.png
         center: true
         include-before: [ '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>']
+        pdf-separate-fragments: true
 execute:
     warning: false
     message: false
 categories:
     - math
-    - preporatory
+    - preparatory
 ---
 
 
-# Marginal, Joint and Conditional probabilites
+# Marginal, Joint and Conditional probabilities
 
 ## Setup
 
@@ -56,7 +57,7 @@ Say we have 100 patients, we can tabulate them according to their cancer status 
 
 ## Marginal probabilities
 
-- *Marginal* probabilites concern probabilities of *one* random event, regardless of the other random event.
+- *Marginal* probabilities concern probabilities of *one* random event, regardless of the other random event.
 - We read these probabilities from the *margins* of the joint probability table.
 
 
@@ -146,7 +147,7 @@ $P(B=1,A=1) = 5 / 100$
 
 :::
 
-## Conditional probabilites
+## Conditional probabilities
 
 - *Conditional* probabilities concern the probability of one random event given that another random event has occurred.
 - e.g. *what is the probability that a patient dies ($A=1$) given that they have cancer ($B=1$)?*
@@ -195,25 +196,21 @@ $P(B=1,A=1) = 5 / 100$
 
 :::
 
-::: {.fragment}
+# Probability rules and identities
 
-:::: {.callout-note}
+## Sum rule
 
-## conditional probabilities require dividing by the denominator of the conditioning set
-
-This is why we need *positivity* (as dividing by $0$ is not defined)
-
-::::
-
-:::
-
-## Probability rules and identities
+A *marginal* probability can be computed by summing over the *joint probabilities* of all possible values of the other random event.
 
 :::{layout="[60,40]"}
+
+::::{.fragment}
 
 | statement | interpretation |
 |----------|-----------------------------------|
 | $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
+
+::::
 
 :::::{.fragment}
 
@@ -225,7 +222,7 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 |   |               | 15   |     | 100 |
 
 \begin{align}
-    P(A=1) &= P(A=1,B=0) + P(A=1,B=1) \\
+    P(A=1) &= P(A=1,B=1) + P(A=1,B=0) \\
            &= 5/100 + 10/100 \\
            & = 15/100
 \end{align}
@@ -235,7 +232,9 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 
 :::
 
-## Probability rules and identities
+## Product rule
+
+A *joint* probability can be computed by multiplying the *conditional probability* of one random event given the other random event with the *marginal probability* of the other random event.
 
 :::{layout="[60,40]"}
 
@@ -263,7 +262,23 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 
 :::
 
-## Probability rules and identities
+---
+
+With these two rules and basic algebra, we can derive more identities
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
+| $P(A,B) = P(A|B)P(B)$ | product rule | 
+
+## Product rule - different form
+
+a *conditional* probability can be computed by dividing the *joint probability* of the two random events by the *marginal probability* of the other random event, since[^*] 
+
+$$
+x = y * z \implies y = \frac{x}{z}
+$$
+
 
 | statement | interpretation |
 |----------|-----------------------------------|
@@ -271,16 +286,22 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 | $P(A,B) = P(A|B)P(B)$ | product rule | 
 | $P(A|B) = \frac{P(A,B)}{P(B)}$ | conditional is joint over marginal (follows from product rule)| 
 
-## Probability rules and identities
+[^*]: $z \neq 0$
+
+## Law of total probability
 
 | statement | interpretation |
 |----------|-----------------------------------|
 | $P(A) = \sum_{b} P(A,B=b)$ | marginal is sum over joint |
 | $P(A,B) = P(A|B)P(B)$ | product rule | 
 | $P(A|B) = \frac{P(A,B)}{P(B)}$ | conditional is joint over marginal (follows from product rule)| 
-| $P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)$ | total expectation (consequence of marginal vs joint and product rule) |
+| $P(A|C) = \sum_{b} P(A|B=b,C)P(B=b|C)$ | total probability (consequence of marginal vs joint and product rule) |
 
-## Marginal and conditional independence:
+- this identity can be proven quite easily using the product rule and the sum rule [@sec-proof-totalprob]
+
+# Marginal independence and conditional independence
+
+## Marginal independence
 
 | statement | interpretation |
 |----------|-----------------------------------|
@@ -289,15 +310,13 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 - knowing $A$ has no information on what to expect of $B$
 - If I roll a die, the result of that die ($A$) has no information on the weather in the Netherlands ($B$)
 
-## Marginal and conditional independence:
+## Conditional independence
 
-| statement | interpretation |
-|----------|-----------------------------------|
-| $P(A,B) = P(A)P(B)$ | (marginal) independence of $A$ and $B$| 
-| $P(A,B|C) = P(A|C)P(B|C)$ | conditional independence of $A$ and $B$ given $C$| 
-| $P(A|B,C) = P(A|C)$ | conditional independence of $A$ and $B$ given $C$| 
+- some events may not be independent in general, but they may be independent given some other event $C$.
+- statement:
 
-- $C$ has all the information that is shared between $A$ and $B$
+  $$P(A,B|C) = P(A|C)P(B|C)$$
+
 
 ## Conditional Independence in an example
 
@@ -308,26 +327,132 @@ This is why we need *positivity* (as dividing by $0$ is not defined)
 - We ask Bob the same, he recounts $B$, a different noisy version of $C$
 - Are $A$ and $B$ independent? No! $P(A,B) \neq P(A)P(B)$
   - If we learn $A$ from Alice, we can get a good guess about $B$ from Bob
-- If we knew $C$, would hearing $A$ give use more information about $B$?
+- If we knew $C$, would hearing $A$ give us more information about $B$?
   - No, because all the shared information between $A$ and $B$ is explained by $C$, so:
   - $P(A,B) \neq P(A)P(B)$
   - $P(A,B|C) = P(A|C)P(B|C)$
 - Variables can be marginally dependent but conditionally independent (and vice-versa)
 
-![ABC](figs/ABC.png){width="100%"}
+![ABC](ABC.png){width="100%"}
 
 :::
 
-## Assumption parlance {#sec-assumptions}
+## Conditional independence, stated differently
+
+$$P(A|B,C) = P(A|C)$$
+
+| statement | interpretation |
+|----------|-----------------------------------|
+| $P(A,B) = P(A)P(B)$ | (marginal) independence of $A$ and $B$| 
+| $P(A,B|C) = P(A|C)P(B|C)$ | conditional independence of $A$ and $B$ given $C$| 
+| $P(A|B,C) = P(A|C)$ | conditional independence of $A$ and $B$ given $C$| 
+
+
+- both statements of conditional independence can be shown to be equivalent (when the involved conditional probabilities are well-defined) [@sec-proof-condindep]
+
+# Assumption parlance {#sec-assumptions}
+
+## Hierarchy of conditions / assumptions
 
 - necessary assumption:
   - A **must** hold for B to be true
+  - *having a heart is necessary for having a heart rate*
 - sufficient assumption:
   - B is always true when A holds
+  - *Being a square is sufficient to be a rectangle*
 - strong assumption:
   - requires *strong* evidence, we'd rather not make these
 - weak assumption:
   - requires *weak* evidence
 - strong vs weak assumption are judged on relative terms
-  - if assumption A is sufficient for B, B cannot be a stronger assumption that A
+  - if assumption A is sufficient for B, B cannot be a stronger assumption than A
 
+# Proofs
+
+## Law of total (conditional) probability{#sec-proof-totalprob}
+
+We are asked to prove:
+
+$$P(A \mid C) = \sum_b P(A \mid B = b, C) \, P(B = b \mid C)$$
+
+\begin{align}
+P(A \mid C)
+&= \sum_b P(A, B = b \mid C) && \text{(sum rule)} \\
+&= \sum_b P(A \mid B = b, C) \, P(B = b \mid C) && \text{(product rule)}
+\end{align}
+
+## Conditional independence equivalent statements{#sec-proof-condindep}
+
+We will prove that the conditional independence statement
+
+$$
+P(A \mid B, C) = P(A \mid C)
+$$
+
+is **equivalent** to
+
+$$
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+$$
+
+using basic rules of probability.
+
+## Conditional independence equivalent statements
+
+### ✅ Proof (⇐ direction):
+
+Assume
+
+$$
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+$$
+
+By the product rule,
+
+$$
+P(A, B \mid C) = P(A \mid B, C) \cdot P(B \mid C)
+$$
+
+Comparing both expressions:
+
+$$
+P(A \mid B, C) \cdot P(B \mid C) = P(A \mid C) \cdot P(B \mid C)
+$$
+
+Divide both sides by $P(B \mid C) > 0$, we get:
+
+$$
+P(A \mid B, C) = P(A \mid C)
+$$
+
+## Conditional independence equivalent statements
+
+### ✅ Proof (⇒ direction):
+
+Assume
+
+$$
+P(A \mid B, C) = P(A \mid C)
+$$
+
+Again by the product rule:
+
+$$
+P(A, B \mid C) = P(A \mid B, C) \cdot P(B \mid C)
+$$
+
+Substitute $P(A \mid C)$ for $P(A \mid B, C)$, we get:
+
+$$
+P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+$$
+
+## Conditional independence equivalent statements
+
+### ✅ Conclusion:
+
+$$
+P(A \mid B, C) = P(A \mid C) \quad \Longleftrightarrow \quad P(A, B \mid C) = P(A \mid C) \cdot P(B \mid C)
+$$
+
+as required.
