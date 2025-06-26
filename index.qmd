@@ -2,7 +2,7 @@
 title: "Causal Inference and Causal Data Science Summerschool"
 ---
 
-Dates: Aug 5th - Aug 10th 2024
+Dates: July 7 - 11 2025
 
 **please have a look at the setup-document [here](practicals/00_setup/setup.html) *before* the first day and make sure you have a working R installation with the required packages**
 
@@ -10,7 +10,7 @@ Dates: Aug 5th - Aug 10th 2024
 
 Learn causal inference and causal data science!
 
-Please fill in the participante evaluation form [here](https://forms.gle/k8aUfkYUi6iCSQ2f8)
+Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYUi6iCSQ2f8)
 
 ## Schedule
 
@@ -24,7 +24,8 @@ Please fill in the participante evaluation form [here](https://forms.gle/k8aUfkY
 | 12:30 - 13:15 | LUNCH     |                                                   | |
 | 13:15 - 14:00 | Lecture   | Intro to Potential Outcomes II                    | |
 | 14:15 - 15:00 | Lecture   | Adjustment Methods I: Stratification, Matching and Propensity Scores| |
-| 15:15 - 16:30 | Practical | Adjustment Methods I                               |[html](practicals/11_poutcomes/day1_practical2.html)  |
+| 15:15 - 16:30 | Practical | Adjustment Methods I                    |[html](practicals/11_poutcomes/day1_practical_partII.html) 
+|  | Practical | Bonus Exercises                  |[html](practicals/11_poutcomes/day1_practical_partII_bonus.html)|
 
 ### Day 2: DAGs and SCMs
 
@@ -54,13 +55,14 @@ Please fill in the participante evaluation form [here](https://forms.gle/k8aUfkY
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf)|
-| 10:00 - 10:45 | Lecture   | Causal Perspectives on Prediction Modeling II | |
-| 11:00 - 12:00 | practical | Causal Perspectives on Prediction Modeling    | [html](practicals/41_prediction/index.html)|
+| 09:00 - 09:45 | Lecture   | Causal Structure Learning I 
+|[pdf](lectures/day4-datascience/Day4_p2.pdf) |
+| 10:00 - 10:45 | Lecture   | Causal Structure Learning II                  | |
+| 11:00 - 12:00 | practical | Causal Structure Learning                     |[html](practicals/42_discovery/day4_p2.html)
 | 12:00 - 13:30 | LUNCH     |                                               | |
-| 13:30 - 14:15 | Lecture   | Causal Structure Learning I                   |[pdf](lectures/day4-datascience/Day4_p2.pdf) |
-| 14:30 - 15:00 | Lecture   | Causal Structure Learning II                  | |
-| 15:15 - 16:30 | practical | Causal Structure Learning                     |[html](practicals/42_discovery/day4_p2.html)
+|13:30 - 14:15  | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf)|
+| 14:30 - 15:00 | Lecture   | Causal Perspectives on Prediction Modeling II | |
+| 15:15 - 16:30 | practical | Causal Perspectives on Prediction Modeling    | [html](practicals/41_prediction/index.html)|
 
 ### Day 5: Advanced Topics in Causal Inference
 
