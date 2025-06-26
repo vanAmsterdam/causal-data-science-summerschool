@@ -4,7 +4,10 @@ title: "Causal Inference and Causal Data Science Summerschool"
 
 Dates: July 7 - 11 2025
 
-**please have a look at the setup-document [here](practicals/00_setup/setup.html) *before* the first day and make sure you have a working R installation with the required packages**
+## Pre-course preparation 
+
+- **please have a look at the setup-document [here](practicals/00_setup/setup.html) *before* the first day and make sure you have a working R installation with the required packages**
+- required math background: a minimal understanding of probability will be assumed; see the slides here: [html](lectures/prep/math.html), [pdf](lectures/prep/math_handout.pdf)  and [video-lecture](https://www.youtube.com/playlist?list=PL7MfeCSIPad9gQt3igDSAgXo557E48Scc) (13 minutes total)
 
 ## Course objectives
 
