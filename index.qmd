@@ -46,9 +46,9 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |[pdf](lectures/day3-tte/LectureDay3.pdf) |
+| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |<!--[pdf](lectures/day3-tte/LectureDay3.pdf)--> |
 | 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
-| 11:00 - 12:00 | practical | Target Trials in Practice I         |[html](practicals/31_tte/Practical.html) |
+| 11:00 - 12:00 | practical | Target Trials in Practice I         |<!-- [html](practicals/31_tte/Practical.html) | -->
 | 12:30 - 13:30 | LUNCH     |                                     | |
 | 13:30 - 14:15 | Lecture   | Target Trials Emulation II          | |
 | 14:30 - 15:00 | Lecture   | Target Trials Emulation III       | |
@@ -58,10 +58,9 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Causal Structure Learning I 
-|[pdf](lectures/day4-datascience/Day4_p2.pdf) |
+| 09:00 - 09:45 | Lecture   | Causal Structure Learning I |<!--[pdf](lectures/day4-datascience/Day4_p2.pdf) --> |
 | 10:00 - 10:45 | Lecture   | Causal Structure Learning II                  | |
-| 11:00 - 12:00 | practical | Causal Structure Learning                     |[html](practicals/42_discovery/day4_p2.html)
+| 11:00 - 12:00 | practical | Causal Structure Learning                     |<!--[html](practicals/42_discovery/day4_p2.html) -->
 | 12:00 - 13:30 | LUNCH     |                                               | |
 |13:30 - 14:15  | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf)|
 | 14:30 - 15:00 | Lecture   | Causal Perspectives on Prediction Modeling II | |
@@ -71,14 +70,15 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   |[pdf](lectures/day5/Day5_Part1.pdf) [ppt](lectures/day5/Day5_Part1.pptx)|
-| 10:00 - 10:45 | Lecture  | When traditional methods fail                                         |[pdf](lectures/day5/Day5_Part2.pdf)  [ppt](lectures/day5/Day5_Part2.pptx)|
-| 11:00 - 12:00 | Lecture  | Causal Inference in Quasi-Experimental and Policy Evaluation settings |[pdf](lectures/day5/Day5_PolicyEvaluation.pdf)  [ppt](lectures/day5/Day5_Part2.pptx)|
-| 12.00 - 12.45 |          | Q&A and borrel                                                        | |
+| 09:00 - 10:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   |<!--[pdf](lectures/day5/Day5_Part1.pdf) [ppt](lectures/day5/Day5_Part1.pptx)-->|
+| 11:00 - 11:45 | Group Work  | Design your own causal research project| |
+| 12:00 - 12:30 | LUNCH     |                                               | |
+| 12:30 - 13:30 | Group Work  |Discuss causal research projects| |           
+| 13:30 - 13:30 | Lecture  | Discussion, Q\&A| |   
 
 ## Instructors
 
-- [Oisín Ryan](https://oisinryan.org) (coordinator)
+- [Oisín Ryan](https://ryanoisin.github.io) (coordinator)
 - [Bas Penning-de Vries](https://research.umcutrecht.nl/researchers/bas-penning-de-vries)
 - [Wouter van Amsterdam](https://vanamsterdam.github.io)
 
