@@ -1,0 +1,38 @@
+---
+title: "Test your knowledge"
+subtitle: "DAGs and Structural Causal Models"
+author: "Wouter van Amsterdam"
+eval: false
+bibliography: references.bib
+format: 
+  html:
+    toc: true
+    self-contained: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+---
+
+::: {.callout-tip collapse="true"}
+## Question 1: Say $Y$ depends on treatment $T$ and covariate $X$, how to encode a statistical interaction between $X$ and $T$ in a DAG?
+
+answer: the DAG is not different from 'non-interaction' DAGs, just encode $X \to Y$ and $T \to Y$ (remember, DAGs are non-parametric)
+
+:::
+
+<!--Here's a cool fontawesome icon {{< fa thumbs-up >}}-->
+
+::: {.callout-goals}
+## my goals
+:::
+
+
+## Conclusion
+
+You learned ABC
+
+## Further reading
+
+Read Chapter 9 of Pearls Causality [@pearlCausalDiagramsIdentification2009]
+

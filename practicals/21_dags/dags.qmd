@@ -1,6 +1,6 @@
 ---
 title: "Practical on DAGs"
-subtitle: ""
+subtitle: "Bonus Exercises"
 author: "Wouter van Amsterdam"
 date: "2024-08-06"
 eval: false
@@ -16,8 +16,6 @@ execute:
   eval: true
 ---
 
-
-This lab will guide you through practical examples of drawing and analyzing DAGs using R. You will learn how to simulate data, create DAGs, and use them for causal inference.
 
 ```{r}
 #| label: setup
