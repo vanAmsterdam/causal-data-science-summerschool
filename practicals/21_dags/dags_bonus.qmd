@@ -1,0 +1,56 @@
+---
+title: "Practical on DAGs, bonus exercises"
+subtitle: ""
+author: "Wouter van Amsterdam"
+date: "2024-08-06"
+eval: false
+format: 
+  html:
+    toc: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+    number-sections: true
+execute:
+  eval: true
+---
+
+# Causal Factorization
+
+Take this DAG
+
+![DAG](../../lectures/day2-scms/_tikzs/dag-obs.png){#fig-dag-obs}
+
+
+::: {.callout-tip collapse="true"}
+## Write down the causal factorization of the joint distribution over $Y,T,Z,W$ for this DAG
+
+answer: 
+
+- $P(Y,T,Z,W) = P(Y|T,Z)P(T|Z,W)P(Z)P(W)$
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Draw the mutilated DAG after intervening on $T$
+
+answer: 
+
+![mutilated DAG](../../lectures/day2-scms/_tikzs/dag-intervened.png){#fig-dag-obs-mutilated}
+
+:::
+
+::: {.callout-tip collapse="true"}
+## Write down the factorization for the joint in the mutilated DAG after intervening on $T$
+
+answer: 
+
+![mutilated DAG](../../lectures/day2-scms/_tikzs/dag-intervened.png){#fig-dag-obs-mutilated}
+
+- $P(Y,T,Z,W) = P(Y|T,Z)P(T)P(Z)P(W)$
+
+:::
+
+
+

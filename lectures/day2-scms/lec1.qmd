@@ -254,7 +254,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 - better outcomes for babies delivered in the hospital for *both risk groups*
 - but not better *marginal* ('overall')
-- how is this possible? (a.k.a. *simpsons paradox*)
+- how is this possible?
 - what is the correct way to estimate the effect of delivery location?
 
 ## New question: hernia
@@ -288,6 +288,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 - we got two questions with exactly the same data
 - in one example, 'stratified analysis' seemed best
 - in the other example, 'marginal analysis' seemed best
+- need a language to formalize this *differentness*
 - with *Directed Acyclic Graphs* we can make our decision
 
 ## Causal Directed Acyclic Graphs
@@ -299,8 +300,9 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 ![Directed Acyclic Graph](_tikzs/dag-fire0.png){#fig-dag-fire0 .fragment}
 
-- when used to convey causal assumptions, DAGs are 'causal' DAGs
-- this is not the only use of DAGs (see [day 4](../day4-causal-predictions/lec1.html))
+- when used to convey causal assumptions, DAGs are 'causal' DAGs[^1]
+
+[^1]: this is not the only use of DAGs (see [day 4](../day4-causal-predictions/lec1.html))
 
 ## Making DAGs for our examples:
 
@@ -312,7 +314,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
     - women with high risk of bad neonatal outcomes (`pregnancy risk`) are referred to the hospital for delivery
     - hospital deliveries lead to better outcomes for babies as more emergency treatments possible
     - both `pregnancy risk` and `hospital delivery` cause `neonatal outcome`
-- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is what's called a confounder)
+- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is called a confounder)
 
 ## Making DAGs for our examples:
 
@@ -328,12 +330,13 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ## Causal DAGs to the rescue
 
 - the *other variable* was:
-    - a **common cause** of the treatment and outcome in the pregnancy example
+    - a **common cause (confounder)** of the treatment and outcome in the pregnancy example
     - a **mediator** between the treatment and the outcome in the hernia example
 - using our background knowledge we could see *something* is different about these examples
+- this insight prompted us to a different analysis
 - next: ground this in causal theory and see implications for analysis
 
-# DAG definitions
+# DAG definitions and properties
 
 ## DAGs convey two types of assumptions:
 
@@ -354,265 +357,20 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
   - `sprinkler on` **may** (or may not) cause `wet floor`
   - `wet floor` **cannot** cause `sprinkler on`
 
-## DAGs convey two types of assumptions:
+## Basic DAG patterns: fork
 
-### causal direction and conditional independence
+:::{layout="[30,70]"}
 
-1. conditional indepence (e.g. exclusion of influence / information)
+![fork / confounder](_tikzs/dag-fork.png){#fig-fork width="100%"}
 
-::: {layout-ncol=3}
-
-![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
-
-![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
-
-![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
-
-:::
-
-- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
-  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
-- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
-  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
-- @fig-dag-fire3 is also compatible with @fig-dag-fire2
-
-
-## DAGs are 'non-parametric'
-
-### They relay what variable 'listens' to what, but not in what way
-
-::: {layout="[30,70]" layout-valign="center"}
-
-![DAG](_tikzs/dag-nonparametric.png)
-
-```{r}
-#| label: fig-dag-nonparametric
-#| output: fragment
-#| fig-cap: Three datasets with the same DAG
-
-set.seed(12345)
-n = 1e3
-
-f1 <- function(t, x, u) t + 0.5 * (x - pi) + u
-f2 <- function(t, x, u) t + sin(x) + u
-f3 <- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u
-
-df <- data.table(
-  x = runif(n, 0, 2*pi),
-  t = rbinom(n, 1, 0.5),
-  u = rnorm(n, 0, .1)
-)
-
-df[, `:=`(
-  y1 = f1(t, x, u),
-  y2 = f2(t, x, u),
-  y3 = f3(t, x, u)
-)]
-
-dfm <- melt(df, measure.vars=c('y1', 'y2', 'y3'),
-            variable.name="f", value.name="y")
-
-ggplot(dfm, aes(x=x, y=y, col=factor(t))) + 
-  geom_point() + 
-  facet_grid(~f)
-```
+- $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
+- $Z$ = sun rises, $X$ =  rooster crows, $Y$ = temperature rises
+- $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
+- $X \perp Y | Z$ (conditioning on the sun rising, the rooster crowing has no information on the temperature)
+- $Z \to X$ is a *back-door*: a path between $X$ and $Y$ that starts with an arrow into $X$
+- *typically want to adjust for $Z$ (see [later @sec-backdoor])*
 
 :::
-
-1. $Y = T + 0.5 (X - \pi) + \epsilon$ (linear)
-2. $Y = T + \sin(X) + \epsilon$ (non-linear additive)
-3. $Y = T * \sin(X) - (1-T) \sin(x) + \epsilon$ (non-linear + interaction)
-
-## DAGs are 'non-parametric'
-
-### They relay what variable 'listens' to what, but not in what way
-
-::: {layout="[30,70]" layout-valign="center"}
-
-![DAG](_tikzs/dag-nonparametric.png)
-
-- this DAG says $Y$ is a function of $X,T$ and external noise $U_Y$, or:
-- $Y = f_Y(X,T,U_Y)$
-- in the [next lecture](./lec3-scms.html) we'll talk more about these 'structural equations'
-
-:::
-
-## DAGs imply a causal factorization of the joint distribution
-
-::: {layout="[30,70]"}
-
-![observational data](_tikzs/dag-obs.png){#fig-obs width=50%}
-
-:::: {.column}
-
-\begin{align}
-    P(Y,T,Z,W) &=^1 P(Y|T,Z,W)P(T,Z,W) \\
-               &=^2 P(Y|T,Z)P(T,Z,W) \\
-               &=^3 P(Y|T,Z)P(T|Z,W)P(Z,W) \\
-               &=^4 P(Y|T,Z)P(T|Z,W)P(Z)P(W)
-\end{align}
-
-:::::{.non-incremental}
-
-1. product-rule 
-2. $Y$ independent of $W$ given $T,Z$ per DAG
-3. product-rule
-4. $Z,W$ marginally independent per DAG
-
-:::::
-
-::::
-
-:::
-
-- If this looks complicated: just follow the arrows
-
-## The DAG definition of an intervention {#sec-def-intervention}
-
-assume this is our DAG for a situation and we want to learn the effect $T$ has on $Y$
-
-- this is denoted $P(Y|\text{do}(T))$: a hypothetical intervention in the system
-- in the graph, [intervening]{.fg} on variable $T$ means removing all incoming arrows
-- this assumes such a *modular* intervention is possible: i.e. leave everything else unaltered
-
-::: {layout-ncol=2}
-
-![observational data](_tikzs/dag-obs.png){#fig-obs height=400}
-
-![intervened DAG](_tikzs/dag-intervened.png){#fig-intervened .fragment height=400}
-
-:::
-
-- which means $T$ does not *listen* to other variables anymore, but is set at a particular value, like in an experiment
-- imagining this scenario requires a well-defined treatment variable (akin to consistency)
-
-## Intervention as graph surgery - changed distribution
-
-::: {layout-ncol=2}
-
-![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
-
-![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
-
-:::
-
-::: {layout-ncol=2}
-
-::::{.fragment}
-\begin{align}
-      P_{\text{obs}}(Y,T,Z) &= P(Y|T,Z)\color{red}{P(T|Z)}P(Z) \\
-        P_{\text{obs}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T)
-\end{align}
-
-::::
-
-::::{.fragment}
-\begin{align}
-      P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z) \\
-        P_{\text{int}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T) \\
-               &\class{fragment}{= \sum_{z} P(Y|T,Z=z)\color{green}{P(Z)}} \\
-               &\class{fragment}{= P(Y|\text{do}(T))}
-\end{align}
-::::
-
-:::
-
-## Intervention as graph surgery - changed distribution
-
-::: {layout-ncol=2}
-
-:::: {#int}
-![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
-
-$$P_{\text{obs}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{red}{P(Z=z|T)}$$
-::::
-
-:::: {#int}
-![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
-
-$$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand}
-::::
-
-:::
-
-- in $P_{\text{obs}}$, $P(Z|T) \color{red}{\neq} P(Z)$
-- in $P_{\text{int}}$, $P(Z|T) \color{green}{=} P(Z)$
-- thereby $P_{\text{obs}}(Y|T) \neq P_{\text{int}}(P(Y|T)) = P(Y|\text{do}(T))$
-- **seeing is not doing**
-- **looking at @eq-estimand, we can compute these from $P_{\text{obs}}$!** (this is what is called an *estimand*)
-
-## Back to example 1
-
-::: {layout-ncol=2}
-
-![DAG](_tikzs/dag-delivery.png)
-
-
-|      |      | location |          |
-|------|------|---------:|---------:|
-|      |      | home     | hospital |
-| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
-|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
-|      |      |                  |                  |
-|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
-
-:::
-
-- estimand: $P(\text{outcome}|\text{do}(\text{location})) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk})$
-- $P(\text{risk}=\text{low})=74\%$
-
-::: {.fragment}
-\begin{align}
- P(\text{outcome}|\text{do}(\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\% \\
-     P(\text{outcome}|\text{do}(\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\%
-\end{align}
-:::
-
-- **conclusion**: sending all deliveries to the hospital leads to better neonatal outcomes
-
-## Back to example 2
-
-::: {layout-ncol=2}
-
-![DAG](_tikzs/dag-hernia)
-
-- removing all arrows going in to $T$ results in the same DAG
-- so $P(Y|T) = P(Y|\text{do}(T))$
-- i.e. use the marginals
-
-:::
-
-
-
-## The gist of observational causal inference
-
-is to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)
-
-:::{.columns}
-
-::::{.column width="20%"}
-
-![observational data: data we have](_tikzs/dag-obs.png){#fig-obs}
-
-![intervened DAG: what we want to know](_tikzs/dag-intervened.png){#fig-intervened}
-
-::::
-
-::::{.column width="80%"}
-
-- causal inference frameworks provide a language to express assumptions
-- based on these assumptions, the framework tells us whether such an inference is possible
-    - this is often referred to as *is the effect identified*
-- and provide formula(s) for how to do so based on the observed data distribution (*estimand(s)*)
-- (one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)
-- not yet said: *how* to do statistical inference to estimate the estimand (much can still go wrong here)
-  - can also be part of identification, see [the following lecture on SCMs](./lec3-scms.html)
-
-::::
-
-:::
-
-# DAG rules
 
 ## Basic DAG patterns: chain
 
@@ -621,21 +379,10 @@ is to take data we have to make inferences about data from a different distribut
 ![chain / mediation](_tikzs/dag-chain.png){#fig-chain width="100%"}
 
 - $M$ *mediates* effect of $X$ on $Y$
+- $X$: student signs up for causal inference course, $M$: student studies causal inference, $Y$: student understands causal inference
+- $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
 - $X \perp Y | M$
-- do not want to adjust for $M$ when estimating total effect of $X$ on $Y$
-
-:::
-
-## Basic DAG patterns: fork
-
-:::{layout="[30,70]"}
-
-![fork / confounder](_tikzs/dag-fork.png){#fig-fork width="100%"}
-
-- $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
-- $X \perp Y | Z$
-- $Z \to X$ is a *back-door*: a path between $X$ and $Y$ that starts with an arrow into $X$
-- typically want to adjust for $Z$ (see [later @sec-backdoor])
+- *typically do not want to adjust for $M$ when estimating total effect of $X$ on $Y$*
 
 :::
 
@@ -647,7 +394,7 @@ is to take data we have to make inferences about data from a different distribut
 
 - $X$ and $Y$ *both cause* $Z$
 - $X \perp Y$ (but *NOT* when conditioning on $Z$)
-- often do not want to condition on $Z$ as this induces a correlation between $X$ and $Y$
+- *often do not want to condition on $Z$ as this induces a correlation between $X$ and $Y$*
 
 :::
 
@@ -700,14 +447,395 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
 
 ## Conditioning on a collider creates dependence of its parents 
 
-- may not be too visible: doing an analysis in a selected subgroup is a form of ('invisible') conditioning)
+- may not be too visible: doing an analysis in a selected subgroup is a form of ('invisible') conditioning
 - e.g. when selecting only patients in the hospital
     - being admitted to the hospital is a collider (has many different causes, e.g. traffic accident or fever)
     - usually only one of these is the reason for hospital admission
     - the causes for hospital admission now seem anti-correlated
-- collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
 
+<!-- - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017] -->
 <!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
+
+## DAGs convey two types of assumptions:
+
+### causal direction and conditional independence
+
+1. conditional indepence (e.g. exclusion of influence / information)
+
+::: {layout-ncol=3}
+
+![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
+
+![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
+
+![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
+
+:::
+
+- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
+  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
+- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
+  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
+- @fig-dag-fire3 is also compatible with @fig-dag-fire2
+
+## DAGs are 'non-parametric'
+
+### They relay what variable 'listens' to what, but not in what way
+
+::: {layout="[30,70]" layout-valign="center"}
+
+![DAG](_tikzs/dag-nonparametric.png)
+
+- this DAG says $Y$ is a function of $X,T$ and external noise $U_Y$, or:
+- $Y = f_Y(X,T,U_Y)$
+- in the [next lecture](./lec3-scms.html) we'll talk more about these 'structural equations'
+
+:::
+
+## DAGs are 'non-parametric'
+
+### They relay what variable 'listens' to what, but not in what way
+
+::: {layout="[30,70]" layout-valign="center"}
+
+![DAG](_tikzs/dag-nonparametric.png)
+
+```{r}
+#| label: fig-dag-nonparametric
+#| output: fragment
+#| fig-cap: Three datasets with the same DAG
+
+set.seed(12345)
+n = 1e3
+
+f1 <- function(t, x, u) t + 0.5 * (x - pi) + u
+f2 <- function(t, x, u) t + sin(x) + u
+f3 <- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u
+
+df <- data.table(
+  x = runif(n, 0, 2*pi),
+  t = rbinom(n, 1, 0.5),
+  u = rnorm(n, 0, .1)
+)
+
+df[, `:=`(
+  y1 = f1(t, x, u),
+  y2 = f2(t, x, u),
+  y3 = f3(t, x, u)
+)]
+
+dfm <- melt(df, measure.vars=c('y1', 'y2', 'y3'),
+            variable.name="f", value.name="y")
+
+ggplot(dfm, aes(x=x, y=y, col=factor(t))) + 
+  geom_point() + 
+  facet_grid(~f)
+```
+
+:::
+
+1. $Y = T + 0.5 (X - \pi) + \epsilon$ (linear)
+2. $Y = T + \sin(X) + \epsilon$ (non-linear additive)
+3. $Y = T * \sin(X) - (1-T) \sin(x) + \epsilon$ (non-linear + interaction)
+
+# Mini Quiz
+
+Google Form [https://bit.ly/dagquiz](https://bit.ly/dagquiz)
+
+![](figs/bit.ly_dagquiz.png){width=40%}
+
+
+# From Directed Acyclic Graphs to causality
+
+## The DAG definition of an intervention {#sec-def-intervention}
+
+assume this is our DAG for a situation and we want to learn the effect $T$ has on $Y$
+
+- in the graph, [intervening]{.fg} on variable $T$ means removing all incoming arrows
+- this assumes such a *modular* intervention is possible: i.e. leave everything else unaltered
+
+::: {layout-ncol=2}
+
+![observational data](_tikzs/dag-obs.png){#fig-obs height=400}
+
+![intervened DAG](_tikzs/dag-intervened.png){#fig-intervened .fragment height=400}
+
+:::
+
+- which means $T$ does not *listen* to other variables anymore, but is set at a particular value, like in an experiment
+- imagining this scenario requires a well-defined treatment variable (akin to consistency)
+
+## Intervention example: hospital deliveries
+
+::: {layout-ncol=2}
+
+![observ(ational /ed) data: hospital delivery depends on pregnancy outcome risk](_tikzs/dag-delivery.png){#fig-obs width=95%}
+
+![hypothetical situation: send all pregnancies to hospital or home, regardless of risk](_tikzs/dag-delivery-int.png){.fragment #fig-intervened width=95%}
+
+:::
+
+- this is called **graph surgery** because we *cut* all the arrows going to the treatment (hospital delivery)
+
+## From graph to data
+
+- we now have a *graphical* definition of an intervention, how to map this onto data?
+
+. . .
+
+:::{.callout-tip}
+
+## All we need is basic probability applied to the DAG
+
+- product rule: $P(A,B) = P(A|B)P(B)$
+- sum rule: $P(A) = \sum_B P(A|B)P(B)$
+- total probability: $P(A|C)  = \sum_B P(A|B,C)P(B|C)$
+
+[See the preporatory math lecuture](../prep/math.html)
+
+:::
+
+
+## DAGs imply a causal factorization of the joint distribution
+
+- assume these variables $T$: treatment, $Y$: outcome, $Z$: 'other' variable
+- the product rule allows us to write this joint in many (9) different *factorizations*, $P(Y,T,Z)=$
+  - $P(Y|T,Z)P(T,Z)$
+  - $P(Z|T,Y)P(T,Y)$
+  - $P(Y|T,Z)P(T|Z)P(Z)$
+  - ...
+- whereas all of these are correct, knowing the DAG, one of these is *special*: the *causal factorization*
+
+## DAGs imply a causal factorization of the joint distribution
+
+::: {layout="[30,70]"}
+
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+:::: {.column}
+
+\begin{align}
+    P(Y,T,Z) &= P(Y|T,Z)P(T,Z) \\
+             &= P(Y|T,Z)P(T|Z)P(Z)
+\end{align}
+
+:::::{.non-incremental}
+
+- 2 times the product rule
+
+:::::
+
+::::
+
+:::
+
+- If this looks complicated: just follow the arrows, starting with variables with no incoming arrows
+
+## Intervention as graph surgery 
+
+### Why is the causal factorization special?
+
+::: {layout-ncol=2}
+
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
+
+:::
+
+::: {layout-ncol=2}
+
+::::{.fragment}
+\begin{align}
+      P_{\text{obs}}(Y,T,Z) &= P(Y|T,Z)\color{red}{P(T|Z)}P(Z)
+\end{align}
+
+::::
+
+::::{.fragment}
+\begin{align}
+      P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z)
+\end{align}
+::::
+
+:::
+
+- in the *causal factorization*, *intervening* on $T$ means changing only one of the conditionals in the factorization, the others remain the same
+- this is what is meant with a *modular intervention*
+
+## Intervention as graph surgery
+
+### Connection with probabilities
+
+- the *conditional distribution* of $Y$ given $T$ is denoted as $P(Y|T)$ ('*seeing*')
+- the *causal effect* of $T$ on $Y$ is denoted $P(Y|\text{do}(T))$, which is $Y$ given $T$ in the graph where all arrows coming in to $T$ are removed ('*doing*')
+- we compute this from the *truncated* factorization, which comes from the *causal factorization* by removing $P(T|Z)$:
+  - *causal factorization*: $P(Y|T,Z)P(T|Z)P(Z)$
+  - truncated factorization: $P(Y|T,Z)P(Z)$
+
+## Intervention as graph surgery 
+
+### Changed distribution
+
+::: {layout-ncol=2}
+
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
+
+:::
+
+::: {layout-ncol=2}
+
+::::{.fragment}
+\begin{align}
+      P_{\text{obs}}(Y,T,Z) &= P(Y|T,Z)\color{red}{P(T|Z)}P(Z) \\
+        P_{\text{obs}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T)
+\end{align}
+
+::::
+
+::::{.fragment}
+\begin{align}
+      P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z) \\
+        P_{\text{int}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T) \\
+               &\class{fragment}{= \sum_{z} P(Y|T,Z=z)\color{green}{P(Z)}} \\
+               &\class{fragment}{= P(Y|\text{do}(T))}
+\end{align}
+::::
+
+:::
+
+
+## Intervention as graph surgery - changed distribution
+
+::: {layout-ncol=2}
+
+:::: {#int}
+![observational data](_tikzs/dag1-obs.png){#fig-obs width=50%}
+
+$$P_{\text{obs}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{red}{P(Z=z|T)}$$
+::::
+
+:::: {#int}
+![intervened DAG](_tikzs/dag1-intervened.png){#fig-intervened width=50%}
+
+$$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand}
+::::
+
+:::
+
+- in $P_{\text{obs}}$, $P(Z|T) \color{red}{\neq} P(Z)$
+- in $P_{\text{int}}$, $P(Z|T) \color{green}{=} P(Z)$
+- thereby $P_{\text{obs}}(Y|T) \neq P_{\text{int}}(P(Y|T)) = P(Y|\text{do}(T))$
+- **seeing is not doing**
+- **looking at @eq-estimand, we can compute these from $P_{\text{obs}}$!** (this is what is called an *estimand*)
+
+## Back to example 1
+
+### Seeing
+
+::: {layout-ncol=2}
+
+![DAG](_tikzs/dag-delivery.png)
+
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+:::
+
+- seeing: $P(\text{outcome}|\text{location}) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk}|\text{location})$
+- $P(\text{risk}=\text{low} | \text{location} = \text{hospital})=10\%$
+- $P(\text{risk}=\text{low} | \text{location} = \text{home})=90\%$
+
+::: {.fragment}
+\begin{align}
+ P(\text{outcome}|\text{location} = \text{hospital}) &= 95 * 0.1 + 80 * 0.9 = 81.5\% \\
+     P(\text{outcome}|\text{location} = \text{home}) &= 90 * 0.9 + 50 * 0.1 = 86\%
+\end{align}
+:::
+
+- **conclusion**: deliveries in the hospital had worse neonatal outcomes
+
+## Back to example 1
+
+::: {layout-ncol=2}
+
+![DAG](_tikzs/dag-delivery.png)
+
+
+|      |      | location |          |
+|------|------|---------:|---------:|
+|      |      | home     | hospital |
+| risk | low  | `r str_mat[1,1]` | `r str_mat[2,1]` |
+|      | high | `r str_mat[1,2]` | `r str_mat[2,2]` |
+|      |      |                  |                  |
+|      | *marginal* | `r strsm[1]` | `r strsm[2]` |
+
+:::
+
+- estimand: $P(\text{outcome}|\text{do}(\text{location})) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk})$
+- $P(\text{risk}=\text{low})=74\%$
+
+::: {.fragment}
+\begin{align}
+ P(\text{outcome}|\text{do}(\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\% \\
+     P(\text{outcome}|\text{do}(\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\%
+\end{align}
+:::
+
+- **conclusion**: sending all deliveries to the hospital leads to better neonatal outcomes
+
+
+## Back to example 2
+
+::: {layout-ncol=2}
+
+![DAG](_tikzs/dag-hernia)
+
+- removing all arrows going in to $T$ results in the same DAG
+- so $P(Y|T) = P(Y|\text{do}(T))$
+- i.e. use the marginals
+
+:::
+
+
+
+## The gist of observational causal inference
+
+is to take data we have to make inferences about data from a different distribution (i.e. the intervened-on distribution)
+
+:::{.columns}
+
+::::{.column width="20%"}
+
+![observational data: data we have](_tikzs/dag-obs.png){#fig-obs}
+
+![intervened DAG: what we want to know](_tikzs/dag-intervened.png){#fig-intervened}
+
+::::
+
+::::{.column width="80%"}
+
+- causal inference frameworks provide a language to express assumptions
+- based on these assumptions, the framework tells us whether such an inference is possible
+    - this is often referred to as *is the effect identified*
+- and provide formula(s) for how to do so based on the observed data distribution (*estimand(s)*)
+- (one could say this is essentially assumption-based extrapolation, some researchers think this entire enterprise is anti-scientific)
+- not yet said: *how* to do statistical inference to estimate the estimand (much can still go wrong here)
+  - can also be part of identification, see [the following lecture on SCMs](./lec3-scms.html)
+
+::::
+
+:::
+
+# Beyond toy examples: d-separation and back-door criterion
 
 ## When life gets complicated / real
 

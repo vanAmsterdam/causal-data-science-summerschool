@@ -134,20 +134,40 @@
     \centering
 
     \tikzsetnextfilename{dag-delivery}
-\begin{tikzpicture}
-  % Nodes
-  \node[draw] (z) at (0, 3) {pregnancy risk};
-  \node[draw] (t) at (-3, 0) {hospital delivery};
-  \node[draw] (y) at (3, 0) {neonatal outcome};
+  \begin{tikzpicture}
+    % Nodes
+    \node[draw] (z) at (0, 3) {pregnancy risk};
+    \node[draw] (t) at (-3, 0) {hospital delivery};
+    \node[draw] (y) at (3, 0) {neonatal outcome};
 
-  % Edges
-  \draw[->] (z) -- (t);
-  \draw[->] (z) -- (y);
-  \draw[->] (t) -- (y);
+    % Edges
+    \draw[->] (z) -- (t);
+    \draw[->] (z) -- (y);
+    \draw[->] (t) -- (y);
 
-\end{tikzpicture}
+  \end{tikzpicture}
 
 \end{figure}
+
+\begin{figure}
+    \centering
+
+    \tikzsetnextfilename{dag-delivery-int}
+  \begin{tikzpicture}
+    % Nodes
+    \node[draw] (z) at (0, 3) {pregnancy risk};
+    \node[draw] (t) at (-3, 0) {hospital delivery};
+    \node[draw] (y) at (3, 0) {neonatal outcome};
+
+    % Edges
+    \draw[->] (z) -- (y);
+    \draw[->] (t) -- (y);
+
+  \end{tikzpicture}
+
+\end{figure}
+
+
 
 \begin{figure}
     \centering

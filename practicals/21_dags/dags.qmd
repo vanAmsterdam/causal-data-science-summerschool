@@ -1,6 +1,5 @@
 ---
 title: "Practical on DAGs"
-subtitle: ""
 author: "Wouter van Amsterdam"
 date: "2024-08-06"
 eval: false
@@ -16,8 +15,6 @@ execute:
   eval: true
 ---
 
-
-This lab will guide you through practical examples of drawing and analyzing DAGs using R. You will learn how to simulate data, create DAGs, and use them for causal inference.
 
 ```{r}
 #| label: setup
@@ -47,7 +44,7 @@ suppressPackageStartupMessages({
 
 source(here::here("practicals", "21_dags", "_makedatas.R"))
 datas <- make_datas()
-
+birthw <- datas[['birthw']]
 ```
 
 
@@ -68,14 +65,7 @@ The `birthw` dataset contains the following variables:
 - `lbwt`: Low birth weight (0 = >=2500grams, 1 = < 2500grams)
 - `death`: Neonatal death within 3 months (0 = no, 1 = yes)
 
-```{r}
-#| echo: true
-#| collapse: false
-birthw <- datas[["birthw"]]
-head(birthw)
-```
-
-The data can alternatively be downloaded here: [birthw.csv](datas/birthw.csv)
+The data can be downloaded here: [birthw.csv](datas/birthw.csv)
 
 ## Create a DAG
 
@@ -98,7 +88,7 @@ We'll fit different logistic regression models with different covariates (indepe
 Specifically, fit a model with:
 
 1. all observed covariates (`fit_allobs`)
-2. only the somking variable (`fit_marginal`)
+2. only the smoking variable (`fit_marginal`)
 
 These models give us estimates of (log) odds ratios for the independent variables.
 To translate a logistic regression model into differences in probabilities we use the `avg_comparisons` function from the `marginaleffects` package.
@@ -318,7 +308,7 @@ Context:
 
 :::
 
-# Bonus: Confounder adjustment with Daggity
+# Confounder adjustment with Daggity
 
 In this exercise we will use the dagitty package for creating and manipulating DAGs.
 
@@ -352,7 +342,7 @@ We will simulate data based on the DAG structure:
 
 set.seed(123)
 
-n <- 1000
+n <- 10000
 
 # Simulate variables
 pregnancy_risk <- rbinom(n, 1, 0.3)  # 30% high risk
