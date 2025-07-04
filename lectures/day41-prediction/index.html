@@ -236,12 +236,14 @@ Wouter van Amsterdam
 <li class="fragment">cross-sectional (e.g.&nbsp;diagnosis)</li>
 <li class="fragment">longitudinal follow-up (e.g.&nbsp;survival)</li>
 </ol></li>
-<li class="fragment">use a statistical learning technique (e.g.&nbsp;regression, machine learning), fit model <span class="math inline">\(f\)</span> to observed <span class="math inline">\(\{x_i,y_i\}\)</span> with a criterion / loss function</li>
+<li class="fragment">use a statistical learning technique (e.g.&nbsp;regression, machine learning)</li>
+</ol>
+<ul>
+<li class="fragment">fit model <span class="math inline">\(f\)</span> to observed <span class="math inline">\(\{x_i,y_i\}\)</span> with a criterion / loss function</li>
+</ul>
+<ol start="5" type="1">
 <li class="fragment">evaluate prediction performance with e.g.&nbsp;discrimination, calibration, <span class="math inline">\(R^2\)</span></li>
 </ol>
-</section>
-<section id="curve-fitting" class="slide level2 center">
-<h2>Curve fitting</h2>
 </section>
 <section id="prediction-typical-estimand" class="slide level2 center">
 <h2>Prediction: typical estimand</h2>
@@ -526,36 +528,10 @@ Wouter van Amsterdam
 </div>
 </div>
 </section>
-<section id="calculating-the-effect-of-a-policy-from-existing-data" class="slide level2 center">
-<h2>Calculating the effect of a policy from existing data</h2>
-<ul>
-<li class="fragment">we have data where <span class="math inline">\(t \sim \pi_0(X)\)</span></li>
-<li class="fragment">we want to know the expected value of <span class="math inline">\(Y\)</span> when instead <span class="math inline">\(t \sim \pi_1(X)\)</span></li>
-<li class="fragment">how to compute this? with importance sampling!</li>
-<li class="fragment">importance sampling:
-<ul>
-<li class="fragment"><p>want to compute the expected value of function <span class="math inline">\(g(x)\)</span> over a distribution <span class="math inline">\(\color{green}{p}\)</span>: <span class="math inline">\(E_{x \sim \color{green}{p}}[g(x)]\)</span></p></li>
-<li class="fragment"><p>instead, we are given samples from a different distribution <span class="math inline">\(x \sim \color{red}{q}\)</span></p></li>
-<li class="fragment"><p>if we know <span class="math inline">\(\color{green}{p}(x)\)</span> and <span class="math inline">\(\color{red}{q}(x)\)</span>, we can do:</p>
-<p><span class="math display">\[E_{x \sim \color{red}{q}(x)} \left[ \frac{\color{green}{p}(x)}{\color{red}{q}(x)} g(x) \right]\]</span></p></li>
-<li class="fragment"><p>where <span class="math inline">\(\frac{\color{green}{p}(x)}{\color{red}{q}(x)}\)</span> are the <em>importance weights</em> (for a proof see <a href="#/sec-is" class="quarto-xref">Section&nbsp;6.6</a>)</p></li>
-</ul></li>
-</ul>
-</section>
-<section id="special-cases-for-importance-sampling-and-policy-evaluation" class="slide level2 center">
-<h2>Special cases for importance sampling and policy evaluation</h2>
-<ol type="1">
-<li class="fragment">propensity score reweighting:
-<ul>
-<li class="fragment">target distribution <span class="math inline">\(p(t|x)=p(t)\)</span> (as in RCT)</li>
-<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span> (the propensity score)</li>
-<li class="fragment">this is why propensity score reweighting mimics an RCT</li>
-</ul></li>
-</ol>
-</section>
 <section id="sec-policyeval" class="slide level2 center">
-<h2>Special cases for importance sampling and policy evaluation</h2>
-<ol start="2" type="1">
+<h2>What if we cannot do this (cluster randomized) trial?</h2>
+<h3 id="off-policy-evaluation">Off-policy evaluation</h3>
+<ol type="1">
 <li class="fragment">have historic RCT data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>
 <ul>
 <li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
@@ -572,6 +548,7 @@ Wouter van Amsterdam
 <li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
 <li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span></li>
 <li class="fragment">we need to estimate <span class="math inline">\(q\)</span> (i.e.&nbsp;the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)</li>
+<li class="fragment">use importance sampling to estimate the expected value of <span class="math inline">\(Y\)</span> under <span class="math inline">\(\pi_1\)</span> from the observed data</li>
 </ul></li>
 </ol>
 </section>
@@ -1069,44 +1046,6 @@ Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
       window.document.addEventListener("DOMContentLoaded", function (event) {
         const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")

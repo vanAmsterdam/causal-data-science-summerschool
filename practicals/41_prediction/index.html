@@ -183,21 +183,61 @@ window.Quarto = {
 <figcaption>dag-bmi</figcaption>
 </figure>
 </div>
-<p>These nubmers are produces by the model:</p>
-<ol type="a">
-<li><span class="math inline">\(f(\text{statin}=1,\text{age}=50,\text{bmi}=20)=10\)</span>%</li>
-<li><span class="math inline">\(f(\text{statin}=0,\text{age}=50,\text{bmi}=20)=15\)</span>%</li>
-<li><span class="math inline">\(f(\text{statin}=1,\text{age}=50,\text{bmi}=25)=20\)</span>%</li>
-<li><span class="math inline">\(f(\text{statin}=0,\text{age}=50,\text{bmi}=25)=18\)</span>%</li>
-<li><span class="math inline">\(f(\text{statin}=1,\text{age}=55,\text{bmi}=25)=23\)</span>%</li>
-<li><span class="math inline">\(f(\text{statin}=0,\text{age}=55,\text{bmi}=25)=21\)</span>%</li>
-</ol>
+<p>These numbers are produced by the model <span class="math inline">\(f\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>statin</th>
+<th>age</th>
+<th>bmi</th>
+<th><span class="math inline">\(f\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>50</td>
+<td>20</td>
+<td>10%</td>
+</tr>
+<tr class="even">
+<td>0</td>
+<td>50</td>
+<td>20</td>
+<td>15%</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>50</td>
+<td>25</td>
+<td>20%</td>
+</tr>
+<tr class="even">
+<td>0</td>
+<td>50</td>
+<td>25</td>
+<td>18%</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>55</td>
+<td>25</td>
+<td>23%</td>
+</tr>
+<tr class="even">
+<td>0</td>
+<td>55</td>
+<td>25</td>
+<td>21%</td>
+</tr>
+</tbody>
+</table>
 <p>Read the following statements:</p>
 <ol type="1">
 <li>for a patient of age=50 and bmi=25 who is not using a statin, the causal effect of reducing bmi by 5 points is a risk reduction of 18-15=3%</li>
 <li>for a patient of age=50 and bmi=20 who is not using a statin, the causal effect of starting a statin is a risk reduction of 15-10=5%</li>
 <li>for a patient of age=50, reducing bmi from 25 to 20 causes the effect of statins to become smaller on an absolute risk scale.</li>
-<li>for a patient with a bmi of 25, the causal effect of aging by 5 years is an increase in risk of 3%</li>
+<li>for a patient with a bmi of 25 who is taking a statin, the causal effect of aging by 5 years is an increase in risk of 3%</li>
 </ol>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
@@ -214,8 +254,9 @@ Which statements are correct?
 <p>answer: 2 is correct.</p>
 <ol type="1">
 <li>is incorrect as this is not the causal effect due to the unobserved confounder <span class="math inline">\(u\)</span> (age,statin) is not a sufficient adjustment set for the effect of bmi on heart attack.</li>
-<li>From the DAG we see that causal effect of statin is identified, as adjustment set (age,bmi) satistifies the backdoor rule (all backdoor paths are closed).</li>
-<li>is incorrect because the change in effect of statin for different levels of bmi does not in itself have a causal interpretation The total causal effect for age <em>could</em> be estimated from the data using adjustment set (bmi), but statin is a mediator from age to heart attack so (bmi,statin), which is used by <span class="math inline">\(f\)</span>, is not a valid adjustment set, so 4 is incorrect.</li>
+<li>From the DAG we see that causal effect of statin is identified, as adjustment set (age,bmi) satisfies the backdoor rule (all backdoor paths are closed).</li>
+<li>is incorrect because the change in effect of statin for different levels of bmi does not in itself have a causal interpretation</li>
+<li>The total causal effect for age <em>could</em> be estimated from the data using adjustment set (bmi), but statin is a mediator from age to heart attack so (bmi,statin), which is used by <span class="math inline">\(f\)</span>, is not a valid adjustment set, so 4 is incorrect.</li>
 </ol>
 </div>
 </div>
@@ -255,7 +296,7 @@ Given the previous answer, should the researchers be worried? Is retraining the 
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Answer: Decreased disrimination is a sign of a succesful deployment, as the goal was to reduce the risk in the high-risk patients.</p>
+<p>Answer: Decreased discrimination is a sign of a succesful deployment, as the goal was to reduce the risk in the high-risk patients.</p>
 </div>
 </div>
 </div>
@@ -367,7 +408,7 @@ What other studies can you perform to decide on the previous question?
 <h1 data-number="3"><span class="header-section-number">3</span> Other uses of causality in prediction modeling</h1>
 <p>Researchers developed a deep learning model that detects heart attacks on an ECGs. They used ECGs from both the emergency room as well as out-patient clinic ECGs. The emergency room has a different type of ECG machine than the out-patient clinic, and heart attacks are much more frequent in the emergency room than in the out-patient clinic. By conducting model interpretability studies, researchers found that the deep learning model can recognize whether an ECG is from the out-patient clinic or the emergency room, and in fact uses this information in its prediction. This finding is explained to the cardiologist, who says that the model is not ‘robust’, that this should be fixed or the model cannot be used.</p>
 <div class="callout callout-style-simple callout-tip no-icon callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon no-icon"></i>
 </div>
@@ -376,9 +417,9 @@ You are a data-scientist with causal training, what is your reply?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Answer: <em>it depends</em>. Indeed, the model uses non-causal (or ‘spurious’) information to create a prediction. This will create problems when this information is unreliable, for example because the ECG-machines may be swapped between the emergency room and out-patient clinic at any time. However, as long as the same ECG-machines stay in place, there is no fundamental issue in using this information in the prediction. In fact, including where the ECG was made (emergency vs out-patient) would be a very good feature to include in any prediction model for heart attacks, be it a deep learning model or any other prediction model type.</p>
+<p>Answer: <em>it depends</em>. Indeed, the model uses non-causal (or ‘spurious’) information to create a prediction. This will create problems when this information is unreliable, for example because the ECG-machines may be swapped between the emergency room and out-patient clinic at any time. However, as long as the same ECG-machines stay in place, there is no fundamental issue in using this information in the prediction. In fact, including where the ECG was made (emergency vs out-patient) would be a good feature to include in any prediction model for heart attacks, be it a deep learning model or any other prediction model type.</p>
 </div>
 </div>
 </div>
