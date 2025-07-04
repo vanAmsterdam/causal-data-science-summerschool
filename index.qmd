@@ -71,7 +71,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 10:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   |<!--[pdf](lectures/day5/Day5_Part1.pdf) [ppt](lectures/day5/Day5_Part1.pptx)-->|
+| 09:00 - 10:45 | Lecture  | Mediation, Instrumental Variables and DAGs in Longitudinal settings   | [pdf](lectures/day5/LectureDay5.pdf) |
 | 11:00 - 12:00 | Group Work | Design your own causal research project| |
 | 12:00 - 12:30 | LUNCH     |                                               | |
 | 12:30 - 13:30 | Group Work  |Discuss causal research projects| |           
