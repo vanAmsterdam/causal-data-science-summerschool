@@ -42,14 +42,6 @@ suppressMessages({
 ```
 
 
-<!--
-
-Qs:
-
-1. what knowledge of probability to expect? e.g. conditioning
-
---->
-
 # Adjustment sets and approaches
 
 ## How to find adjustment sets?
@@ -65,14 +57,15 @@ Qs:
 
 ## Valid adjustment sets
 
-::: {layout="[70,30]"}
+::: {layout="[30,70]"}
+
+![dag](_tikzs/house.png)
 
 - in general:
     - $PA_T$ (the direct parents of treatment $T$: $Z_1$) are a valid adjustment set
     - $PA_Y$ (the direct parents of outcome $Y$: $Z_2$) are a valid adjustment set
 - in this case:
-    - $W$ is a valid adjustment set
-![dag](_tikzs/house.png)
+    - $W$ is also a valid adjustment set
 
 :::
 
@@ -80,7 +73,7 @@ Qs:
 
 - websites like [dagitty.net](https://dagitty.net) and [causalfusion.net](https://causalfusion.net) provide user-friendly interfaces for creating and exporting DAGs, in addition:
   - valid adjustment sets (if they exist)
-  - testable conditional indepdencies
+  - testable conditional independencies
 
 ---
 
@@ -140,13 +133,14 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
 ## General estimators for the ATE and the CATE (meta-learners) {#sec-metalearners}
 
 - denote $\tau(w) = E[y|\text{do}(t=1),w] - E[y|\text{do}(t=0),w]$
+  - (assuming $W$ is a sufficient set)
 - T-learner: model $T=0$ and $T=1$ separately (e.g. regression separetely for treated and untreated):
   \begin{align}
     \mu_0(w) &= E[Y|\text{do}(T=0),W=w] \\
     \mu_1(w) &= E[Y|\text{do}(T=1),W=w] \\
     \tau(w)  &= \mu_1(w) - \mu_0(w)
   \end{align}
-- S-learner: use $T$ as just another feature (assuming $W$ is a sufficient set)
+- S-learner: use $T$ as just another feature
   \begin{align}
     \mu(t,w) &= E[Y|T=t,W=w] \\
     \tau(w)  &= \mu(1,w) - \mu(0,w)

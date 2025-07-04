@@ -109,7 +109,7 @@ Qs:
 - bonus queries:
     - counterfactuals
 - Pearl Causal Hierarchy
-- other uses of DAGs: missing data, selection
+<!-- - other uses of DAGs: missing data, selection -->
 - reflections on DAGs, limitations
 
 # Structural Causal Models: definitions
@@ -134,7 +134,7 @@ Together these define a *Structural Causal Model* [see definition 7.1.1 in @pear
 
 :::
 
-## Structural Causal Model 1
+## Structural Causal Model 1{#sec-scm1}
 
 ```{r}
 #| label: scm1
@@ -470,7 +470,7 @@ Someone killed the priest (†), we want to know who-dunnit ($=Q$)
 
 . . . 
 
-Based on prior knowledge on *5 suspects* (all the SCMs compatible with our DAG)
+Based on prior knowledge we have *5 suspects* (all the SCMs compatible with our DAG)
 
 . . .
 
@@ -483,7 +483,7 @@ If we had full data, we would know it was $M_3$
 
 ## Idenfitication in pictures
 
-Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)
+Someone killed the priest (†) , we want to know who-dunnit ($=Q$)
 
 Based on prior knowledge on *5 suspects* (all the SCMs compatible with our DAG)
 
@@ -567,15 +567,15 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 - many more effects are identified in this setting
 - 'works' with unobserved confounding, positivity violations
 - caveats:
-    - much harder to determine identifyability (no backdoor-rule)
+    - much harder to determine identifyability (no analogue of backdoor-rule)
     - prefer weaker assumptions over stronger assumption
 
 
-# Defining counterfactuals and the causal Hierarchy (of questions)
+# Defining counterfactuals and the causal hierarchy (of questions)
 
 ## Counterfactuals
 
-- all of the above can be achieved with DAGs, but we haven't used SCMs *super-power* yet: counterfactuals
+- all of the above can be achieved with DAGs, but we haven't used SCMs *unique power* yet: counterfactuals
 - RCT / DAG questions: *What is the expected survival if we keep all patients in the hospital for 7 days?*
 
 
@@ -647,7 +647,7 @@ ggplot(vdfm2, aes(x=value, fill=los3_surgery4)) +
 
 ## Computing counterfactuals with SCMs
 
-- Given our information on the structural equation for `survival`:
+- Given our information on the structural equation for `survival` ([@sec-scm1]):
   $$\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}$$
 - and observed values on Adam's and Zoe's `surgery` AND `survival` following `los=3`
 - we can compute their individual $u_{\text{survival}}$:

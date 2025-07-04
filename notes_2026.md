@@ -1,0 +1,1 @@
+- math prep: linearity of expected value
