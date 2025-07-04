@@ -3,7 +3,6 @@ title: "Test your knowledge"
 subtitle: "DAGs and Structural Causal Models"
 author: "Wouter van Amsterdam"
 eval: false
-bibliography: references.bib
 format: 
   html:
     toc: true

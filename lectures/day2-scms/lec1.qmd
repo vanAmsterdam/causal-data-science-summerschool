@@ -254,7 +254,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 - better outcomes for babies delivered in the hospital for *both risk groups*
 - but not better *marginal* ('overall')
-- how is this possible? (a.k.a. *simpsons paradox*)
+- how is this possible?
 - what is the correct way to estimate the effect of delivery location?
 
 ## New question: hernia
@@ -314,7 +314,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
     - women with high risk of bad neonatal outcomes (`pregnancy risk`) are referred to the hospital for delivery
     - hospital deliveries lead to better outcomes for babies as more emergency treatments possible
     - both `pregnancy risk` and `hospital delivery` cause `neonatal outcome`
-- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is what's called a confounder)
+- the *other variable* `pregnancy risk` is a common cause of the treatment (`hospital delivery`) and the outcome (this is called a confounder)
 
 ## Making DAGs for our examples:
 
@@ -330,7 +330,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ## Causal DAGs to the rescue
 
 - the *other variable* was:
-    - a **common cause** of the treatment and outcome in the pregnancy example
+    - a **common cause (confounder)** of the treatment and outcome in the pregnancy example
     - a **mediator** between the treatment and the outcome in the hernia example
 - using our background knowledge we could see *something* is different about these examples
 - this insight prompted us to a different analysis
@@ -357,91 +357,6 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
   - `sprinkler on` **may** (or may not) cause `wet floor`
   - `wet floor` **cannot** cause `sprinkler on`
 
-## DAGs convey two types of assumptions:
-
-### causal direction and conditional independence
-
-1. conditional indepence (e.g. exclusion of influence / information)
-
-::: {layout-ncol=3}
-
-![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
-
-![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
-
-![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
-
-:::
-
-- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
-  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
-- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
-  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
-- @fig-dag-fire3 is also compatible with @fig-dag-fire2
-
-
-## DAGs are 'non-parametric'
-
-### They relay what variable 'listens' to what, but not in what way
-
-::: {layout="[30,70]" layout-valign="center"}
-
-![DAG](_tikzs/dag-nonparametric.png)
-
-```{r}
-#| label: fig-dag-nonparametric
-#| output: fragment
-#| fig-cap: Three datasets with the same DAG
-
-set.seed(12345)
-n = 1e3
-
-f1 <- function(t, x, u) t + 0.5 * (x - pi) + u
-f2 <- function(t, x, u) t + sin(x) + u
-f3 <- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u
-
-df <- data.table(
-  x = runif(n, 0, 2*pi),
-  t = rbinom(n, 1, 0.5),
-  u = rnorm(n, 0, .1)
-)
-
-df[, `:=`(
-  y1 = f1(t, x, u),
-  y2 = f2(t, x, u),
-  y3 = f3(t, x, u)
-)]
-
-dfm <- melt(df, measure.vars=c('y1', 'y2', 'y3'),
-            variable.name="f", value.name="y")
-
-ggplot(dfm, aes(x=x, y=y, col=factor(t))) + 
-  geom_point() + 
-  facet_grid(~f)
-```
-
-:::
-
-1. $Y = T + 0.5 (X - \pi) + \epsilon$ (linear)
-2. $Y = T + \sin(X) + \epsilon$ (non-linear additive)
-3. $Y = T * \sin(X) - (1-T) \sin(x) + \epsilon$ (non-linear + interaction)
-
-## DAGs are 'non-parametric'
-
-### They relay what variable 'listens' to what, but not in what way
-
-::: {layout="[30,70]" layout-valign="center"}
-
-![DAG](_tikzs/dag-nonparametric.png)
-
-- this DAG says $Y$ is a function of $X,T$ and external noise $U_Y$, or:
-- $Y = f_Y(X,T,U_Y)$
-- in the [next lecture](./lec3-scms.html) we'll talk more about these 'structural equations'
-
-:::
-
-# DAG rules
-
 ## Basic DAG patterns: fork
 
 :::{layout="[30,70]"}
@@ -451,7 +366,7 @@ ggplot(dfm, aes(x=x, y=y, col=factor(t))) +
 - $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
 - $Z$ = sun rises, $X$ =  rooster crows, $Y$ = temperature rises
 - $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
-- $X \perp Y | Z$ (conditioning on the sun rising, the rooster crowing has no information on the temperature or not)
+- $X \perp Y | Z$ (conditioning on the sun rising, the rooster crowing has no information on the temperature)
 - $Z \to X$ is a *back-door*: a path between $X$ and $Y$ that starts with an arrow into $X$
 - *typically want to adjust for $Z$ (see [later @sec-backdoor])*
 
@@ -464,7 +379,7 @@ ggplot(dfm, aes(x=x, y=y, col=factor(t))) +
 ![chain / mediation](_tikzs/dag-chain.png){#fig-chain width="100%"}
 
 - $M$ *mediates* effect of $X$ on $Y$
-- $X$: person signs up for causal inference course, $M$: person studies causal inference, $Y$: person understands causal inference
+- $X$: student signs up for causal inference course, $M$: student studies causal inference, $Y$: student understands causal inference
 - $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
 - $X \perp Y | M$
 - *typically do not want to adjust for $M$ when estimating total effect of $X$ on $Y$*
@@ -537,9 +452,98 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
     - being admitted to the hospital is a collider (has many different causes, e.g. traffic accident or fever)
     - usually only one of these is the reason for hospital admission
     - the causes for hospital admission now seem anti-correlated
-- collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017]
 
+<!-- - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017] -->
 <!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
+
+## DAGs convey two types of assumptions:
+
+### causal direction and conditional independence
+
+1. conditional indepence (e.g. exclusion of influence / information)
+
+::: {layout-ncol=3}
+
+![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
+
+![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
+
+![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
+
+:::
+
+- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
+  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
+- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
+  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
+- @fig-dag-fire3 is also compatible with @fig-dag-fire2
+
+## DAGs are 'non-parametric'
+
+### They relay what variable 'listens' to what, but not in what way
+
+::: {layout="[30,70]" layout-valign="center"}
+
+![DAG](_tikzs/dag-nonparametric.png)
+
+- this DAG says $Y$ is a function of $X,T$ and external noise $U_Y$, or:
+- $Y = f_Y(X,T,U_Y)$
+- in the [next lecture](./lec3-scms.html) we'll talk more about these 'structural equations'
+
+:::
+
+## DAGs are 'non-parametric'
+
+### They relay what variable 'listens' to what, but not in what way
+
+::: {layout="[30,70]" layout-valign="center"}
+
+![DAG](_tikzs/dag-nonparametric.png)
+
+```{r}
+#| label: fig-dag-nonparametric
+#| output: fragment
+#| fig-cap: Three datasets with the same DAG
+
+set.seed(12345)
+n = 1e3
+
+f1 <- function(t, x, u) t + 0.5 * (x - pi) + u
+f2 <- function(t, x, u) t + sin(x) + u
+f3 <- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u
+
+df <- data.table(
+  x = runif(n, 0, 2*pi),
+  t = rbinom(n, 1, 0.5),
+  u = rnorm(n, 0, .1)
+)
+
+df[, `:=`(
+  y1 = f1(t, x, u),
+  y2 = f2(t, x, u),
+  y3 = f3(t, x, u)
+)]
+
+dfm <- melt(df, measure.vars=c('y1', 'y2', 'y3'),
+            variable.name="f", value.name="y")
+
+ggplot(dfm, aes(x=x, y=y, col=factor(t))) + 
+  geom_point() + 
+  facet_grid(~f)
+```
+
+:::
+
+1. $Y = T + 0.5 (X - \pi) + \epsilon$ (linear)
+2. $Y = T + \sin(X) + \epsilon$ (non-linear additive)
+3. $Y = T * \sin(X) - (1-T) \sin(x) + \epsilon$ (non-linear + interaction)
+
+# Mini Quiz
+
+Google Form [https://bit.ly/dagquiz](https://bit.ly/dagquiz)
+
+![](figs/bit.ly_dagquiz.png){width=40%}
+
 
 # From Directed Acyclic Graphs to causality
 
@@ -747,16 +751,17 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 :::
 
 - seeing: $P(\text{outcome}|\text{location}) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk}|\text{location})$
-- $P(\text{risk}=\text{low})=74\%$
+- $P(\text{risk}=\text{low} | \text{location} = \text{hospital})=10\%$
+- $P(\text{risk}=\text{low} | \text{location} = \text{home})=90\%$
 
 ::: {.fragment}
 \begin{align}
- P(\text{outcome}|\text{do}(\text{hospital})) &= 95 * 0.74 + 80 * 0.26 = 91.1\% \\
-     P(\text{outcome}|\text{do}(\text{home})) &= 90 * 0.74 + 50 * 0.26 = 79.6\%
+ P(\text{outcome}|\text{location} = \text{hospital}) &= 95 * 0.1 + 80 * 0.9 = 81.5\% \\
+     P(\text{outcome}|\text{location} = \text{home}) &= 90 * 0.9 + 50 * 0.1 = 86\%
 \end{align}
 :::
 
-- **conclusion**: sending all deliveries to the hospital leads to better neonatal outcomes
+- **conclusion**: deliveries in the hospital had worse neonatal outcomes
 
 ## Back to example 1
 
