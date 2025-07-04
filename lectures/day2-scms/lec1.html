@@ -343,7 +343,7 @@ Qs:
 <ul>
 <li class="fragment">better outcomes for babies delivered in the hospital for <em>both risk groups</em></li>
 <li class="fragment">but not better <em>marginal</em> (‘overall’)</li>
-<li class="fragment">how is this possible? (a.k.a. <em>simpsons paradox</em>)</li>
+<li class="fragment">how is this possible?</li>
 <li class="fragment">what is the correct way to estimate the effect of delivery location?</li>
 </ul>
 </section>
@@ -413,6 +413,7 @@ Qs:
 <li class="fragment">we got two questions with exactly the same data</li>
 <li class="fragment">in one example, ‘stratified analysis’ seemed best</li>
 <li class="fragment">in the other example, ‘marginal analysis’ seemed best</li>
+<li class="fragment">need a language to formalize this <em>differentness</em></li>
 <li class="fragment">with <em>Directed Acyclic Graphs</em> we can make our decision</li>
 </ul>
 </section>
@@ -434,10 +435,9 @@ Figure&nbsp;1: Directed Acyclic Graph
 </figure>
 </div>
 <ul>
-<li class="fragment">when used to convey causal assumptions, DAGs are ‘causal’ DAGs</li>
-<li class="fragment">this is not the only use of DAGs (see <a href="../day4-causal-predictions/lec1.html">day 4</a>)</li>
+<li class="fragment">when used to convey causal assumptions, DAGs are ‘causal’ DAGs<sup>1</sup></li>
 </ul>
-</section>
+<aside><ol class="aside-footnotes"><li id="fn1"><p>this is not the only use of DAGs (see <a href="../day4-causal-predictions/lec1.html">day 4</a>)</p></li></ol></aside></section>
 <section id="making-dags-for-our-examples" class="slide level2 center">
 <h2>Making DAGs for our examples:</h2>
 <h3 id="the-pregnancy-dag">The pregnancy DAG</h3>
@@ -458,7 +458,7 @@ Figure&nbsp;2
 <li class="fragment">hospital deliveries lead to better outcomes for babies as more emergency treatments possible</li>
 <li class="fragment">both <code>pregnancy risk</code> and <code>hospital delivery</code> cause <code>neonatal outcome</code></li>
 </ul></li>
-<li class="fragment">the <em>other variable</em> <code>pregnancy risk</code> is a common cause of the treatment (<code>hospital delivery</code>) and the outcome (this is what’s called a confounder)</li>
+<li class="fragment">the <em>other variable</em> <code>pregnancy risk</code> is a common cause of the treatment (<code>hospital delivery</code>) and the outcome (this is called a confounder)</li>
 </ul>
 </section>
 <section id="making-dags-for-our-examples-1" class="slide level2 center">
@@ -488,16 +488,17 @@ Figure&nbsp;3
 <ul>
 <li class="fragment">the <em>other variable</em> was:
 <ul>
-<li class="fragment">a <strong>common cause</strong> of the treatment and outcome in the pregnancy example</li>
+<li class="fragment">a <strong>common cause (confounder)</strong> of the treatment and outcome in the pregnancy example</li>
 <li class="fragment">a <strong>mediator</strong> between the treatment and the outcome in the hernia example</li>
 </ul></li>
 <li class="fragment">using our background knowledge we could see <em>something</em> is different about these examples</li>
+<li class="fragment">this insight prompted us to a different analysis</li>
 <li class="fragment">next: ground this in causal theory and see implications for analysis</li>
 </ul>
 </section></section>
 <section>
-<section id="dag-definitions" class="title-slide slide level1 center">
-<h1>DAG definitions</h1>
+<section id="dag-definitions-and-properties" class="title-slide slide level1 center">
+<h1>DAG definitions and properties</h1>
 
 </section>
 <section id="dags-convey-two-types-of-assumptions" class="slide level2 center">
@@ -538,6 +539,149 @@ Figure&nbsp;4: DAG 1
 </ul></li>
 </ul>
 </section>
+<section id="basic-dag-patterns-fork" class="slide level2 center">
+<h2>Basic DAG patterns: fork</h2>
+<div class="quarto-layout-panel" data-layout="[30,70]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div id="fig-fork" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-fork-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-fork.png" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fork-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: fork / confounder
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<ul>
+<li class="fragment"><span class="math inline">\(Z\)</span> <em>causes</em> both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> (common cause / confounder)</li>
+<li class="fragment"><span class="math inline">\(Z\)</span> = sun rises, <span class="math inline">\(X\)</span> = rooster crows, <span class="math inline">\(Y\)</span> = temperature rises</li>
+<li class="fragment"><span class="math inline">\(X \mathrel{\not\!\perp} Y\)</span> (i.e.&nbsp;<span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are dependent)</li>
+<li class="fragment"><span class="math inline">\(X \perp Y | Z\)</span> (conditioning on the sun rising, the rooster crowing has no information on the temperature)</li>
+<li class="fragment"><span class="math inline">\(Z \to X\)</span> is a <em>back-door</em>: a path between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that starts with an arrow into <span class="math inline">\(X\)</span></li>
+<li class="fragment"><em>typically want to adjust for <span class="math inline">\(Z\)</span> (see <a href="#/sec-backdoor" class="quarto-xref">later&nbsp;6.4</a>)</em></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="basic-dag-patterns-chain" class="slide level2 center">
+<h2>Basic DAG patterns: chain</h2>
+<div class="quarto-layout-panel" data-layout="[30,70]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div id="fig-chain" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-chain.png" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: chain / mediation
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<ul>
+<li class="fragment"><span class="math inline">\(M\)</span> <em>mediates</em> effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
+<li class="fragment"><span class="math inline">\(X\)</span>: student signs up for causal inference course, <span class="math inline">\(M\)</span>: student studies causal inference, <span class="math inline">\(Y\)</span>: student understands causal inference</li>
+<li class="fragment"><span class="math inline">\(X \mathrel{\not\!\perp} Y\)</span> (i.e.&nbsp;<span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are dependent)</li>
+<li class="fragment"><span class="math inline">\(X \perp Y | M\)</span></li>
+<li class="fragment"><em>typically do not want to adjust for <span class="math inline">\(M\)</span> when estimating total effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></em></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="basic-dag-patterns-collider" class="slide level2 center">
+<h2>Basic DAG patterns: collider</h2>
+<div class="quarto-layout-panel" data-layout="[30,70]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-collider.png" style="width:100.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: collider
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<ul>
+<li class="fragment"><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> <em>both cause</em> <span class="math inline">\(Z\)</span></li>
+<li class="fragment"><span class="math inline">\(X \perp Y\)</span> (but <em>NOT</em> when conditioning on <span class="math inline">\(Z\)</span>)</li>
+<li class="fragment"><em>often do not want to condition on <span class="math inline">\(Z\)</span> as this induces a correlation between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></em></li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="collider-bias---tinder" class="slide level2 center">
+<h2>Collider bias - Tinder</h2>
+<div class="quarto-layout-panel" data-layout="[30,70]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-subfloat-fig">
+<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-collider.png" style="width:100.0%" data-ref-parent="fig-collider">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) collider
+</figcaption>
+</figure>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: <span class="math display">\[\begin{align}
+    \text{intelligent} &amp;\sim U[0,1] \\
+    \text{attractive}  &amp;\sim U[0,1] \\
+    \text{on tinder}   &amp;= I_{\text{intelligent} + \text{attractive} &lt; 1}
+\end{align}\]</span>
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div id="fig-tinder" class="quarto-float quarto-figure quarto-figure-center" width="1152">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="lec1_files/figure-revealjs/fig-tinder-1.png" id="fig-tinder" width="1152">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="conditioning-on-a-collider-creates-dependence-of-its-parents" class="slide level2 center">
+<h2>Conditioning on a collider creates dependence of its parents</h2>
+<ul>
+<li class="fragment">may not be too visible: doing an analysis in a selected subgroup is a form of (‘invisible’) conditioning</li>
+<li class="fragment">e.g.&nbsp;when selecting only patients in the hospital
+<ul>
+<li class="fragment">being admitted to the hospital is a collider (has many different causes, e.g.&nbsp;traffic accident or fever)</li>
+<li class="fragment">usually only one of these is the reason for hospital admission</li>
+<li class="fragment">the causes for hospital admission now seem anti-correlated</li>
+</ul></li>
+</ul>
+<!-- - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017] -->
+<!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
+</section>
 <section id="dags-convey-two-types-of-assumptions-1" class="slide level2 center">
 <h2>DAGs convey two types of assumptions:</h2>
 <h3 id="causal-direction-and-conditional-independence-1">causal direction and conditional independence</h3>
@@ -553,7 +697,7 @@ Figure&nbsp;4: DAG 1
 <img data-src="_tikzs/dag-fire1.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;5: DAG 1
+Figure&nbsp;10: DAG 1
 </figcaption>
 </figure>
 </div>
@@ -565,7 +709,7 @@ Figure&nbsp;5: DAG 1
 <img data-src="_tikzs/dag-fire2.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;6: DAG 2
+Figure&nbsp;11: DAG 2
 </figcaption>
 </figure>
 </div>
@@ -577,7 +721,7 @@ Figure&nbsp;6: DAG 2
 <img data-src="_tikzs/dag-fire3.png" height="350">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-fire3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;7: DAG 3
+Figure&nbsp;12: DAG 3
 </figcaption>
 </figure>
 </div>
@@ -585,55 +729,20 @@ Figure&nbsp;7: DAG 3
 </div>
 </div>
 <ul>
-<li class="fragment"><a href="#/fig-dag-fire1" class="quarto-xref">Figure&nbsp;5</a> says <code>fire</code> can <strong>only</strong> cause <code>wet floor</code> through <code>sprinkler on</code>
+<li class="fragment"><a href="#/fig-dag-fire1" class="quarto-xref">Figure&nbsp;10</a> says <code>fire</code> can <strong>only</strong> cause <code>wet floor</code> through <code>sprinkler on</code>
 <ul>
 <li class="fragment">this implies <code>fire</code> is independent of <code>wet floor</code> given <code>sprinkler on</code> and can be tested!</li>
 </ul></li>
-<li class="fragment"><a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;6</a> says <em>there may be other ways through which <code>fire</code> causes <code>wet floor</code></em>
+<li class="fragment"><a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;11</a> says <em>there may be other ways through which <code>fire</code> causes <code>wet floor</code></em>
 <ul>
-<li class="fragment"><a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;6</a> is thus a <em>weaker</em> assumption than <a href="#/fig-dag-fire1" class="quarto-xref">Figure&nbsp;5</a></li>
+<li class="fragment"><a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;11</a> is thus a <em>weaker</em> assumption than <a href="#/fig-dag-fire1" class="quarto-xref">Figure&nbsp;10</a></li>
 </ul></li>
-<li class="fragment"><a href="#/fig-dag-fire3" class="quarto-xref">Figure&nbsp;7</a> is also compatible with <a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;6</a></li>
+<li class="fragment"><a href="#/fig-dag-fire3" class="quarto-xref">Figure&nbsp;12</a> is also compatible with <a href="#/fig-dag-fire2" class="quarto-xref">Figure&nbsp;11</a></li>
 </ul>
 </section>
 <section id="dags-are-non-parametric" class="slide level2 center">
 <h2>DAGs are ‘non-parametric’</h2>
 <h3 id="they-relay-what-variable-listens-to-what-but-not-in-what-way">They relay what variable ‘listens’ to what, but not in what way</h3>
-<div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row quarto-layout-valign-center">
-<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="_tikzs/dag-nonparametric.png"></p>
-<figcaption>DAG</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<div class="cell-output-display">
-<div id="fig-dag-nonparametric" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec1_files/figure-revealjs/fig-dag-nonparametric-1.png" width="960">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;8: Three datasets with the same DAG
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-<ol type="1">
-<li class="fragment"><span class="math inline">\(Y = T + 0.5 (X - \pi) + \epsilon\)</span> (linear)</li>
-<li class="fragment"><span class="math inline">\(Y = T + \sin(X) + \epsilon\)</span> (non-linear additive)</li>
-<li class="fragment"><span class="math inline">\(Y = T * \sin(X) - (1-T) \sin(x) + \epsilon\)</span> (non-linear + interaction)</li>
-</ol>
-</section>
-<section id="dags-are-non-parametric-1" class="slide level2 center">
-<h2>DAGs are ‘non-parametric’</h2>
-<h3 id="they-relay-what-variable-listens-to-what-but-not-in-what-way-1">They relay what variable ‘listens’ to what, but not in what way</h3>
 <div class="quarto-layout-panel" data-layout="[30,70]">
 <div class="quarto-layout-row quarto-layout-valign-center">
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
@@ -654,48 +763,56 @@ Figure&nbsp;8: Three datasets with the same DAG
 </div>
 </div>
 </section>
-<section id="dags-imply-a-causal-factorization-of-the-joint-distribution" class="slide level2 center">
-<h2>DAGs imply a causal factorization of the joint distribution</h2>
+<section id="dags-are-non-parametric-1" class="slide level2 center">
+<h2>DAGs are ‘non-parametric’</h2>
+<h3 id="they-relay-what-variable-listens-to-what-but-not-in-what-way-1">They relay what variable ‘listens’ to what, but not in what way</h3>
 <div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row">
+<div class="quarto-layout-row quarto-layout-valign-center">
 <div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div id="fig-obs" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-obs.png" style="width:50.0%">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="_tikzs/dag-nonparametric.png"></p>
+<figcaption>DAG</figcaption>
+</figure>
 </div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;9: observational data
+</div>
+<div class="cell quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<div class="cell-output-display">
+<div id="fig-dag-nonparametric" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="lec1_files/figure-revealjs/fig-dag-nonparametric-1.png" width="960">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dag-nonparametric-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;13: Three datasets with the same DAG
 </figcaption>
 </figure>
 </div>
 </div>
-<div class="column quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<p><span class="math display">\[\begin{align}
-    P(Y,T,Z,W) &amp;=^1 P(Y|T,Z,W)P(T,Z,W) \\
-               &amp;=^2 P(Y|T,Z)P(T,Z,W) \\
-               &amp;=^3 P(Y|T,Z)P(T|Z,W)P(Z,W) \\
-               &amp;=^4 P(Y|T,Z)P(T|Z,W)P(Z)P(W)
-\end{align}\]</span></p>
-<div class="non-incremental">
+</div>
+</div>
+</div>
 <ol type="1">
-<li class="fragment">product-rule</li>
-<li class="fragment"><span class="math inline">\(Y\)</span> independent of <span class="math inline">\(W\)</span> given <span class="math inline">\(T,Z\)</span> per DAG</li>
-<li class="fragment">product-rule</li>
-<li class="fragment"><span class="math inline">\(Z,W\)</span> marginally independent per DAG</li>
+<li class="fragment"><span class="math inline">\(Y = T + 0.5 (X - \pi) + \epsilon\)</span> (linear)</li>
+<li class="fragment"><span class="math inline">\(Y = T + \sin(X) + \epsilon\)</span> (non-linear additive)</li>
+<li class="fragment"><span class="math inline">\(Y = T * \sin(X) - (1-T) \sin(x) + \epsilon\)</span> (non-linear + interaction)</li>
 </ol>
-</div>
-</div></div>
-</div>
-<ul>
-<li class="fragment">If this looks complicated: just follow the arrows</li>
-</ul>
+</section></section>
+<section id="mini-quiz" class="title-slide slide level1 center">
+<h1>Mini Quiz</h1>
+<p>Google Form <a href="https://bit.ly/dagquiz">https://bit.ly/dagquiz</a></p>
+
+<img data-src="figs/bit.ly_dagquiz.png" style="width:40.0%" class="r-stretch"></section>
+
+<section>
+<section id="from-directed-acyclic-graphs-to-causality" class="title-slide slide level1 center">
+<h1>From Directed Acyclic Graphs to causality</h1>
+
 </section>
 <section id="sec-def-intervention" class="slide level2 center">
 <h2>The DAG definition of an intervention</h2>
 <p>assume this is our DAG for a situation and we want to learn the effect <span class="math inline">\(T\)</span> has on <span class="math inline">\(Y\)</span></p>
 <ul>
-<li class="fragment">this is denoted <span class="math inline">\(P(Y|\text{do}(T))\)</span>: a hypothetical intervention in the system</li>
 <li class="fragment">in the graph, <span class="fg">intervening</span> on variable <span class="math inline">\(T\)</span> means removing all incoming arrows</li>
 <li class="fragment">this assumes such a <em>modular</em> intervention is possible: i.e.&nbsp;leave everything else unaltered</li>
 </ul>
@@ -708,7 +825,7 @@ Figure&nbsp;9: observational data
 <img data-src="_tikzs/dag-obs.png" height="400">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;10: observational data
+Figure&nbsp;14: observational data
 </figcaption>
 </figure>
 </div>
@@ -720,7 +837,7 @@ Figure&nbsp;10: observational data
 <img data-src="_tikzs/dag-intervened.png" class="fragment" height="400">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;11: intervened DAG
+Figure&nbsp;15: intervened DAG
 </figcaption>
 </figure>
 </div>
@@ -732,8 +849,115 @@ Figure&nbsp;11: intervened DAG
 <li class="fragment">imagining this scenario requires a well-defined treatment variable (akin to consistency)</li>
 </ul>
 </section>
-<section id="intervention-as-graph-surgery---changed-distribution" class="slide level2 center">
-<h2>Intervention as graph surgery - changed distribution</h2>
+<section id="intervention-example-hospital-deliveries" class="slide level2 center">
+<h2>Intervention example: hospital deliveries</h2>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-obs" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-delivery.png" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;16: observ(ational /ed) data: hospital delivery depends on pregnancy outcome risk
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-intervened" class="fragment quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag-delivery-int.png" class="fragment" style="width:95.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;17: hypothetical situation: send all pregnancies to hospital or home, regardless of risk
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment">this is called <strong>graph surgery</strong> because we <em>cut</em> all the arrows going to the treatment (hospital delivery)</li>
+</ul>
+</section>
+<section id="from-graph-to-data" class="slide level2 center">
+<h2>From graph to data</h2>
+<ul>
+<li class="fragment">we now have a <em>graphical</em> definition of an intervention, how to map this onto data?</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>All we need is basic probability applied to the DAG</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li class="fragment">product rule: <span class="math inline">\(P(A,B) = P(A|B)P(B)\)</span></li>
+<li class="fragment">sum rule: <span class="math inline">\(P(A) = \sum_B P(A|B)P(B)\)</span></li>
+<li class="fragment">total probability: <span class="math inline">\(P(A|C)  = \sum_B P(A|B,C)P(B|C)\)</span></li>
+</ul>
+<p><a href="../prep/math.html">See the preporatory math lecuture</a></p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="dags-imply-a-causal-factorization-of-the-joint-distribution" class="slide level2 center">
+<h2>DAGs imply a causal factorization of the joint distribution</h2>
+<ul>
+<li class="fragment">assume these variables <span class="math inline">\(T\)</span>: treatment, <span class="math inline">\(Y\)</span>: outcome, <span class="math inline">\(Z\)</span>: ‘other’ variable</li>
+<li class="fragment">the product rule allows us to write this joint in many (9) different <em>factorizations</em>, <span class="math inline">\(P(Y,T,Z)=\)</span>
+<ul>
+<li class="fragment"><span class="math inline">\(P(Y|T,Z)P(T,Z)\)</span></li>
+<li class="fragment"><span class="math inline">\(P(Z|T,Y)P(T,Y)\)</span></li>
+<li class="fragment"><span class="math inline">\(P(Y|T,Z)P(T|Z)P(Z)\)</span></li>
+<li class="fragment">…</li>
+</ul></li>
+<li class="fragment">whereas all of these are correct, knowing the DAG, one of these is <em>special</em>: the <em>causal factorization</em></li>
+</ul>
+</section>
+<section id="dags-imply-a-causal-factorization-of-the-joint-distribution-1" class="slide level2 center">
+<h2>DAGs imply a causal factorization of the joint distribution</h2>
+<div class="quarto-layout-panel" data-layout="[30,70]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
+<div id="fig-obs" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag1-obs.png" style="width:50.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;18: observational data
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="column quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
+<p><span class="math display">\[\begin{align}
+    P(Y,T,Z) &amp;= P(Y|T,Z)P(T,Z) \\
+             &amp;= P(Y|T,Z)P(T|Z)P(Z)
+\end{align}\]</span></p>
+<div class="non-incremental">
+<ul>
+<li class="fragment">2 times the product rule</li>
+</ul>
+</div>
+</div></div>
+</div>
+<ul>
+<li class="fragment">If this looks complicated: just follow the arrows, starting with variables with no incoming arrows</li>
+</ul>
+</section>
+<section id="intervention-as-graph-surgery" class="slide level2 center">
+<h2>Intervention as graph surgery</h2>
+<h3 id="why-is-the-causal-factorization-special">Why is the causal factorization special?</h3>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -743,7 +967,7 @@ Figure&nbsp;11: intervened DAG
 <img data-src="_tikzs/dag1-obs.png" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;12: observational data
+Figure&nbsp;19: observational data
 </figcaption>
 </figure>
 </div>
@@ -755,7 +979,70 @@ Figure&nbsp;12: observational data
 <img data-src="_tikzs/dag1-intervened.png" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;13: intervened DAG
+Figure&nbsp;20: intervened DAG
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="fragment quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><span class="math display">\[\begin{align}
+      P_{\text{obs}}(Y,T,Z) &amp;= P(Y|T,Z)\color{red}{P(T|Z)}P(Z)
+\end{align}\]</span></p>
+</div>
+<div class="fragment quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<p><span class="math display">\[\begin{align}
+      P_{\text{int}}(Y,T,Z) &amp;= P(Y|T,Z)\color{green}{P(T)}P(Z)
+\end{align}\]</span></p>
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment">in the <em>causal factorization</em>, <em>intervening</em> on <span class="math inline">\(T\)</span> means changing only one of the conditionals in the factorization, the others remain the same</li>
+<li class="fragment">this is what is meant with a <em>modular intervention</em></li>
+</ul>
+</section>
+<section id="intervention-as-graph-surgery-1" class="slide level2 center">
+<h2>Intervention as graph surgery</h2>
+<h3 id="connection-with-probabilities">Connection with probabilities</h3>
+<ul>
+<li class="fragment">the <em>conditional distribution</em> of <span class="math inline">\(Y\)</span> given <span class="math inline">\(T\)</span> is denoted as <span class="math inline">\(P(Y|T)\)</span> (‘<em>seeing</em>’)</li>
+<li class="fragment">the <em>causal effect</em> of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span> is denoted <span class="math inline">\(P(Y|\text{do}(T))\)</span>, which is <span class="math inline">\(Y\)</span> given <span class="math inline">\(T\)</span> in the graph where all arrows coming in to <span class="math inline">\(T\)</span> are removed (‘<em>doing</em>’)</li>
+<li class="fragment">we compute this from the <em>truncated</em> factorization, which comes from the <em>causal factorization</em> by removing <span class="math inline">\(P(T|Z)\)</span>:
+<ul>
+<li class="fragment"><em>causal factorization</em>: <span class="math inline">\(P(Y|T,Z)P(T|Z)P(Z)\)</span></li>
+<li class="fragment">truncated factorization: <span class="math inline">\(P(Y|T,Z)P(Z)\)</span></li>
+</ul></li>
+</ul>
+</section>
+<section id="intervention-as-graph-surgery-2" class="slide level2 center">
+<h2>Intervention as graph surgery</h2>
+<h3 id="changed-distribution">Changed distribution</h3>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-obs" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag1-obs.png" style="width:50.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;21: observational data
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-intervened" class="quarto-float quarto-figure quarto-figure-center">
+<figure class="quarto-float quarto-float-fig">
+<div aria-describedby="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img data-src="_tikzs/dag1-intervened.png" style="width:50.0%">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;22: intervened DAG
 </figcaption>
 </figure>
 </div>
@@ -781,7 +1068,7 @@ Figure&nbsp;13: intervened DAG
 </div>
 </div>
 </section>
-<section id="intervention-as-graph-surgery---changed-distribution-1" class="slide level2 center">
+<section id="intervention-as-graph-surgery---changed-distribution" class="slide level2 center">
 <h2>Intervention as graph surgery - changed distribution</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -792,7 +1079,7 @@ Figure&nbsp;13: intervened DAG
 <img data-src="_tikzs/dag1-obs.png" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;14: observational data
+Figure&nbsp;23: observational data
 </figcaption>
 </figure>
 </div>
@@ -805,7 +1092,7 @@ Figure&nbsp;14: observational data
 <img data-src="_tikzs/dag1-intervened.png" style="width:50.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;15: intervened DAG
+Figure&nbsp;24: intervened DAG
 </figcaption>
 </figure>
 </div>
@@ -822,6 +1109,80 @@ Figure&nbsp;15: intervened DAG
 </ul>
 </section>
 <section id="back-to-example-1" class="slide level2 center">
+<h2>Back to example 1</h2>
+<h3 id="seeing">Seeing</h3>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="_tikzs/dag-delivery.png"></p>
+<figcaption>DAG</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: left;"></th>
+<th style="text-align: right;">location</th>
+<th style="text-align: right;"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;">home</td>
+<td style="text-align: right;">hospital</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">risk</td>
+<td style="text-align: left;">low</td>
+<td style="text-align: right;">648 / 720 = 90%</td>
+<td style="text-align: right;">19 / 20 = 95%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">high</td>
+<td style="text-align: right;">40 / 80 = 50%</td>
+<td style="text-align: right;">144 / 180 = 80%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><em>marginal</em></td>
+<td style="text-align: right;">688 / 800 = 86%</td>
+<td style="text-align: right;">163 / 200 = 81.5%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<ul>
+<li class="fragment">seeing: <span class="math inline">\(P(\text{outcome}|\text{location}) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk}|\text{location})\)</span></li>
+<li class="fragment"><span class="math inline">\(P(\text{risk}=\text{low} | \text{location} = \text{hospital})=10\%\)</span></li>
+<li class="fragment"><span class="math inline">\(P(\text{risk}=\text{low} | \text{location} = \text{home})=90\%\)</span></li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[\begin{align}
+P(\text{outcome}|\text{location} = \text{hospital}) &amp;= 95 * 0.1 + 80 * 0.9 = 81.5\% \\
+     P(\text{outcome}|\text{location} = \text{home}) &amp;= 90 * 0.9 + 50 * 0.1 = 86\%
+\end{align}\]</span></p>
+</div>
+<ul>
+<li class="fragment"><strong>conclusion</strong>: deliveries in the hospital had worse neonatal outcomes</li>
+</ul>
+</section>
+<section id="back-to-example-1-1" class="slide level2 center">
 <h2>Back to example 1</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
@@ -926,7 +1287,7 @@ P(\text{outcome}|\text{do}(\text{hospital})) &amp;= 95 * 0.74 + 80 * 0.26 = 91.1
 <img data-src="_tikzs/dag-obs.png">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-obs-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;16: observational data: data we have
+Figure&nbsp;25: observational data: data we have
 </figcaption>
 </figure>
 </div>
@@ -936,7 +1297,7 @@ Figure&nbsp;16: observational data: data we have
 <img data-src="_tikzs/dag-intervened.png">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-intervened-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;17: intervened DAG: what we want to know
+Figure&nbsp;26: intervened DAG: what we want to know
 </figcaption>
 </figure>
 </div>
@@ -957,148 +1318,9 @@ Figure&nbsp;17: intervened DAG: what we want to know
 </div></div>
 </section></section>
 <section>
-<section id="dag-rules" class="title-slide slide level1 center">
-<h1>DAG rules</h1>
+<section id="beyond-toy-examples-d-separation-and-back-door-criterion" class="title-slide slide level1 center">
+<h1>Beyond toy examples: d-separation and back-door criterion</h1>
 
-</section>
-<section id="basic-dag-patterns-chain" class="slide level2 center">
-<h2>Basic DAG patterns: chain</h2>
-<div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div id="fig-chain" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-chain.png" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-chain-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;18: chain / mediation
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<ul>
-<li class="fragment"><span class="math inline">\(M\)</span> <em>mediates</em> effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
-<li class="fragment"><span class="math inline">\(X \perp Y | M\)</span></li>
-<li class="fragment">do not want to adjust for <span class="math inline">\(M\)</span> when estimating total effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="basic-dag-patterns-fork" class="slide level2 center">
-<h2>Basic DAG patterns: fork</h2>
-<div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div id="fig-fork" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-fork-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-fork.png" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fork-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;19: fork / confounder
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<ul>
-<li class="fragment"><span class="math inline">\(Z\)</span> <em>causes</em> both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> (common cause / confounder)</li>
-<li class="fragment"><span class="math inline">\(X \perp Y | Z\)</span></li>
-<li class="fragment"><span class="math inline">\(Z \to X\)</span> is a <em>back-door</em>: a path between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> that starts with an arrow into <span class="math inline">\(X\)</span></li>
-<li class="fragment">typically want to adjust for <span class="math inline">\(Z\)</span> (see <a href="#/sec-backdoor" class="quarto-xref">later&nbsp;4.9</a>)</li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="basic-dag-patterns-collider" class="slide level2 center">
-<h2>Basic DAG patterns: collider</h2>
-<div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-collider.png" style="width:100.0%">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;20: collider
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<ul>
-<li class="fragment"><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> <em>both cause</em> <span class="math inline">\(Z\)</span></li>
-<li class="fragment"><span class="math inline">\(X \perp Y\)</span> (but <em>NOT</em> when conditioning on <span class="math inline">\(Z\)</span>)</li>
-<li class="fragment">often do not want to condition on <span class="math inline">\(Z\)</span> as this induces a correlation between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span></li>
-</ul>
-</div>
-</div>
-</div>
-</section>
-<section id="collider-bias---tinder" class="slide level2 center">
-<h2>Collider bias - Tinder</h2>
-<div class="quarto-layout-panel" data-layout="[30,70]">
-<div class="quarto-layout-row">
-<div class="quarto-layout-cell" style="flex-basis: 30.0%;justify-content: flex-start;">
-<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div id="fig-collider" class="quarto-float quarto-figure quarto-figure-center">
-<figure class="quarto-float quarto-subfloat-fig">
-<div aria-describedby="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="_tikzs/dag-collider.png" style="width:100.0%" data-ref-parent="fig-collider">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-(a) collider
-</figcaption>
-</figure>
-</div>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collider-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;21: <span class="math display">\[\begin{align}
-    \text{intelligent} &amp;\sim U[0,1] \\
-    \text{attractive}  &amp;\sim U[0,1] \\
-    \text{on tinder}   &amp;= I_{\text{intelligent} + \text{attractive} &lt; 1}
-\end{align}\]</span>
-</figcaption>
-</figure>
-</div>
-</div>
-<div class="cell quarto-layout-cell" style="flex-basis: 70.0%;justify-content: flex-start;">
-<div class="cell-output-display">
-<div id="fig-tinder" class="quarto-float quarto-figure quarto-figure-center" width="1152">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec1_files/figure-revealjs/fig-tinder-1.png" id="fig-tinder" width="1152">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig quarto-uncaptioned" id="fig-tinder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;22
-</figcaption>
-</figure>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="conditioning-on-a-collider-creates-dependence-of-its-parents" class="slide level2 center">
-<h2>Conditioning on a collider creates dependence of its parents</h2>
-<ul>
-<li class="fragment">may not be too visible: doing an analysis in a selected subgroup is a form of (‘invisible’) conditioning)</li>
-<li class="fragment">e.g.&nbsp;when selecting only patients in the hospital
-<ul>
-<li class="fragment">being admitted to the hospital is a collider (has many different causes, e.g.&nbsp;traffic accident or fever)</li>
-<li class="fragment">usually only one of these is the reason for hospital admission</li>
-<li class="fragment">the causes for hospital admission now seem anti-correlated</li>
-</ul></li>
-<li class="fragment">collider conditioning <em>might</em> be an explanation for the <em>obsesity paradox</em> (i.e.&nbsp;obesity is correlated with better outcomes in diverse medical settings) <span class="citation" data-cites="banackObesityParadoxMay2017">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Banack and Stokes 2017</a>)</span></li>
-</ul>
-<!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
 </section>
 <section id="when-life-gets-complicated-real" class="slide level2 center">
 <h2>When life gets complicated / real</h2>
@@ -1169,14 +1391,12 @@ Figure&nbsp;22
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-banackObesityParadoxMay2017" class="csl-entry" role="listitem">
-Banack, H. R., and A. Stokes. 2017. <span>“The <span>‘Obesity Paradox’</span> May Not Be a Paradox at All.”</span> <em>International Journal of Obesity</em> 41 (8): 1162–63. <a href="https://doi.org/10.1038/ijo.2017.99">https://doi.org/10.1038/ijo.2017.99</a>.
-</div>
 <div id="ref-pearlCausality2009" class="csl-entry" role="listitem">
 Pearl, Judea. 2009. <em>Causality</em>. Cambridge University Press.
 </div>
 </div>
 </section></section>
+
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <p><img src="umcu_blue.png" class="slide-logo"></p>

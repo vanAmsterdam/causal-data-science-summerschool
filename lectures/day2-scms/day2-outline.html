@@ -112,13 +112,15 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="lecture-1-and-2-causal-inference-with-dags" class="level1">
 <h1>Lecture 1 and 2: Causal Inference with DAGs</h1>
+<section id="lecture-1-motivation" class="level2">
+<h2 class="anchored" data-anchor-id="lecture-1-motivation">Lecture 1: motivation</h2>
 <ul>
-<li><p>Causal inference frameworks</p>
+<li>Causal inference frameworks
 <ul>
 <li>What are they for?</li>
 <li>Why learn more than one?</li>
 </ul></li>
-<li><p>Lecture 1 &amp; 2 topics</p>
+<li>Lecture 1 &amp; 2 topics
 <ul>
 <li>what are DAGs</li>
 <li>causal inference with DAGs
@@ -129,35 +131,39 @@ ul.task-list li input[type="checkbox"] {
 <li>back-door criterion</li>
 </ul></li>
 </ul></li>
-<li><p>Motivating examples (same data, different dags)</p>
+<li>Motivating examples (same data, different dags)
 <ul>
 <li>Example task: are hospital deliveries good for babies?</li>
 <li>New question: hernia</li>
 </ul></li>
-<li><p>Causal Directed Acyclic Graphs</p>
+<li>Causal Directed Acyclic Graphs
 <ul>
 <li>diagram that represents our assumptions on causal relations</li>
 <li>Causal DAGs to the rescue</li>
 </ul></li>
-<li><p>Some math background: probabilites and assumptions</p>
+<li>Back to example 1 and 2: we got the right answer</li>
+</ul>
+</section>
+<section id="what-are-dags" class="level2">
+<h2 class="anchored" data-anchor-id="what-are-dags">What are DAGs?</h2>
 <ul>
-<li>Marginal, Joint and Conditional probabilites</li>
-<li>conditional probabilities require dividing by the denominator of the conditioning set (positivity)</li>
-<li>Probability rules and identities</li>
-<li>Marginal and conditional independence:</li>
-<li>Assumption parlance (strong vs weak assumption, necessary, sufficient)</li>
-</ul></li>
-<li><p>DAG definitions</p>
+<li>DAG definitions and properties
 <ul>
 <li>DAGs convey two types of assumptions: causal direction and conditional independence</li>
 <li>DAGs are ‘non-parametric’: They relay what variable ‘listens’ to what, but not in what way</li>
+</ul></li>
+<li>DAG rules: chain, fork, collider</li>
+</ul>
+</section>
+<section id="from-dags-to-causal-inference" class="level2">
+<h2 class="anchored" data-anchor-id="from-dags-to-causal-inference">From DAGs to causal inference</h2>
+<ul>
+<li><p>The DAG definition of an intervention</p>
+<ul>
 <li>DAGs imply a causal factorization of the joint distribution</li>
-<li>The DAG definition of an intervention</li>
 <li>Intervention as graph surgery - changed distribution</li>
 </ul></li>
-<li><p>Back to example 1 and 2: we got the right answer</p></li>
 <li><p>The gist of observational causal inference is to take data we have to make inferences about data from a different distribution (i.e.&nbsp;the intervened-on distribution)</p></li>
-<li><p>DAG rules: chain, fork, collider</p></li>
 <li><p>When life gets complicated / real: many variable</p>
 <ul>
 <li>d-separation (directional-separation)</li>
@@ -166,6 +172,7 @@ ul.task-list li input[type="checkbox"] {
 </ul></li>
 <li><p>How about positivity</p></li>
 </ul>
+</section>
 </section>
 <section id="lecture-3-structural-causal-models-scms" class="level1">
 <h1>Lecture 3 structural causal models (SCMs)</h1>
