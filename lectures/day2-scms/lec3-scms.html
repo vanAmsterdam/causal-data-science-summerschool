@@ -233,7 +233,7 @@ Wouter van Amsterdam
 <li class="fragment"><a href="#/dag-recap" id="/toc-dag-recap">DAG-recap</a></li>
 <li class="fragment"><a href="#/structural-causal-models-definitions" id="/toc-structural-causal-models-definitions">Structural Causal Models: definitions</a></li>
 <li class="fragment"><a href="#/identification" id="/toc-identification">Identification</a></li>
-<li class="fragment"><a href="#/defining-counterfactuals-and-the-causal-hierarchy-of-questions" id="/toc-defining-counterfactuals-and-the-causal-hierarchy-of-questions">Defining counterfactuals and the causal Hierarchy (of questions)</a></li>
+<li class="fragment"><a href="#/defining-counterfactuals-and-the-causal-hierarchy-of-questions" id="/toc-defining-counterfactuals-and-the-causal-hierarchy-of-questions">Defining counterfactuals and the causal hierarchy (of questions)</a></li>
 </ul>
 </nav>
 </section>
@@ -325,8 +325,7 @@ Qs:
 <ul>
 <li class="fragment">counterfactuals</li>
 </ul></li>
-<li class="fragment">Pearl Causal Hierarchy</li>
-<li class="fragment">other uses of DAGs: missing data, selection</li>
+<li class="fragment">Pearl Causal Hierarchy <!-- - other uses of DAGs: missing data, selection --></li>
 <li class="fragment">reflections on DAGs, limitations</li>
 </ul>
 </section></section>
@@ -360,7 +359,7 @@ Qs:
 <p>Together these define a <em>Structural Causal Model</em> <span class="citation" data-cites="pearlLogicStructureBasedCounterfactuals2009">(see definition 7.1.1 in <a href="#/references" role="doc-biblioref" onclick="">Pearl 2009</a>, and further)</span> (notation: <span class="math inline">\(M=&lt;U,V,F&gt;\)</span>)</p>
 </div>
 </section>
-<section id="structural-causal-model-1" class="slide level2 center">
+<section id="sec-scm1" class="slide level2 center">
 <h2>Structural Causal Model 1</h2>
 <div class="cell" data-execute="false">
 <div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1-3|4-6|7-9|11-16|18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>f_surgery <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery) { <span class="co"># pa_surgery = {}</span></span>
@@ -517,7 +516,7 @@ Qs:
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
 <pre><code> u_surgery      u_los u_survival 
-  4.317931   3.909789  11.331566 </code></pre>
+ 6.6997106  0.7016542  8.9951928 </code></pre>
 </div>
 </div>
 </div>
@@ -551,8 +550,8 @@ Figure&nbsp;1: 1000 random samples of U
 </div>
 <div class="cell fragment" data-execute="true">
 <div class="cell-output cell-output-stdout">
-<pre><code> u_surgery      u_los u_survival    surgery        los   survival 
-  2.034069   5.222650  12.690868   2.034069   7.256719  15.879449 </code></pre>
+<pre><code>  u_surgery       u_los  u_survival     surgery         los    survival 
+ 2.01984790  0.09820628 12.33286294  2.01984790  2.11805418 10.41122132 </code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -601,9 +600,9 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <div class="cell-output cell-output-stdout">
 <pre><code>       model mean_survival
       &lt;char&gt;         &lt;num&gt;
-1:      scm1      8.613519
-2: submodel3      3.585969
-3: submodel7      7.585969</code></pre>
+1:      scm1      8.485179
+2: submodel3      3.571035
+3: submodel7      7.571035</code></pre>
 </div>
 </div>
 </section></section>
@@ -672,7 +671,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <!--Someone killed the priest {{< iconify ph:knife >}} , we want to know who-dunnit ($=Q$)-->
 <p>Someone killed the priest (†), we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
 <div class="fragment">
-<p>Based on prior knowledge on <em>5 suspects</em> (all the SCMs compatible with our DAG)</p>
+<p>Based on prior knowledge we have <em>5 suspects</em> (all the SCMs compatible with our DAG)</p>
 </div>
 <div class="fragment">
 <p><img data-src="figs/whodunnit-col.png"></p>
@@ -683,7 +682,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 </section>
 <section id="idenfitication-in-pictures-1" class="slide level2 center">
 <h2>Idenfitication in pictures</h2>
-<p>Someone killed the priest {{&lt; iconify ph:knife &gt;}} , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
+<p>Someone killed the priest (†) , we want to know who-dunnit (<span class="math inline">\(=Q\)</span>)</p>
 <p>Based on prior knowledge on <em>5 suspects</em> (all the SCMs compatible with our DAG)</p>
 
 <img data-src="figs/whodunnit-gray.png" class="r-stretch"><p>If we had full data, we would have know it was <span class="math inline">\(M_3\)</span></p>
@@ -771,20 +770,20 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <li class="fragment">‘works’ with unobserved confounding, positivity violations</li>
 <li class="fragment">caveats:
 <ul>
-<li class="fragment">much harder to determine identifyability (no backdoor-rule)</li>
+<li class="fragment">much harder to determine identifyability (no analogue of backdoor-rule)</li>
 <li class="fragment">prefer weaker assumptions over stronger assumption</li>
 </ul></li>
 </ul>
 </section></section>
 <section>
 <section id="defining-counterfactuals-and-the-causal-hierarchy-of-questions" class="title-slide slide level1 center">
-<h1>Defining counterfactuals and the causal Hierarchy (of questions)</h1>
+<h1>Defining counterfactuals and the causal hierarchy (of questions)</h1>
 
 </section>
 <section id="counterfactuals" class="slide level2 center">
 <h2>Counterfactuals</h2>
 <ul>
-<li class="fragment">all of the above can be achieved with DAGs, but we haven’t used SCMs <em>super-power</em> yet: counterfactuals</li>
+<li class="fragment">all of the above can be achieved with DAGs, but we haven’t used SCMs <em>unique power</em> yet: counterfactuals</li>
 <li class="fragment">RCT / DAG questions: <em>What is the expected survival if we keep all patients in the hospital for 7 days?</em></li>
 </ul>
 </section>
@@ -818,8 +817,8 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <ul>
 <li class="fragment">Average causal effects in subgroup with <code>surgery=4</code>:
 <ul>
-<li class="fragment">3-days LOS: 5.7</li>
-<li class="fragment">7-days LOS: 9.7</li>
+<li class="fragment">3-days LOS: 5.6</li>
+<li class="fragment">7-days LOS: 9.6</li>
 </ul></li>
 </ul>
 <div class="fragment">
@@ -840,7 +839,7 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <section id="computing-counterfactuals-with-scms" class="slide level2 center">
 <h2>Computing counterfactuals with SCMs</h2>
 <ul>
-<li class="fragment">Given our information on the structural equation for <code>survival</code>: <span class="math display">\[\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}\]</span></li>
+<li class="fragment">Given our information on the structural equation for <code>survival</code> (<a href="#/sec-scm1" class="quarto-xref">Section&nbsp;2.2</a>): <span class="math display">\[\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}\]</span></li>
 <li class="fragment">and observed values on Adam’s and Zoe’s <code>surgery</code> AND <code>survival</code> following <code>los=3</code></li>
 <li class="fragment">we can compute their individual <span class="math inline">\(u_{\text{survival}}\)</span>:</li>
 </ul>
