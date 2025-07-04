@@ -134,7 +134,7 @@ Together these define a *Structural Causal Model* [see definition 7.1.1 in @pear
 
 :::
 
-## Structural Causal Model 1
+## Structural Causal Model 1{#sec-scm1}
 
 ```{r}
 #| label: scm1
@@ -647,7 +647,7 @@ ggplot(vdfm2, aes(x=value, fill=los3_surgery4)) +
 
 ## Computing counterfactuals with SCMs
 
-- Given our information on the structural equation for `survival`:
+- Given our information on the structural equation for `survival` ([@sec-scm1]):
   $$\text{survival} = \text{los} - 2*\text{surgery} + u_{\text{survival}}$$
 - and observed values on Adam's and Zoe's `surgery` AND `survival` following `los=3`
 - we can compute their individual $u_{\text{survival}}$:

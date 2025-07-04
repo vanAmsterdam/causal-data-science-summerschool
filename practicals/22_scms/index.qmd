@@ -1,0 +1,293 @@
+---
+title: "Practical: Structural Causal Models and Meta-learners"
+subtitle: "Identification and Hierarchy of Questions"
+author: "Wouter van Amsterdam"
+eval: false
+format: 
+  html:
+    toc: true
+    self-contained: true
+    code-fold: true
+    df-print: paged
+    callout-appearance: simple
+    callout-icon: false
+---
+
+<!--## practical 2-->
+
+  <!--- causal ladder: what Q is this?-->
+  <!--- give data of hierarchy and answer the Q-->
+  <!--- give data of 2 treatments + SCM (treatment 3 which can be extrapolated from)-->
+
+In this practical you'll learn more about identification and counterfactuals using the Structural Causal Model approach, and meta-learners
+
+# Identification
+
+:::{.callout-note collapse="false"}
+
+## Remember the definition of identification in [the lecture on SCMs](../../lectures/day2-scms/lec3-scms.qmd#sec-identification):
+
+
+Let $Q(M)$ be any computable quantity of a model $M$.
+We say that $Q$ is **identifiable** in a class $\mathbb{M}$ of models if, for any pairs of models $M_1$ and $M_2$ from $\mathbb{M}$,
+$Q(M_1) = Q(M_2)$ whenever $P_{M_1} (y) = P_{M_2} (y)$.
+If our observations are limited and permit only a partial set $F_M$ of features (of $P_M(y)$) to be estimated,
+we define $Q$ to be identifiable from $F_M$ if $Q(M_1) = Q(M_2)$ whenever $F_{M_1} = F_{M_2}$.
+
+:::
+
+We have two different datasets, for which we know they came from the following DAG:
+
+![DAG U](_tikzs/dagu.png){#fig-dagu}
+
+```{r}
+#| label: setup
+#| eval: true 
+
+
+required_pkgs <- c("marginaleffects", "ggplot2", "data.table")
+cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
+
+for (pkg in required_pkgs) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, repos=cran_repo)
+  }
+}
+
+suppressPackageStartupMessages({
+  # Load packages
+  library(marginaleffects)
+  library(ggplot2)
+  library(data.table)
+})
+
+source(here::here("practicals", "22_scms", "_makedatas.R"))
+datas <- make_datas()
+
+data1 <- datas[["data1"]]
+data2 <- datas[["data2"]]
+```
+
+The datasets can be downloaded here:
+
+[data1.csv](datas/data1.csv)
+
+[data2.csv](datas/data2.csv)
+
+::: {.callout-note collapse="true"}
+
+## state the ATE in terms of expected values of 'do' expressions
+
+answer: $$\text{ATE} = E[Y|\text{do}(X=1)] - E[Y|\text{do}(X=0)]$${#eq-ate}
+
+:::
+
+::: {.callout-note collapse="true"}
+
+## we did not measure $U$, can we estimate this target query based on the DAG, using the observed data 
+
+answer: no, there is an open back-door path through $U$ which we cannot block as we did not observe that variable
+
+:::
+
+`data1` and `data2` come from the same DAG but from different SCMs
+
+::: {.callout-note collapse="true"}
+
+## How can this be? What does this mean?
+
+answer: the endogenous variables have the same parents, so the DAG is the same. The structural equations are different
+
+:::
+
+We can estimate four features of the observed distribution: $P(Y=1|X=0),P(Y=1|X=1),P(Y=1),P(X=1)$.
+Observe that for `data1` and `data2`, these are approximately the same (up to sampling variation)
+
+::: {.callout-tip collapse="true"}
+
+## Estimate them from the observed data
+
+```{r}
+#| label: obs-pis
+#| eval: true
+
+writeLines((paste0("data1\nP(Y=1|X=0) = ", mean(data1[data1$x==0,"y"]), "\nP(Y=1|X=1) = ", mean(data1[data1$x==1,"y"]), "\nP(Y=1) = ", mean(data1[,"y"]), "\nP(X=1) = ", mean(data1[,"x"]))))
+
+writeLines((paste0("data2\nP(Y=1|X=0) = ", mean(data2[data2$x==0,"y"]), "\nP(Y=1|X=1) = ", mean(data2[data2$x==1,"y"]), "\nP(Y=1) = ", mean(data2[,"y"]), "\nP(X=1) = ", mean(data2[,"x"]))))
+# mean(data1[data1$x==0,"y"])
+# mean(data1[data1$x==1,"y"])
+# mean(data1[,"y"])
+# mean(data1[,"x"])
+#
+# mean(data2[data2$x==0,"y"])
+# mean(data2[data2$x==1,"y"])
+# mean(data2[,"y"])
+# mean(data2[,"x"])
+
+```
+
+:::
+
+::: {.callout-note collapse="true"}
+
+## Use the fact that `u` is in the data to calculate the actual effect in both datasets, what are the answers?
+
+```{r}
+#| label: estimate-u
+#| eval: true
+
+fit1 <- glm(y~x*u, data=data1, family=binomial)
+fit2 <- glm(y~x*u, data=data2, family=binomial)
+avg_comparisons(fit1, variables="x")
+avg_comparisons(fit2, variables="x")
+```
+
+:::
+
+::: {.callout-tip collapse="true"}
+
+## Explain how this proves (to statistical error) that our target query was not identified
+
+answer: there were two datasets with two different underlying models. Both yielded the same distribution in terms of observed variables $X,Y$, but when using the `unobserved` variable $U$, we could see both models had different answers to our query.
+
+:::
+
+# Counterfactual computations
+
+Use the following information on patient John:
+
+- age: 60
+- hypertension: true
+- diabetes: true
+- intervention: weight-loss program
+- survival-time: 10
+
+In addition to the following structural equation, where u denotes an (unobserved) exogenous noise variable, such that $E[u] = 0$ (i.e. the mean is 0):
+
+$$\text{survival-time} = 120 - \text{age} - 10*\text{hypertension} - 15*\text{diabetes} + 5*\text{weight-loss-program} + u$$
+
+::: {.callout-tip collapse="true"}
+
+## calculate the expected survival time for patients with the same covariate values as John when intervening to give or not give the weight-loss-program
+
+answer:
+
+\begin{align}
+  E[\text{survival-time}|\text{do}(\text{program}=0),...] &= E[120 - 60 - 10 - 15 + u] \\
+                                                   &= 120 - 60 - 10 - 15 + E[u] \\
+                                                   &= 35 + E[u] \\
+                                                   &= 35 + 0 \\
+                                                   &= 35 \\
+\end{align}
+
+\begin{align}
+  E[\text{survival-time}|\text{do}(\text{program}=1),...] &= E[120 - 60 - 10 - 15 + 5 + u] \\
+                                                   &= 120 - 60 - 10 - 15 + 5 + E[u] \\
+                                                   &= 40 + E[u] \\
+                                                   &= 40 + 0 \\
+                                                   &= 40 \\
+\end{align}
+
+:::
+
+::: {.callout-tip collapse="true"}
+
+## Calculate the survival time for John, given that he took the weight-loss-program and survived 10 year, if he would not have taken the weigth-loss-program
+
+answer: 
+
+### step 1. abduction: infer John's u
+
+John's expected survival time with the program (which he had) was 40 years.
+He lived for 10 years.
+We can infer that his $u=-30$
+
+### step 2. action: modify the treatment
+
+We update his treatment status to 'no weight-loss-program', the formula is now the second answer to the previous question
+
+### step 3. predict:
+
+Given John's $u=-30$ and his other observed values, we can now calculate that his expected survival time was $5$ years if he would not have taken the weight-loss program.
+
+### note:
+
+in this simple linear case, the counterfactual could have been calculated directly, but in general this is not the case
+
+:::
+
+# Meta-learners
+
+::: {.callout-note collapse="false"}
+
+## Remember the definition of the conditional average treatment effect (CATE) from [lecture 4](../../lectures/day2-scms/lec4.html#sec-metalearnes)
+
+$\text{CATE}(w) = E[y|\text{do}(t=1),w] - E[y|\text{do}(t=0),w]$
+
+:::
+
+::: {.callout-note collapse="false"}
+
+## Rembember the definition of the T-learner and the S-learner from [lecture 4](../../lectures/day2-scms/lec4.html#sec-metalearners):
+
+- denote $\tau(w) = E[y|\text{do}(t=1),w] - E[y|\text{do}(t=0),w]$
+- T-learner: model $T=0$ and $T=1$ separately (e.g. regression separetely for treated and untreated):
+  \begin{align}
+    \mu_0(w) &= E[Y|\text{do}(T=0),W=w] \\
+    \mu_1(w) &= E[Y|\text{do}(T=1),W=w] \\
+    \tau(w)  &= \mu_1(w) - \mu_0(w)
+  \end{align}
+- S-learner: use $T$ as just another feature
+  \begin{align}
+    \mu(t,w) &= E[Y|T=t,W=w] \\
+    \tau(w)  &= \mu(1,w) - \mu(0,w)
+  \end{align}
+
+:::
+
+With the following datasets:
+
+```{r}
+#| label: fig-dag-nonparametric
+#| eval: true
+#| echo: false 
+#| fig-cap: Three datasets with the same DAG
+
+set.seed(12345)
+n = 1e3
+
+f1 <- function(t, x, u) t + 0.5 * (x - pi) + u
+f2 <- function(t, x, u) t + sin(x) + u
+f3 <- function(t, x, u) t * sin(x) - (1-t) * sin(x) + u
+
+df <- data.table(
+  x = runif(n, 0, 2*pi),
+  t = rbinom(n, 1, 0.5),
+  u = rnorm(n, 0, .1)
+)
+
+df[, `:=`(
+  y1 = f1(t, x, u),
+  y2 = f2(t, x, u),
+  y3 = f3(t, x, u)
+)]
+
+dfm <- melt(df, measure.vars=c('y1', 'y2', 'y3'),
+            variable.name="f", value.name="y")
+
+ggplot(dfm, aes(x=x, y=y, col=factor(t))) + 
+  geom_point() + 
+  facet_grid(~f)
+```
+
+::: {.callout-tip collapse="true"}
+
+## what learning-approach would you recommend for estimating the CATE?
+
+1. S-learner with simple basemodel and no interaction (e.g. linear regression)
+2. S-learner with non-linear base model and no interaction term (e.g. splines / boosting / ...)
+3. T-learner
+
+NOTE: we typically have data with multi-dimensional features and/or confounders. Having the above plot to decide on the right meta-learning approach is almost never possible.
+
+:::
