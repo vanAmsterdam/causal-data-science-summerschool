@@ -1,6 +1,5 @@
 ---
 title: "Practical on Causal Perspectives on Prediction"
-subtitle: ""
 author: "Wouter van Amsterdam"
 date: "2024-08-08"
 eval: false
@@ -24,21 +23,23 @@ In addition, assume this DAG:
 
 ![dag-bmi](tikzs/dag-bmi.png)
 
-These nubmers are produces by the model:
+These numbers are produced by the model $f$:
 
-a. $f(\text{statin}=1,\text{age}=50,\text{bmi}=20)=10$%
-b. $f(\text{statin}=0,\text{age}=50,\text{bmi}=20)=15$%
-c. $f(\text{statin}=1,\text{age}=50,\text{bmi}=25)=20$%
-d. $f(\text{statin}=0,\text{age}=50,\text{bmi}=25)=18$%
-e. $f(\text{statin}=1,\text{age}=55,\text{bmi}=25)=23$%
-e. $f(\text{statin}=0,\text{age}=55,\text{bmi}=25)=21$%
+| statin | age | bmi | $f$ |
+|--------|-----|-----|-----|
+| 1      | 50  | 20  | 10% |
+| 0      | 50  | 20  | 15% |
+| 1      | 50  | 25  | 20% |
+| 0      | 50  | 25  | 18% |
+| 1      | 55  | 25  | 23% |
+| 0      | 55  | 25  | 21% |
 
 Read the following statements:
 
 1. for a patient of age=50 and bmi=25 who is not using a statin, the causal effect of reducing bmi by 5 points is a risk reduction of 18-15=3%
 2. for a patient of age=50 and bmi=20 who is not using a statin, the causal effect of starting a statin is a risk reduction of 15-10=5%
 3. for a patient of age=50, reducing bmi from 25 to 20 causes the effect of statins to become smaller on an absolute risk scale.
-4. for a patient with a bmi of 25, the causal effect of aging by 5 years is an increase in risk of 3%
+4. for a patient with a bmi of 25 who is taking a statin, the causal effect of aging by 5 years is an increase in risk of 3%
 
 :::{.callout-tip collapse="true"}
 
@@ -47,9 +48,9 @@ Read the following statements:
 answer: 2 is correct.
 
 1. is incorrect as this is not the causal effect due to the unobserved confounder $u$ (age,statin) is not a sufficient adjustment set for the effect of bmi on heart attack.
-2. From the DAG we see that causal effect of statin is identified, as adjustment set (age,bmi) satistifies the backdoor rule (all backdoor paths are closed).
+2. From the DAG we see that causal effect of statin is identified, as adjustment set (age,bmi) satisfies the backdoor rule (all backdoor paths are closed).
 3. is incorrect because the change in effect of statin for different levels of bmi does not in itself have a causal interpretation
-The total causal effect for age *could* be estimated from the data using adjustment set (bmi), but statin is a mediator from age to heart attack so (bmi,statin), which is used by $f$, is not a valid adjustment set, so 4 is incorrect.
+4. The total causal effect for age *could* be estimated from the data using adjustment set (bmi), but statin is a mediator from age to heart attack so (bmi,statin), which is used by $f$, is not a valid adjustment set, so 4 is incorrect.
 
 :::
 
@@ -79,7 +80,7 @@ As a consequence, the discriminative performance of the model has gone down.
 
 ## Given the previous answer, should the researchers be worried? Is retraining the model needed?
 
-Answer: Decreased disrimination is a sign of a succesful deployment, as the goal was to reduce the risk in the high-risk patients.
+Answer: Decreased discrimination is a sign of a succesful deployment, as the goal was to reduce the risk in the high-risk patients.
 
 :::
 
@@ -153,11 +154,11 @@ and heart attacks are much more frequent in the emergency room than in the out-p
 By conducting model interpretability studies, researchers found that the deep learning model can recognize whether an ECG is from the out-patient clinic or the emergency room, and in fact uses this information in its prediction.
 This finding is explained to the cardiologist, who says that the model is not 'robust', that this should be fixed or the model cannot be used.
 
-:::{.callout-tip collapse="true}
+:::{.callout-tip collapse="true"}
 
 ## You are a data-scientist with causal training, what is your reply?
 
-Answer: *it depends*. Indeed, the model uses non-causal (or 'spurious') information to create a prediction. This will create problems when this information is unreliable, for example because the ECG-machines may be swapped between the emergency room and out-patient clinic at any time. However, as long as the same ECG-machines stay in place, there is no fundamental issue in using this information in the prediction. In fact, including where the ECG was made (emergency vs out-patient) would be a very good feature to include in any prediction model for heart attacks, be it a deep learning model or any other prediction model type.
+Answer: *it depends*. Indeed, the model uses non-causal (or 'spurious') information to create a prediction. This will create problems when this information is unreliable, for example because the ECG-machines may be swapped between the emergency room and out-patient clinic at any time. However, as long as the same ECG-machines stay in place, there is no fundamental issue in using this information in the prediction. In fact, including where the ECG was made (emergency vs out-patient) would be a good feature to include in any prediction model for heart attacks, be it a deep learning model or any other prediction model type.
 
 :::
 

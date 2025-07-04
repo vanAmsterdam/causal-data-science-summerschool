@@ -48,9 +48,9 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
-| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |pdf](lectures/day3-tte/LectureDay3.pdf |
+| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I | [pdf](lectures/day3-tte/LectureDay3.pdf) |
 | 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
-| 11:00 - 12:00 | practical | Target Trials in Practice I         |<!-- [html](practicals/31_tte/Practical.html) | -->
+| 11:00 - 12:00 | practical | Target Trials in Practice I         |[html](practicals/31_tte/Practical.html) |
 | 12:30 - 13:15 | LUNCH     |                                     | |
 | 13:15 - 14:15 | Lecture   | Target Trials Emulation II          | |
 | 14:30 - 15:00 | Lecture   | Target Trials Emulation III       | |
@@ -64,9 +64,9 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 | 10:00 - 10:45 | Lecture   | Causal Structure Learning II                  | |
 | 11:00 - 12:30 | practical | Causal Structure Learning                     |<!--[html](practicals/42_discovery/day4_p2.html) -->
 | 12:30 - 13:15 | LUNCH     |                                               | |
-| 13:15 - 14:15 | Lecture   | Causal Perspectives on Prediction Modeling I  |<!-- [html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf) -->|
+| 13:15 - 14:15 | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf)|
 | 14:30 - 15:00 | Lecture   | Causal Perspectives on Prediction Modeling II | |
-| 15:15 - 16:30 | practical | Causal Perspectives on Prediction Modeling    | <!-- [html](practicals/41_prediction/index.html) -->|
+| 15:15 - 16:30 | practical | Causal Perspectives on Prediction Modeling    | [html](practicals/41_prediction/index.html)|
 
 ### Day 5: Advanced Topics in Causal Inference
 

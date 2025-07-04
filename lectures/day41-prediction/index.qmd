@@ -61,28 +61,9 @@ observe an $X$, want to know what to expect for $Y$
 3. measure $Y$
    a. cross-sectional (e.g. diagnosis)
    b. longitudinal follow-up (e.g. survival)
-4. use a statistical learning technique (e.g. regression, machine learning), fit model $f$ to observed $\{x_i,y_i\}$ with a criterion / loss function
+4. use a statistical learning technique (e.g. regression, machine learning)
+  - fit model $f$ to observed $\{x_i,y_i\}$ with a criterion / loss function
 5. evaluate prediction performance with e.g. discrimination, calibration, $R^2$
-
-## Curve fitting
-
-```{r}
-#| label: "curve-fitting"
-
-require(ggplot2); theme_set(theme_bw())
-require(data.table)
-
-x <- c(1, 2.5, 4, 7)
-eps <- c(.1, -.2, .05, .1)
-y <- x + eps
-a <- 0
-b <- 1
-
-df <- data.table(x, y, eps)
-
-
-
-```
 
 ## Prediction: typical estimand
 
@@ -368,39 +349,22 @@ With causal inference!
 was the model predicting anything sensible?
 :::
 
-## Calculating the effect of a policy from existing data
+## What if we cannot do this (cluster randomized) trial?{#sec-policyeval}
 
-- we have data where $t \sim \pi_0(X)$
-- we want to know the expected value of $Y$ when instead $t \sim \pi_1(X)$
-- how to compute this? with importance sampling!
-- importance sampling:
-  - want to compute the expected value of function $g(x)$ over a distribution $\color{green}{p}$: $E_{x \sim \color{green}{p}}[g(x)]$
-  - instead, we are given samples from a different distribution $x \sim \color{red}{q}$
-  - if we know $\color{green}{p}(x)$ and $\color{red}{q}(x)$, we can do:
+### Off-policy evaluation
 
-    $$E_{x \sim \color{red}{q}(x)} \left[ \frac{\color{green}{p}(x)}{\color{red}{q}(x)} g(x) \right]$$
-  - where $\frac{\color{green}{p}(x)}{\color{red}{q}(x)}$ are the *importance weights* (for a proof see @sec-is)
- 
-## Special cases for importance sampling and policy evaluation
-
-1. propensity score reweighting:
-   - target distribution $p(t|x)=p(t)$ (as in RCT)
-   - observed distribution $q(t|x) = \pi_0(x)$ (the propensity score)
-   - this is why propensity score reweighting mimics an RCT
-
-## Special cases for importance sampling and policy evaluation{#sec-policyeval}
-
-2. have historic RCT data, want to evaluate new policy $\pi_1$
+1. have historic RCT data, want to evaluate new policy $\pi_1$
    - target distribution $p(t|x)=\pi_1(x)$
    - observed distribution $q(t|x) = 0.5$
    - note: when $\pi_1(x)$ is deterministic (e.g. give the treatment when $f(x) > 0.1$), we get the following:
      a. when randomized treatment is concordant with $\pi_1$, keep the patient (weight = 1), otherwise, remove from the data (weight = 0)
      b. calculate average outcomes in the kept patients
    - this way, multiple alternative policies may be evaluated
-3. have historic observational data, want to evaluate new policy $\pi_1$:
+2. have historic observational data, want to evaluate new policy $\pi_1$:
    - target distribution $p(t|x)=\pi_1(x)$
    - observed distribution $q(t|x) = \pi_0(x)$
    - we need to estimate $q$ (i.e. the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)
+   - use importance sampling to estimate the expected value of $Y$ under $\pi_1$ from the observed data
 
 ---
 
