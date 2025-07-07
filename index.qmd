@@ -34,6 +34,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/k8aUfkYU
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
+| | Test-your-knowledge | Day 1 material | [google form](https://forms.gle/VRV25bKWrk6PXSQP9) |
 | 09:00 - 09:45 | Lecture   | Intro to DAGs I                                          |[html](lectures/day2-scms/lec1.html) [pdf](lectures/day2-scms/lec1.pdf)|
 | 09:45 - 10:45 | Lecture   | Intro to DAGs II                                         ||
 | 11:00 - 12:30 | practical | Drawing and Using DAGs I                                 |[html](practicals/21_dags/dags.html)|
