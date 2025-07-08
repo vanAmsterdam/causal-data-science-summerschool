@@ -198,6 +198,9 @@ nys <- ntots * pos_tz
 
 strs <- paste0(nys, " / ", ntots, " = ", 100*pos_tz, "%")
 str_mat <- matrix(strs, ncol=2, dimnames=dnames)
+
+# TODO: add the marginals for risk
+
 # kable(t(str_mat))
 # pander::pander(ftable(t(str_mat)), emphasize.strong.rows=c(1), emphasize.strong.cols=c(1))
 
@@ -739,6 +742,7 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 ![DAG](_tikzs/dag-delivery.png)
 
+<!-- TODO: add the marginals for risk -->
 
 |      |      | location |          |
 |------|------|---------:|---------:|
@@ -767,7 +771,7 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 ::: {layout-ncol=2}
 
-![DAG](_tikzs/dag-delivery.png)
+![mutilated DAG after graph surgery](_tikzs/dag-delivery-int.png)
 
 
 |      |      | location |          |
