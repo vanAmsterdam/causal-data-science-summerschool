@@ -4735,7 +4735,7 @@ Answer
 </section>
 <section id="part-b-an-observational-study" class="level3">
 <h3 class="anchored" data-anchor-id="part-b-an-observational-study">Part B: an observational study</h3>
-<p>In this part of the practical, we consider an observational study on the effect of the use of some drug on overall survival since diagnosis of some disease. For simplicity, there will be no drop-out or censoring other than administrative censoring at 10 years after diagnosis. <!--We'd like to know both the effect of initiating drug treatment (intention-to-treat effect) as well as the effect of sustained treatment versus sustained non-treatment (per-protocol effect).--></p>
+<p>In this part of the practical, we consider an observational study on the effect of the use of some drug on overall survival since diagnosis of some disease. For simplicity, there will be no drop-out or censoring other than administrative censoring at 10 months after diagnosis. <!--We'd like to know both the effect of initiating drug treatment (intention-to-treat effect) as well as the effect of sustained treatment versus sustained non-treatment (per-protocol effect).--></p>
 Start again by simulating data using the provided code. This time, don’t worry about the actual code. All you need to know about it is that by running it, you get in your global environment two functions, one called <code>drawSample</code> and one called <code>wide2long</code>, which reshapes the output of <code>drawSample</code> in a convenient way.
 <details>
 <summary>
@@ -4919,7 +4919,7 @@ Code
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>long<span class="sc">$</span>status <span class="ot">&lt;-</span> status[m]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
-<strong>Question</strong> <strong>B4.</strong> What is the crude difference in 5-year event risk between the initiators and non-initiators?
+<strong>Question</strong> <strong>B4.</strong> What is the crude difference in 5-month event risk between the initiators and non-initiators?
 <details>
 <summary>
 Answer
@@ -4968,14 +4968,14 @@ Code
 <span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>trial<span class="sc">$</span>time <span class="ot">&lt;-</span> time[m]<span class="sc">-</span><span class="dv">3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </details>
-<strong>B5.</strong> What is the difference in 5-year event risk between the initiators and non-initiators?
+<strong>B5.</strong> What is the difference in 5-month event risk between the initiators and non-initiators?
 <details>
 <summary>
 Answer
 </summary>
 <p><font color="grey"></font></p><font color="grey">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate 5-year risks</span></span>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate 5-month risks</span></span>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">I</span>(time<span class="sc">&lt;=</span><span class="dv">5</span>)<span class="sc">~</span>arm,<span class="at">data=</span><span class="fu">subset</span>(trial,start<span class="sc">==</span><span class="dv">3</span>))</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>est_ref <span class="ot">&lt;-</span> <span class="fu">unname</span>(fit<span class="sc">$</span>coef[<span class="st">&quot;arm&quot;</span>])</span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;&#39;True&#39; risk difference: &quot;</span>,<span class="fu">round</span>(est_ref<span class="sc">*</span><span class="dv">100</span>,<span class="dv">1</span>),<span class="st">&quot;%&quot;</span>,<span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -5162,7 +5162,7 @@ Next, we censor individuals from the point of a protocol departure.
 <section id="part-d-g-computation" class="level3">
 <h3 class="anchored" data-anchor-id="part-d-g-computation">Part D: g-computation</h3>
 <p>In this part, we’ll again revisit the observational study of part B. Instead of IPW to adjust for a lack of exchangeability, you’ll be using g-computation.</p>
-<p>As we’ve established, g-computation for inference about marginal counterfacutal risks is really just standardision of conditional (counterfactual) risks. The conditional risks that we’re after now are (1) the risk of sustaining the event of interest within 5 years from the target intervention (randomisation) time (3 months) if—possibly contrary to fact—patients were to <em>initiate</em> drug treatment, and (2) the risk if patients were not to <em>initiate</em>, both conditional on a set of variables that explain any lack of exchangeability. In the previous, we assumed that the variables <code>L</code> and <code>Llag</code> should be together sufficient to control for confounding, so we’ll also do this here.</p>
+<p>As we’ve established, g-computation for inference about marginal counterfacutal risks is really just standardision of conditional (counterfactual) risks. The conditional risks that we’re after now are (1) the risk of sustaining the event of interest within 5 months from the target intervention (randomisation) time (3 months) if—possibly contrary to fact—patients were to <em>initiate</em> drug treatment, and (2) the risk if patients were not to <em>initiate</em>, both conditional on a set of variables that explain any lack of exchangeability. In the previous, we assumed that the variables <code>L</code> and <code>Llag</code> should be together sufficient to control for confounding, so we’ll also do this here.</p>
 Let’s therefore regress <code>time&lt;=5</code> on <code>arm</code>, <code>L</code> and <code>Llag</code>:
 <details>
 <summary>
