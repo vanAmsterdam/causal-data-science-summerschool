@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -99,7 +102,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -116,7 +118,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-be51df28a2a48809041d03b0f324d756.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-b2f46c95abe7a562720a132562b688cb.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -362,7 +364,7 @@ Qs:
 <section id="sec-scm1" class="slide level2 center">
 <h2>Structural Causal Model 1</h2>
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1-3|4-6|7-9|11-16|18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>f_surgery <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery) { <span class="co"># pa_surgery = {}</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1-3|4-6|7-9|11-16|18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>f_surgery <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery) { <span class="co"># pa_surgery = {}</span></span>
 <span id="cb1-2"><a></a>  u_surgery</span>
 <span id="cb1-3"><a></a>}</span>
 <span id="cb1-4"><a></a>f_los <span class="ot">&lt;-</span> <span class="cf">function</span>(surgery, u_los) { <span class="co"># pa_los = {surgery}</span></span>
@@ -378,7 +380,7 @@ Qs:
 <span id="cb1-14"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb1-15"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
 <span id="cb1-16"><a></a>}</span>
-<span id="cb1-17"><a></a><span class="fu">scm1</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-17"><a></a><span class="fu">scm1</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
@@ -393,12 +395,12 @@ Qs:
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" data-code-line-numbers="|2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
 <span id="cb3-2"><a></a>  surgery  <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
 <span id="cb3-3"><a></a>  los      <span class="ot">=</span> <span class="fu">f_los</span>(surgery, u_los)</span>
 <span id="cb3-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb3-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
-<span id="cb3-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-6"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column" style="width:50%;">
 <p><img data-src="figs/scm1_01.png" class="fragment"></p>
@@ -410,12 +412,12 @@ Qs:
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" data-code-line-numbers="3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
 <span id="cb4-2"><a></a>  surgery  <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
 <span id="cb4-3"><a></a>  los      <span class="ot">=</span> <span class="fu">f_los</span>(surgery, u_los)</span>
 <span id="cb4-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb4-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
-<span id="cb4-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-6"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column" style="width:50%;">
 <p><img data-src="figs/scm1_02.png"></p>
@@ -427,12 +429,12 @@ Qs:
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" data-code-line-numbers="4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>scm1 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
 <span id="cb5-2"><a></a>  surgery  <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
 <span id="cb5-3"><a></a>  los      <span class="ot">=</span> <span class="fu">f_los</span>(surgery, u_los)</span>
 <span id="cb5-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb5-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
-<span id="cb5-6"><a></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-6"><a></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div><div class="column" style="width:50%;">
 <p><img data-src="figs/scm1_03.png"></p>
@@ -448,14 +450,14 @@ Qs:
 <li class="fragment"><strong>submodel</strong>: in <code>scm1</code> replace <code>f_los</code> with a specific <em>value</em>, e.g.&nbsp;<code>7</code> days <!-- todo: make this side-by-side --></li>
 </ul>
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb6" data-code-line-numbers="1|3|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>submodel7 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" data-code-line-numbers="1|3|8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a>submodel7 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
 <span id="cb6-2"><a></a>  surgery <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
 <span id="cb6-3"><a></a>  los <span class="ot">=</span> <span class="dv">7</span></span>
 <span id="cb6-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb6-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
 <span id="cb6-6"><a></a>}</span>
 <span id="cb6-7"><a></a></span>
-<span id="cb6-8"><a></a><span class="fu">submodel7</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-8"><a></a><span class="fu">submodel7</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
@@ -473,14 +475,14 @@ Qs:
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>submodel7 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>submodel7 <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery, u_los, u_survival) {</span>
 <span id="cb8-2"><a></a>  surgery <span class="ot">=</span> <span class="fu">f_surgery</span>(u_surgery)</span>
 <span id="cb8-3"><a></a>  los <span class="ot">=</span> <span class="dv">7</span></span>
 <span id="cb8-4"><a></a>  survival <span class="ot">=</span> <span class="fu">f_survival</span>(surgery, los, u_survival)</span>
 <span id="cb8-5"><a></a>  <span class="fu">c</span>(<span class="at">surgery=</span>surgery, <span class="at">los=</span>los, <span class="at">survival=</span>survival)</span>
 <span id="cb8-6"><a></a>}</span>
 <span id="cb8-7"><a></a></span>
-<span id="cb8-8"><a></a><span class="fu">submodel7</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-8"><a></a><span class="fu">submodel7</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> surgery      los survival 
        2        7        8 </code></pre>
@@ -505,13 +507,13 @@ Qs:
 </ul>
 <div class="fragment">
 <div class="cell" data-execute="false">
-<div class="sourceCode cell-code" id="cb10" data-code-line-numbers="1|2|3|4|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>sample_u <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" data-code-line-numbers="1|2|3|4|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a>sample_u <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
 <span id="cb10-2"><a></a>    u_surgery  <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>,  <span class="dv">2</span>,  <span class="dv">8</span>)</span>
 <span id="cb10-3"><a></a>    u_los      <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>,  <span class="dv">7</span>)</span>
 <span id="cb10-4"><a></a>    u_survival <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>,  <span class="dv">8</span>, <span class="dv">13</span>)</span>
 <span id="cb10-5"><a></a>    <span class="fu">c</span>(<span class="at">u_surgery=</span>u_surgery, <span class="at">u_los=</span>u_los, <span class="at">u_survival=</span>u_survival)</span>
 <span id="cb10-6"><a></a>}</span>
-<span id="cb10-7"><a></a><span class="fu">sample_u</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-7"><a></a><span class="fu">sample_u</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
@@ -540,13 +542,13 @@ Figure&nbsp;1: 1000 random samples of U
 <section id="a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u" class="slide level2 center">
 <h2>A Probabilistic Causal Model is a SCM with a distribution over U</h2>
 <div class="cell" data-execute="true">
-<div class="sourceCode cell-code" id="cb12" data-code-line-numbers="1|2|3|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>sample_pcm <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12" data-code-line-numbers="1|2|3|7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>sample_pcm <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
 <span id="cb12-2"><a></a>  U <span class="ot">&lt;-</span> <span class="fu">sample_u</span>()</span>
 <span id="cb12-3"><a></a>  V <span class="ot">&lt;-</span> <span class="fu">scm1</span>(U[[<span class="st">'u_surgery'</span>]], U[[<span class="st">'u_los'</span>]], U[[<span class="st">'u_survival'</span>]])</span>
 <span id="cb12-4"><a></a>  <span class="fu">c</span>(U, V)</span>
 <span id="cb12-5"><a></a>}</span>
 <span id="cb12-6"><a></a>  </span>
-<span id="cb12-7"><a></a><span class="fu">sample_pcm</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-7"><a></a><span class="fu">sample_pcm</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment" data-execute="true">
 <div class="cell-output cell-output-stdout">
@@ -577,7 +579,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <li class="fragment">take random samples from <code>U</code>, push forward through <code>submodel7</code> and <code>submodel3</code></li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14" data-code-line-numbers="1-2|4-5|7-18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="co"># N = 1e3</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14" data-code-line-numbers="1-2|4-5|7-18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="co"># N = 1e3</span></span>
 <span id="cb14-2"><a></a><span class="co"># us &lt;- map(1:N, ~sample_u())</span></span>
 <span id="cb14-3"><a></a></span>
 <span id="cb14-4"><a></a>v3s <span class="ot">&lt;-</span> <span class="fu">map</span>(us, <span class="sc">~</span><span class="fu">do.call</span>(submodel3, <span class="fu">as.list</span>(.x)))</span>
@@ -594,7 +596,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <span id="cb14-15"><a></a>  <span class="at">submodel7=</span>v7df</span>
 <span id="cb14-16"><a></a>), <span class="at">idcol=</span><span class="st">'model'</span>)</span>
 <span id="cb14-17"><a></a></span>
-<span id="cb14-18"><a></a>dfa[, <span class="fu">list</span>(<span class="at">mean_survival=</span><span class="fu">mean</span>(survival)), by<span class="ot">=</span><span class="st">"model"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-18"><a></a>dfa[, <span class="fu">list</span>(<span class="at">mean_survival=</span><span class="fu">mean</span>(survival)), by<span class="ot">=</span><span class="st">"model"</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell fragment">
 <div class="cell-output cell-output-stdout">
@@ -986,12 +988,12 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <h2>References</h2>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-bareinboimPearlHierarchyFoundations2022" class="csl-entry" role="listitem">
-Bareinboim, Elias, Juan Correa, Duligur Ibeling, and Thomas Icard. 2022. <span>“On <span>Pearl</span>’s <span>Hierarchy</span> and the <span>Foundations</span> of <span>Causal Inference</span> (1st Edition).”</span> In <em>Probabilistic and <span>Causal Inference</span>: The <span>Works</span> of <span>Judea Pearl</span></em>, edited by Hector Geffner, Rita Dechter, and Joseph Halpern, 507–56. ACM Books.
+Bareinboim, Elias, Juan Correa, Duligur Ibeling, and Thomas Icard. 2022. <span>“On <span>Pearl</span>’s <span>Hierarchy</span> and the <span>Foundations</span> of <span>Causal Inference</span> (1st Edition).”</span> In <em>Probabilistic and <span>Causal Inference</span>: The <span>Works</span> of <span>Judea Pearl</span></em>, edited by Hector Geffner, Rita Dechter, and Joseph Halpern. ACM Books.
 </div>
 <div id="ref-pearlLogicStructureBasedCounterfactuals2009" class="csl-entry" role="listitem">
-Pearl, Judea, ed. 2009. <span>“The <span>Logic</span> of <span>Structure-Based Counterfactuals</span>.”</span> In <em>Causality</em>, 2nd ed., 201–58. Cambridge: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511803161.009">https://doi.org/10.1017/CBO9780511803161.009</a>.
+Pearl, Judea, ed. 2009. <span>“The <span>Logic</span> of <span>Structure-Based Counterfactuals</span>.”</span> In <em>Causality</em>, 2nd ed. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511803161.009">https://doi.org/10.1017/CBO9780511803161.009</a>.
 </div>
 </div>
 </section></section>
@@ -1185,7 +1187,7 @@ Pearl, Judea, ed. 2009. <span>“The <span>Logic</span> of <span>Structure-Based
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1297,13 +1299,14 @@ Pearl, Judea, ed. 2009. <span>“The <span>Logic</span> of <span>Structure-Based
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

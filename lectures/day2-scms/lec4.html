@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,7 +36,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -50,7 +52,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-be51df28a2a48809041d03b0f324d756.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-b2f46c95abe7a562720a132562b688cb.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -239,11 +241,13 @@ Wouter van Amsterdam
 <figcaption>daggity.net</figcaption>
 </figure>
 </div>
+<div class="fragment">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="figs/causalfusion.png" class="fragment"></p>
+<p><img data-src="figs/causalfusion.png"></p>
 <figcaption>causalfusion.net</figcaption>
 </figure>
+</div>
 </div>
 </div>
 </section></section>
@@ -475,7 +479,7 @@ Figure&nbsp;1: Three datasets with the same DAG
 <h2>References</h2>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-anandCausalEffectIdentification2023" class="csl-entry" role="listitem">
 Anand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. <span>‚ÄúCausal <span>Effect Identification</span> in <span>Cluster DAGs</span>.‚Äù</span> <em>Proceedings of the AAAI Conference on Artificial Intelligence</em> 37 (10): 12172‚Äì79. <a href="https://doi.org/10.1609/aaai.v37i10.26435">https://doi.org/10.1609/aaai.v37i10.26435</a>.
 </div>
@@ -671,7 +675,7 @@ Anand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. <span>‚Ä
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -783,13 +787,14 @@ Anand, Tara V., Adele H. Ribeiro, Jin Tian, and Elias Bareinboim. 2023. <span>‚Ä
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

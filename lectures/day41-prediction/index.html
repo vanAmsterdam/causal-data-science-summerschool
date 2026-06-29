@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-08">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,7 +36,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -50,7 +52,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-f563837468303362081e247dddd440d0.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -678,7 +680,7 @@ Wouter van Amsterdam
 <li class="fragment"><p>assumption of no unobserved confounding often hard to justify in observational data</p></li>
 <li class="fragment"><p>but there’s more between heaven (RCT) and earth (confounder adjustment)</p>
 <ul>
-<li>proxy-variable methods <span class="citation" data-cites="miaoIdentifyingCausalEffects2018 vanamsterdamIndividualTreatmentEffect2022">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Miao, Geng, and Tchetgen Tchetgen 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam et al. 2022</a>)</span></li>
+<li>proxy-variable methods <span class="citation" data-cites="miaoIdentifyingCausalEffects2018 vanamsterdamIndividualTreatmentEffect2022">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Miao et al. 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam et al. 2022</a>)</span></li>
 <li>constant relative treatment effect assumption <span class="citation" data-cites="alaaMachineLearningGuide2021 vanamsterdamConditionalAverageTreatment2023 candidodosreisUpdatedPREDICTBreast2017">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Alaa et al. 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam and Ranganath 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Candido dos Reis et al. 2017</a>)</span></li>
 <li>diff-in-diff</li>
 <li>instrumental variable analysis <span class="citation" data-cites="waldFittingStraightLines1940 puliGeneralControlFunctions2021 hartfordDeepIVFlexible2017">(<a href="#/references" role="doc-biblioref" onclick="">Wald 1940</a>; <a href="#/references" role="doc-biblioref" onclick="">Puli and Ranganath 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">Hartford et al. 2017</a>)</span></li>
@@ -692,7 +694,7 @@ Wouter van Amsterdam
 <ul>
 <li class="fragment">prediction accuracy can be tested in RCTs, or in observational data with specialized methods accounting for confounding <span class="citation" data-cites="keoghPredictionInterventionsEvaluation2024">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Keogh and van Geloven 2024</a>)</span></li>
 <li class="fragment">in confounded observational data, typical metrics (e.g.&nbsp;AUC or calibration) are not sufficient as we want to predict well in data from <em>other distribution than observed data</em> (i.e.&nbsp;other treatment decisions)</li>
-<li class="fragment">a new <em>policy</em> can be evaluated in historic RCTs <span class="citation" data-cites="karmaliBloodPressureloweringTreatment2018">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Karmali et al. 2018</a>)</span></li>
+<li class="fragment">a new <em>policy</em> can be evaluated in historic RCTs <span class="citation" data-cites="karmaliBloodPressureloweringTreatment2018">(e.g. <a href="#/references" role="doc-biblioref" onclick=""><span class="nocase">Karmali et al.</span> 2018</a>)</span></li>
 <li class="fragment">ultimate test is cluster RCT</li>
 <li class="fragment">if not perfect, likely a better recipe than <em>treatment-naive</em> models</li>
 </ul>
@@ -791,39 +793,39 @@ Wouter van Amsterdam
 <h2>References</h2>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-alaaMachineLearningGuide2021" class="csl-entry" role="listitem">
-Alaa, Ahmed M., Deepti Gurdasani, Adrian L. Harris, Jem Rashbass, and Mihaela van der Schaar. 2021. <span>“Machine Learning to Guide the Use of Adjuvant Therapies for Breast Cancer.”</span> <em>Nature Machine Intelligence</em>, June, 1–11. <a href="https://doi.org/10/gk6bh7">https://doi.org/10/gk6bh7</a>.
+Alaa, Ahmed M., Deepti Gurdasani, Adrian L. Harris, Jem Rashbass, and Mihaela van der Schaar. 2021. <span>“Machine Learning to Guide the Use of Adjuvant Therapies for Breast Cancer.”</span> <em>Nature Machine Intelligence</em>, June 24, 1–11. <a href="https://doi.org/10/gk6bh7">https://doi.org/10/gk6bh7</a>.
 </div>
 <div id="ref-vanamsterdamConditionalAverageTreatment2023" class="csl-entry" role="listitem">
 Amsterdam, Wouter A. C. van, and Rajesh Ranganath. 2023. <span>“Conditional Average Treatment Effect Estimation with Marginally Constrained Models.”</span> <em>Journal of Causal Inference</em> 11 (1): 20220027. <a href="https://doi.org/10.1515/jci-2022-0027">https://doi.org/10.1515/jci-2022-0027</a>.
 </div>
 <div id="ref-vanamsterdamIndividualTreatmentEffect2022" class="csl-entry" role="listitem">
-Amsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, Gijs A. Bartholomeus, Aahlad Manas Puli, Pim A. de Jong, Tim Leiner, Anne S. R. van Lindert, Marinus J. C. Eijkemans, and Rajesh Ranganath. 2022. <span>“Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage <span>III</span> Non-Small Cell Lung Cancer.”</span> <em>Scientific Reports</em> 12 (1, 1): 5848. <a href="https://doi.org/10.1038/s41598-022-09775-9">https://doi.org/10.1038/s41598-022-09775-9</a>.
+Amsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, et al. 2022. <span>“Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage <span>III</span> Non-Small Cell Lung Cancer.”</span> <em>Scientific Reports</em> 12 (1, 1): 5848. <a href="https://doi.org/10.1038/s41598-022-09775-9">https://doi.org/10.1038/s41598-022-09775-9</a>.
 </div>
 <div id="ref-candidodosreisUpdatedPREDICTBreast2017" class="csl-entry" role="listitem">
-Candido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, David Greenberg, Jem Rashbass, Marjanka K. Schmidt, Alexandra J. van den Broek, et al. 2017. <span>“An Updated <span>PREDICT</span> Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.”</span> <em>Breast Cancer Research</em> 19 (1): 58. <a href="https://doi.org/10/gbhgpq">https://doi.org/10/gbhgpq</a>.
+Candido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, et al. 2017. <span>“An Updated <span>PREDICT</span> Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.”</span> <em>Breast Cancer Research</em> 19 (1): 58. <a href="https://doi.org/10/gbhgpq">https://doi.org/10/gbhgpq</a>.
 </div>
 <div id="ref-collinsTRIPODAIStatement2024" class="csl-entry" role="listitem">
-Collins, Gary S., Karel G. M. Moons, Paula Dhiman, Richard D. Riley, Andrew L. Beam, Ben Van Calster, Marzyeh Ghassemi, et al. 2024. <span>“<span>TRIPOD</span>+<span>AI</span> Statement: Updated Guidance for Reporting Clinical Prediction Models That Use Regression or Machine Learning Methods.”</span> <em>BMJ</em> 385 (April): e078378. <a href="https://doi.org/10.1136/bmj-2023-078378">https://doi.org/10.1136/bmj-2023-078378</a>.
+Collins, Gary S., Karel G. M. Moons, Paula Dhiman, et al. 2024. <span>“<span>TRIPOD</span>+<span>AI</span> Statement: Updated Guidance for Reporting Clinical Prediction Models That Use Regression or Machine Learning Methods.”</span> <em>BMJ</em> 385 (April): e078378. <a href="https://doi.org/10.1136/bmj-2023-078378">https://doi.org/10.1136/bmj-2023-078378</a>.
 </div>
 <div id="ref-cooperEvaluationMachinelearningMethods1997" class="csl-entry" role="listitem">
-Cooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, John Aronis, Bruce G. Buchanan, Richard Caruana, Michael J. Fine, et al. 1997. <span>“An Evaluation of Machine-Learning Methods for Predicting Pneumonia Mortality.”</span> <em>Artificial Intelligence in Medicine</em> 9 (2): 107–38. <a href="https://doi.org/10.1016/S0933-3657(96)00367-3">https://doi.org/10.1016/S0933-3657(96)00367-3</a>.
+Cooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, et al. 1997. <span>“An Evaluation of Machine-Learning Methods for Predicting Pneumonia Mortality.”</span> <em>Artificial Intelligence in Medicine</em> 9 (2): 107–38. <a href="https://doi.org/10.1016/S0933-3657(96)00367-3">https://doi.org/10.1016/S0933-3657(96)00367-3</a>.
 </div>
 <div id="ref-hartfordDeepIVFlexible2017" class="csl-entry" role="listitem">
-Hartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. <span>“Deep <span>IV</span>: <span>A Flexible Approach</span> for <span>Counterfactual Prediction</span>.”</span> In <em>International <span>Conference</span> on <span>Machine Learning</span></em>, 1414–23. PMLR. <a href="https://proceedings.mlr.press/v70/hartford17a.html">https://proceedings.mlr.press/v70/hartford17a.html</a>.
+Hartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. <span>“Deep <span>IV</span>: <span>A Flexible Approach</span> for <span>Counterfactual Prediction</span>.”</span> <em>International <span>Conference</span> on <span>Machine Learning</span></em>, July 17, 1414–23. <a href="https://proceedings.mlr.press/v70/hartford17a.html">https://proceedings.mlr.press/v70/hartford17a.html</a>.
 </div>
 <div id="ref-karmaliBloodPressureloweringTreatment2018" class="csl-entry" role="listitem">
-Karmali, Kunal N., Donald M. Lloyd-Jones, Joep van der Leeuw, David C. Goff Jr, Salim Yusuf, Alberto Zanchetti, Paul Glasziou, et al. 2018. <span>“Blood Pressure-Lowering Treatment Strategies Based on Cardiovascular Risk Versus Blood Pressure: <span>A</span> Meta-Analysis of Individual Participant Data.”</span> <em>PLOS Medicine</em> 15 (3): e1002538. <a href="https://doi.org/10.1371/journal.pmed.1002538">https://doi.org/10.1371/journal.pmed.1002538</a>.
+<span class="nocase">Karmali, Kunal N., Donald M. Lloyd-Jones, Joep van der Leeuw, et al.</span> 2018. <span>“Blood Pressure-Lowering Treatment Strategies Based on Cardiovascular Risk Versus Blood Pressure: <span>A</span> Meta-Analysis of Individual Participant Data.”</span> <em>PLOS Medicine</em> 15 (3): e1002538. <a href="https://doi.org/10.1371/journal.pmed.1002538">https://doi.org/10.1371/journal.pmed.1002538</a>.
 </div>
 <div id="ref-keoghPredictionInterventionsEvaluation2024" class="csl-entry" role="listitem">
-Keogh, Ruth H., and Nan van Geloven. 2024. <span>“Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.”</span> January 10, 2024. <a href="https://doi.org/10.48550/arXiv.2304.10005">https://doi.org/10.48550/arXiv.2304.10005</a>.
+Keogh, Ruth H., and Nan van Geloven. 2024. <span>“Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.”</span> Pre-published January 10. <a href="https://doi.org/10.48550/arXiv.2304.10005">https://doi.org/10.48550/arXiv.2304.10005</a>.
 </div>
 <div id="ref-miaoIdentifyingCausalEffects2018" class="csl-entry" role="listitem">
 Miao, Wang, Zhi Geng, and Eric J Tchetgen Tchetgen. 2018. <span>“Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.”</span> <em>Biometrika</em> 105 (4): 987–93. <a href="https://doi.org/10.1093/biomet/asy038">https://doi.org/10.1093/biomet/asy038</a>.
 </div>
 <div id="ref-puliGeneralControlFunctions2021" class="csl-entry" role="listitem">
-Puli, Aahlad Manas, and Rajesh Ranganath. 2021. <span>“General <span>Control Functions</span> for <span>Causal Effect Estimation</span> from <span>Instrumental Variables</span>.”</span> <a href="http://arxiv.org/abs/1907.03451">http://arxiv.org/abs/1907.03451</a>.
+Puli, Aahlad Manas, and Rajesh Ranganath. 2021. <span>“General <span>Control Functions</span> for <span>Causal Effect Estimation</span> from <span>Instrumental Variables</span>.”</span> February 2. <a href="http://arxiv.org/abs/1907.03451">http://arxiv.org/abs/1907.03451</a>.
 </div>
 <div id="ref-waldFittingStraightLines1940" class="csl-entry" role="listitem">
 Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</span> If <span>Both Variables</span> Are <span>Subject</span> to <span>Error</span>.”</span> <em>The Annals of Mathematical Statistics</em> 11 (3): 284–300. <a href="https://doi.org/10.1214/aoms/1177731868">https://doi.org/10.1214/aoms/1177731868</a>.
@@ -1020,7 +1022,7 @@ Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1094,13 +1096,14 @@ Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

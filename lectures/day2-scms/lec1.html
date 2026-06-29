@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
   <meta name="dcterms.date" content="2024-08-06">
@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
   <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
   <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -33,7 +36,6 @@
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
-      margin-bottom: 0em;
     }
     .hanging-indent div.csl-entry {
       margin-left:2em;
@@ -50,7 +52,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-f563837468303362081e247dddd440d0.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -522,11 +524,13 @@ Figure&nbsp;4: DAG 1
 </div>
 </div>
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="fragment">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="_tikzs/dag-floor2.png" class="fragment"></p>
+<p><img data-src="_tikzs/dag-floor2.png"></p>
 <figcaption>DAG 2</figcaption>
 </figure>
+</div>
 </div>
 </div>
 </div>
@@ -1096,7 +1100,7 @@ Figure&nbsp;24: intervened DAG
 </figcaption>
 </figure>
 </div>
-<p><span id="eq-estimand"><span class="math display">\[P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)} \qquad(1)\]</span></span></p>
+<p><span id="eq-estimand"><span class="math display">\[P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)} \tag{1}\]</span></span></p>
 </div>
 </div>
 </div>
@@ -1360,7 +1364,7 @@ Figure&nbsp;26: intervened DAG: what we want to know
 <div class="fragment">
 <p><strong>Theorem 3.2.2 (Back-Door Adjustment)</strong></p>
 <p>If a set of variables <span class="math inline">\(Z\)</span> satisfies the back-door criterion relative to <span class="math inline">\((X,Y)\)</span>, then the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> is identifiable and is given by the formula</p>
-<p><span id="eq-backdooradjustment"><span class="math display">\[P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z) \qquad(2)\]</span></span></p>
+<p><span id="eq-backdooradjustment"><span class="math display">\[P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z) \tag{2}\]</span></span></p>
 </div>
 </section>
 <section id="did-we-see-this-equation-before" class="slide level2 center">
@@ -1390,7 +1394,7 @@ Figure&nbsp;26: intervened DAG: what we want to know
 <h2>References</h2>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-pearlCausality2009" class="csl-entry" role="listitem">
 Pearl, Judea. 2009. <em>Causality</em>. Cambridge University Press.
 </div>
@@ -1587,7 +1591,7 @@ Pearl, Judea. 2009. <em>Causality</em>. Cambridge University Press.
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -1699,13 +1703,14 @@ Pearl, Judea. 2009. <em>Causality</em>. Cambridge University Press.
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
