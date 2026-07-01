@@ -83,7 +83,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/vzYDu21X
 ## Instructors
 
 - [Oisín Ryan](https://ryanoisin.github.io) (coordinator)
-- [Bas Penning-de Vries](https://research.umcutrecht.nl/researchers/bas-penning-de-vries)
+- [Bas Penning de Vries](https://research.umcutrecht.nl/researchers/bas-penning-de-vries)
 - [Wouter van Amsterdam](https://vanamsterdam.github.io)
 
 ## Links
