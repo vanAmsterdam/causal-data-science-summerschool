@@ -50,7 +50,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/vzYDu21X
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
 | | Test-your-knowledge | Day 2 material | [google form](https://forms.gle/5B22D2ExptBTtBm47) |
-| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I | |
+| 09:00 - 09:45 | Lecture   | Intro to Trials and Target Trials I |[html](lectures/day3-tte/lecture_day_3.html) |
 | 10:00 - 10:45 | Lecture   | Target Trials Emulation I           | |
 | 11:00 - 12:00 | practical | Target Trials in Practice I         ||
 | 12:30 - 13:15 | LUNCH     |                                     | |
