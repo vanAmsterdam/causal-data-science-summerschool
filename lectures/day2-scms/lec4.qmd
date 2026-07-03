@@ -1,7 +1,7 @@
 ---
 title: Adjustment Sets and Approaches - and limitations / critiques
 author: Wouter van Amsterdam
-date: 2024-08-06
+date: 2026-07-07
 format: 
     #latex:
         #documentclass: beamer
@@ -13,6 +13,7 @@ format:
         #number-sections: true
     revealjs:
         theme: umcu.scss
+        # theme: [umcu.scss, ../custom_dev.scss]
         incremental: true
         width: 1600
         height: 900
@@ -101,9 +102,9 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
 - say $Z$ is 5 categorical variables with each 3 categories, this means $4^5=1024$ estimates of:
   - $P(y|x,z)$ for each value of $x$
 - what if $Z$ is continuous?
-- in practice, researchers rely on smoothness assumptions (e.g. regression) to estimate $P(Y|x,z)$ with a parametric model
+- in practice, researchers often rely on smoothness assumptions (e.g. regression) to estimate $P(Y|x,z)$ with a parametric model
 - this assumption *can* be based on substantive causal knowledge, but often seems inspired rather pragmatism or necessity
-- misspecification of this estimator leads to biased results (even if you know all the confounders)
+- misspecification of this estimator leads to biased results (even if you observed all the confounders)
 
 ## Target queries
 
@@ -129,6 +130,21 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
   \end{align}
 
 - i.e. the ATE collapses to the the regression parameter $\beta_t$ in a linear regression model of $y$ on $t,z$
+  
+## Binary outcome: logistic regression
+
+- researchers make the following substantive assumption: the log-odds of the outcome is linear in the treatment and confounders:
+  $$\text{logit}(P(y=1|t,z)) = \beta_0 + \beta_t t + \beta_z z$$
+  
+- then the ATE is not equal to $\beta_t$ anymore, but can be computed from the regression model:
+  \begin{align}
+    \text{ATE} &= E[Y|\text{do}(t=1)] - E[Y|\text{do}(t=0)] \\
+               &= E_z[P(y=1|t=1,z)] - E_z[P(y=1|t=0,z)] \\
+               &= E_z[\text{logit}^{-1}(\beta_0 + \beta_t * 1 + \beta_z z)] - E_z[\text{logit}^{-1}(\beta_0 + \beta_t * 0 + \beta_z z)]
+  \end{align}
+- after fitting a logistic regression model in R with `glm`, the ATE can be computed with the package `marginaleffects` (or `margins`)
+
+
 
 ## General estimators for the ATE and the CATE (meta-learners) {#sec-metalearners}
 
@@ -146,8 +162,29 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
     \tau(w)  &= \mu(1,w) - \mu(0,w)
   \end{align}
 - (many other variants combinations: this is a whole literature)
+  
+## Doubly robust estimators
 
-## Intuitive way-pointers:
+- In day 1, we saw that the ATE can be estimated with the propensity score:
+  
+. . .
+
+$$e(w) = P(T=1|W=w)$$
+
+- Doubly robust estimators combine the propensity score and outcome regression:
+  
+. . . 
+
+  \begin{align}
+    \hat{\tau}_{DR} &= \frac{1}{n} \sum_{i=1}^n \left[ \frac{T_i Y_i}{\hat{e}(W_i)} - \frac{(1-T_i) Y_i}{1-\hat{e}(W_i)} + \hat{\mu_1}(W_i) - \hat{\mu_0}(W_i) \right]
+  \end{align}
+
+- They have the property that if either the propensity score model or the outcome regression model is correctly specified, the estimator is consistent for the ATE.
+- In addition, they may be more *efficient* than either method alone, especially when both models are correctly specified.
+
+## How to choose between estimators? 
+
+### Intuitive way-pointers:
 
 - where does the complexity come from? 
   a. variance in outcome under control: $E[y|\text{do}(T=0),w]$
@@ -163,6 +200,7 @@ $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$
 #| label: fig-dag-nonparametric
 #| output: fragment
 #| fig-cap: Three datasets with the same DAG
+#| fig-height: 3
 
 set.seed(12345)
 n = 1e3

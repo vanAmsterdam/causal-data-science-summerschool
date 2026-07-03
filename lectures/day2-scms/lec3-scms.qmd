@@ -1,8 +1,8 @@
 ---
 title: Structural Causal Models
-subtitle: introduction
+subtitle: an introduction
 author: Wouter van Amsterdam
-date: 2024-08-06
+date: 2026-07-07
 format: 
     #latex:
         #documentclass: beamer
@@ -14,6 +14,8 @@ format:
         #number-sections: true
     revealjs:
         theme: umcu.scss
+        #theme: [default, umcu.scss]
+        # theme: [umcu.scss, ../custom_dev.scss]
         incremental: true
         width: 1600
         height: 900
@@ -63,13 +65,12 @@ Qs:
     - chain (mediation)
     - collider
 
-5. typically: 
-  - condition on confounders, don't condition on mediators or colliders
+5. typically: condition on confounders, don't condition on mediators or colliders
 
 6. in more complex DAGs, use d-separation to check identifyability
 7. backdoor criterion
 
-## In this lecture: structural causal models (SCMs)
+## In this lecture: Structural Causal Models (SCMs)
 
 ::: {layout-ncol=2}
 
@@ -92,11 +93,10 @@ Qs:
     - know what variables to condition on for estimating treatment effect
 - However,
     - DAGs and RCTs do not cover all causal questions
-    - SCMs go a level deeper than DAGs
-    - DAGs naturally 'arise' from SCMs
+    - SCMs go a level deeper than DAGs, DAGs naturally 'arise' from SCMs
     - some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification
     - understand 'identifyability'
-    - SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality
+    - SCM thinking aligns with physical thinking about the world and is a natural way to think about causality
 
 ---
 
@@ -120,7 +120,7 @@ Qs:
   - `surgery` = duration of surgery (hours)
   - `los` = length of stay in hospital post surgery (days)
   - `survival` = survival time (years)
-- *background variables* (exogenous):
+- *background variables* (exogenous, `u`nobserved):
   - `u_surgery`, `u_los`, `u_survival`
 - *functions* `f_` for each *variable* which depend on its *parents* `pa_` and its own *background* `u_`:
   - `surgery = f_surgery(pa_surgery,u_surgery)`
@@ -134,7 +134,7 @@ Together these define a *Structural Causal Model* [see definition 7.1.1 in @pear
 
 :::
 
-## Structural Causal Model 1{#sec-scm1}
+## Structural Causal Model 1: an R program {#sec-scm1}
 
 ```{r}
 #| label: scm1
@@ -328,7 +328,7 @@ sample_u <- function() {
 sample_u()
 ```
 
-. . .
+---
 
 ```{r}
 #| label: fig-u_samples
@@ -366,6 +366,7 @@ sample_pcm()
 #| label: fig-pcm1-samples
 #| echo: false
 #| fig-cap: "Realisations of endogenous variables V over random samples of U in [@fig-u_samples]"
+#| fig-height: 3
 vs <- map(us, ~do.call(scm1, as.list(.x)))
 vdf <- vs |> map(~data.table(t(.x))) |> rbindlist()
 vdf[, idx:=.I]
@@ -427,11 +428,10 @@ dfa[, list(mean_survival=mean(survival)), by="model"]
 ## In the real world
 
 - knowing the SCM is a super-power: you basically know everything revelant about the system, but in the real world:
-- we do not observe $U$
-- we typically do not know `f_`
-  - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
-- we are presented with realizations $V_i$ of this SCM over a random sample of U
-  - this is another assumption on the *sampling* but this is largely orthogonal to causal inference
+  - we do not observe $U$
+  - we typically do not know `f_`
+    - we may be willing to place *assumptions* on `f_` (e.g. generalized linear models)
+  - we are presented with realizations $V_i$ of this SCM over a random sample of U
 - we may be interest in knowing:
   1. what is the expected survival time if we *always* admit patients for exactly 7 days?
 
@@ -495,7 +495,7 @@ Unfortunately, it was dark an we only got a gray-scale image of the perpetrator
 
 . . .
 
-All our suspects (models) lead to the same partial observations
+All our suspects (models) have the same partial observations but different answers to our question
 
 . . . 
 
@@ -505,7 +505,7 @@ Based on *observed data* and *assumptions* we cannot *identify* the answer to ou
 
 i.e. multiple models with different answers for $Q$ fit the observed data equally well
 
-## Not identified vs estimand
+## Not identified in a concrete example
 
 ![](figs/scm1_03.png){fig-align="center"}
 
@@ -519,6 +519,78 @@ The backdoor adjustment in this DAG means the correct estimand is:
 - However, we can formulate multiple distinct latent variable models that each yield a different treatment effect (i.e. the output of the estimand)
 - But these latent variable models all fit the *observed* data equally well
 - So we cannot identify the treatment effect
+
+## Numeric example: same observations, two SCMs
+
+Binary simplification of the slide's DAG: $Z \to T$, $Z \to Y$, $T \to Y$.
+
+Assume $Z$ is latent. Both models have
+
+$$
+P(Z=1)=0.5,\quad P(T=1|Z=0)=0.2,\quad P(T=1|Z=1)=0.8
+$$
+
+:::: {.columns}
+::: {.column width="50%"}
+Model $M_A$
+
+| $P(Y=1|T,Z)$ | $Z=0$ | $Z=1$ |
+|---|---:|---:|
+| $T=0$ | 0.20 | 1.00 |
+| $T=1$ | 0.00 | 0.80 |
+:::
+
+::: {.column width="50%"}
+Model $M_B$
+
+| $P(Y=1|T,Z)$ | $Z=0$ | $Z=1$ |
+|---|---:|---:|
+| $T=0$ | 0.40 | 0.20 |
+| $T=1$ | 0.80 | 0.60 |
+:::
+::::
+
+Both imply the same observed data over $(T,Y)$:
+
+$$
+P(T=1)=0.5,\quad P(Y=1|T=1)=0.64,\quad P(Y=1|T=0)=0.36
+$$
+
+## Same observations, different causal answers
+
+If $Z$ were observed, the backdoor estimand would be
+
+$$
+P(Y=1|\text{do}(T=t))=\sum_z P(Y=1|T=t,Z=z)P(Z=z)
+$$
+
+For $M_A$:
+
+$$
+P(Y=1|\text{do}(T=1))=0.40,\quad
+P(Y=1|\text{do}(T=0))=0.60
+$$
+
+$$
+\text{ATE}_{M_A}=-0.20
+$$
+
+For $M_B$:
+
+$$
+P(Y=1|\text{do}(T=1))=0.70,\quad
+P(Y=1|\text{do}(T=0))=0.30
+$$
+
+$$
+\text{ATE}_{M_B}=0.40
+$$
+
+## Model A vs Model B
+
+Same observed $P(T,Y)$, different $Q(M)$.
+
+That is **not identified**.
 
 ## Seeing is not doing
 
@@ -552,7 +624,7 @@ $^2$ because in the intervened DAG, $Z$ is independent of $T$
 . . .
 
 - $P(Y|\text{do}(T)) \neq P(Y|T)$ is Pearl's definition of confounding (def 6.2.1)
-- this shows why RCTs are special (i.e. no backdoor paths into $T$)
+<!-- - this shows why RCTs are special (i.e. no backdoor paths into $T$) -->
 
 <!-- ## Definition 3.2.4 (Causal Effect Identifiability)
 
@@ -565,7 +637,7 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
     - assumption 2: $\mathbb{M}_2$ SCMs with linear functions and Gaussian error terms
     - assumption 1+2: $\mathbb{M} = \mathbb{M_1} \cap \mathbb{M_2}$ (DAG + linear gaussian)
 - many more effects are identified in this setting
-- 'works' with unobserved confounding, positivity violations
+  - settings with unobserved confounding and positivity violations may still be identified
 - caveats:
     - much harder to determine identifyability (no analogue of backdoor-rule)
     - prefer weaker assumptions over stronger assumption
@@ -682,6 +754,7 @@ ggplot(vdfm2, aes(x=value, fill=los3_surgery4)) +
 ## Computing counterfactuals
 
 - notation: $P(Y_{t'}  = y' | T=t,Y=y)$ where $Y_{t'}$ means "set $T=t'$ through intervention"
+- this is called a *counterfactual* because it's a probability statement incorporating two incompatible worlds: the world where $T=t$ and the world where $T=t'$
 - steps:
   1. Abduction (update $P(U)$ from observed evidence)
   2. Action (modify the treatment)
@@ -707,10 +780,13 @@ If you have data to solve the upper, you can solve the lower ranks too [@bareinb
 
 - DAGs:
   - *soft intervention*: don't set treatment to fixed value but replace function with other function of variables
+  - *selection diagrams / transportability*: ask whether effects learned in one population apply to another
   - express patterns for missing data by including missingness indicators
 - SCMs:
   - probability of sufficiency
   - probability of necessity
+  - individual-level counterfactual explanations
+  - counterfactual fairness
 
 ## References
 

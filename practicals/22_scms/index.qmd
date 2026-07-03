@@ -48,9 +48,22 @@ We have two different datasets, for which we know they came from the following D
 required_pkgs <- c("marginaleffects", "ggplot2", "data.table")
 cran_repo <- "https://mirror.lyrahosting.com/CRAN/" # <- a CRAN mirror in the Netherlands, can select another one from here https://cran.r-project.org/mirrors.html
 
+available_pkgs <- available.packages(repos = cran_repo)
+
 for (pkg in required_pkgs) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    install.packages(pkg, repos=cran_repo)
+  if (!pkg %in% rownames(available_pkgs)) {
+    warning(sprintf("Package %s is not available from the configured CRAN repo.", sQuote(pkg)))
+    next
+  }
+
+  installed_version <- tryCatch(
+    as.character(packageVersion(pkg)),
+    error = function(e) NA_character_
+  )
+  cran_version <- available_pkgs[pkg, "Version"]
+
+  if (is.na(installed_version) || compareVersion(installed_version, cran_version) < 0) {
+    install.packages(pkg, repos = cran_repo)
   }
 }
 

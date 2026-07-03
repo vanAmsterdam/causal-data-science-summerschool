@@ -2,7 +2,7 @@
 title: Causal Directed Acylic Graphs
 subtitle: introduction
 author: Wouter van Amsterdam
-date: 2024-08-06
+date: 2026-07-07
 format: 
     #beamer:
         #aspectratio: 169
@@ -14,6 +14,8 @@ format:
     revealjs:
         toc: false
         #theme: [default, umcu.scss]
+        # theme: [default, ../custom_dev.scss]
+        theme: [umcu.scss]
         incremental: true
         width: 1920
         height: 1080
@@ -357,6 +359,25 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
   - `sprinkler on` **may** (or may not) cause `wet floor`
   - `wet floor` **cannot** cause `sprinkler on`
 
+## DAGs convey assumptions on conditional independence
+
+::: {layout-ncol=3}
+
+![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
+
+![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
+
+![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
+
+:::
+
+- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
+  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
+- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
+  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
+  - e.g. @fig-dag-fire3 is also compatible with @fig-dag-fire2
+
+
 ## Basic DAG patterns: fork
 
 :::{layout="[30,70]"}
@@ -364,9 +385,9 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ![fork / confounder](_tikzs/dag-fork.png){#fig-fork width="100%"}
 
 - $Z$ *causes* both $X$ and $Y$ (common cause / confounder)
-- $Z$ = sun rises, $X$ =  rooster crows, $Y$ = temperature rises
+- $Z$ = age, $X$ =  shoe size, $Y$ = reading ability
 - $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
-- $X \perp Y | Z$ (conditioning on the sun rising, the rooster crowing has no information on the temperature)
+- $X \perp Y | Z$ (for kids with same age, shoe size has no information on reading ability)
 - $Z \to X$ is a *back-door*: a path between $X$ and $Y$ that starts with an arrow into $X$
 - *typically want to adjust for $Z$ (see [later @sec-backdoor])*
 
@@ -379,7 +400,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ![chain / mediation](_tikzs/dag-chain.png){#fig-chain width="100%"}
 
 - $M$ *mediates* effect of $X$ on $Y$
-- $X$: student signs up for causal inference course, $M$: student studies causal inference, $Y$: student understands causal inference
+- $X$: student signs up for causal inference course, $M$: student participates in causal inference course, $Y$: student understands causal inference
 - $X \mathrel{\not\!\perp} Y$ (i.e. $X$ and $Y$ are dependent)
 - $X \perp Y | M$
 - *typically do not want to adjust for $M$ when estimating total effect of $X$ on $Y$*
@@ -398,7 +419,7 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 
 :::
 
-## Collider bias - Tinder
+## Collider bias - Publication
 
 :::{layout="[30,70]"}
 
@@ -407,33 +428,33 @@ ggplot(df, aes(x=1, fill=factor(outcome))) +
 ![collider](_tikzs/dag-collider){#fig-collider width="100%"}
 
 \begin{align}
-    \text{intelligent} &\sim U[0,1] \\
-    \text{attractive}  &\sim U[0,1] \\
-    \text{on tinder}   &= I_{\text{intelligent} + \text{attractive} < 1}
+    \text{methodological quality} &\sim U[0,1] \\
+    \text{interesting results}  &\sim U[0,1] \\
+    \text{published}   &= I_{\text{methodological quality} + \text{interesting results} > 1}
 \end{align}
 
 
 :::
 
 ```{r}
-#| label: fig-tinder
+#| label: fig-publication
 #| output: fragment
 #| fig-width: 12
 
-intelligent = runif(n)
-attractive = runif(n)
-s = intelligent + attractive > 1.
-df <- data.frame(intelligent, attractive, s)
+methodological.quality = runif(n)
+interesting.results = runif(n)
+s = methodological.quality + interesting.results > 1
+df <- data.frame(methodological.quality, interesting.results, s)
 df$s <- factor(df$s)
 
-ggplot(df, aes(x=intelligent, y=attractive)) +
+ggplot(df, aes(x=methodological.quality, y=interesting.results)) +
   geom_point(aes(alpha=s, col=s)) + 
   # stat_smooth(method='lm', col='black', se=F, formula=y~x) +
   # stat_smooth(method='lm', se=F, formula=y~x, col='black') +
   stat_smooth(data=df[df$s==T,], method='lm', col='darkred', formula=y~x, se=F) + 
   scale_color_manual(
     breaks=c(F,T), values=c('gray', 'darkgreen'),
-    labels=c('on tinder', 'not on tinder'),
+    labels=c('published', 'not published'),
     guide=guide_legend(
       title=''
       )
@@ -455,28 +476,6 @@ ggplot(df, aes(x=intelligent, y=attractive)) +
 
 <!-- - collider conditioning *might* be an explanation for the *obsesity paradox* (i.e. obesity is correlated with better outcomes in diverse medical settings) [e.g. @banackObesityParadoxMay2017] -->
 <!--- nice paper on this: Crash course in good and bad controls [@cinelliCrashCourseGood2022]-->
-
-## DAGs convey two types of assumptions:
-
-### causal direction and conditional independence
-
-1. conditional indepence (e.g. exclusion of influence / information)
-
-::: {layout-ncol=3}
-
-![DAG 1](_tikzs/dag-fire1){#fig-dag-fire1 height=350}
-
-![DAG 2](_tikzs/dag-fire2){#fig-dag-fire2 height=350}
-
-![DAG 3](_tikzs/dag-fire3){#fig-dag-fire3 height=350}
-
-:::
-
-- @fig-dag-fire1 says `fire` can **only** cause `wet floor` through `sprinkler on`
-  - this implies `fire` is independent of `wet floor` given `sprinkler on` and can be tested!
-- @fig-dag-fire2 says *there may be other ways through which `fire` causes `wet floor`*
-  - @fig-dag-fire2 is thus a *weaker* assumption than @fig-dag-fire1
-- @fig-dag-fire3 is also compatible with @fig-dag-fire2
 
 ## DAGs are 'non-parametric'
 
@@ -545,14 +544,15 @@ Google Form [https://bit.ly/dagquiz](https://bit.ly/dagquiz)
 ![](figs/bit.ly_dagquiz.png){width=40%}
 
 
-# From Directed Acyclic Graphs to causality
+# Causal inference with DAGs
 
 ## The DAG definition of an intervention {#sec-def-intervention}
 
-assume this is our DAG for a situation and we want to learn the effect $T$ has on $Y$
+"What is the expected value of $Y$ if we set $T$ to a particular value, say $T=1$?"
 
-- in the graph, [intervening]{.fg} on variable $T$ means removing all incoming arrows
-- this assumes such a *modular* intervention is possible: i.e. leave everything else unaltered
+- What would the DAG look like if we could intervene on $T$ and set it to 1?
+  - this assumes such a *modular* intervention is possible: i.e. leave everything else unaltered
+- in the graph, [intervening]{.fg} on variable $T$ means removing all arrows that go into $T$
 
 ::: {layout-ncol=2}
 
@@ -653,6 +653,8 @@ assume this is our DAG for a situation and we want to learn the effect $T$ has o
 ::::
 
 ::::{.fragment}
+
+
 \begin{align}
       P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z)
 \end{align}
@@ -660,6 +662,7 @@ assume this is our DAG for a situation and we want to learn the effect $T$ has o
 
 :::
 
+- In the *intervened* DAG, $T$ and $Z$ are **marginally independent**, meaning that $P_{\text{int}}(T|Z) = P_{\text{int}}(T)$
 - in the *causal factorization*, *intervening* on $T$ means changing only one of the conditionals in the factorization, the others remain the same
 - this is what is meant with a *modular intervention*
 
@@ -675,7 +678,7 @@ assume this is our DAG for a situation and we want to learn the effect $T$ has o
 
 ## Intervention as graph surgery 
 
-### Changed distribution
+### Compare $P(Y|T)$ in both the observational and intervened DAGs.
 
 ::: {layout-ncol=2}
 
@@ -688,16 +691,21 @@ assume this is our DAG for a situation and we want to learn the effect $T$ has o
 ::: {layout-ncol=2}
 
 ::::{.fragment}
+
+Observational: $P_{\text{obs}}(Z=z|T) \neq P(Z=z)$ ($Z$ and $T$ are dependent).
+Sum rule gives us:
+
 \begin{align}
-      P_{\text{obs}}(Y,T,Z) &= P(Y|T,Z)\color{red}{P(T|Z)}P(Z) \\
         P_{\text{obs}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T)
 \end{align}
 
 ::::
 
 ::::{.fragment}
+
+Interventional: $P_{\text{int}}(Z=z|T) = P(Z=z)$ ($Z$ and $T$ are independent)
+
 \begin{align}
-      P_{\text{int}}(Y,T,Z) &= P(Y|T,Z)\color{green}{P(T)}P(Z) \\
         P_{\text{int}}(Y|T) &= \sum_{z} P(Y|T,Z=z)P(Z=z|T) \\
                &\class{fragment}{= \sum_{z} P(Y|T,Z=z)\color{green}{P(Z)}} \\
                &\class{fragment}{= P(Y|\text{do}(T))}
@@ -731,9 +739,7 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 - **seeing is not doing**
 - **looking at @eq-estimand, we can compute these from $P_{\text{obs}}$!** (this is what is called an *estimand*)
 
-## Back to example 1
-
-### Seeing
+## Back to example 1: Seeing
 
 ::: {layout-ncol=2}
 
@@ -750,9 +756,11 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 :::
 
-- seeing: $P(\text{outcome}|\text{location}) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk}|\text{location})$
+::::{style="font-size: 0.65em; line-height: 1.15;"}
+- $P(\text{outcome}|\text{location}) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk}|\text{location})$
 - $P(\text{risk}=\text{low} | \text{location} = \text{hospital})=10\%$
 - $P(\text{risk}=\text{low} | \text{location} = \text{home})=90\%$
+::::
 
 ::: {.fragment}
 \begin{align}
@@ -763,11 +771,11 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 - **conclusion**: deliveries in the hospital had worse neonatal outcomes
 
-## Back to example 1
+## Back to example 1: Doing
 
 ::: {layout-ncol=2}
 
-![DAG](_tikzs/dag-delivery.png)
+![DAG](_tikzs/dag-delivery-int.png)
 
 
 |      |      | location |          |
@@ -780,8 +788,10 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 :::
 
-- estimand: $P(\text{outcome}|\text{do}(\text{location})) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk})$
+::::{style="font-size: 0.65em; line-height: 1.15;"}
+- $P(\text{outcome}|\text{do}(\text{location})) = \sum_{\text{risk}} P(\text{outcome}|\text{location},\text{risk})P(\text{risk})$
 - $P(\text{risk}=\text{low})=74\%$
+::::
 
 ::: {.fragment}
 \begin{align}
@@ -801,7 +811,7 @@ $$P_{\text{int}}(Y|T) = \sum_{z} P(Y|T,Z=z)\color{green}{P(Z=z)}$$ {#eq-estimand
 
 - removing all arrows going in to $T$ results in the same DAG
 - so $P(Y|T) = P(Y|\text{do}(T))$
-- i.e. use the marginals
+- $\rightarrow$ use the marginals
 
 :::
 
@@ -860,7 +870,7 @@ is to take data we have to make inferences about data from a different distribut
   - otherwise: *blocks a path* (e.g. $r$ blocks $x,r,s$)
 - conditioning *set* $Z=\{r,t\}$: set of conditioning variables
 
-## The back-door criterion and adjustment {#sec-backdoor}
+## The back-door criterion {#sec-backdoor}
 
 **Definition 3.3.1 (Back-Door) (for pairs of variables)**
 
@@ -871,13 +881,17 @@ A set of variables $Z$ satisfies the *back-door* criterion relative to an ordere
 
 :::{.fragment}
 
+![](_tikzs/dag-obs.png)
+
+:::
+
+## The back-door theorem and adjustment formula
+
 **Theorem 3.2.2 (Back-Door Adjustment)**
 
 If a set of variables $Z$ satisfies the back-door criterion relative to $(X,Y)$, then the causal effect of $X$ on $Y$ is identifiable and is given by the formula
 
 $$P(y|\text{do}(x)) = \sum_z P(y|x,z)P(z)$$ {#eq-backdooradjustment}
-
-:::
 
 ## Did we see this equation before?
 
