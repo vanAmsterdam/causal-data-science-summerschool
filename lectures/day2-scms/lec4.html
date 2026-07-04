@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
-  <meta name="dcterms.date" content="2024-08-06">
+  <meta name="dcterms.date" content="2026-07-07">
   <title>Causal Inference and Causal Data Science Summerschool – Adjustment Sets and Approaches - and limitations / critiques</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -160,7 +160,7 @@ Wouter van Amsterdam
 </div>
 </div>
 
-  <p class="date">2024-08-06</p>
+  <p class="date">2026-07-07</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
@@ -276,9 +276,9 @@ Wouter van Amsterdam
 <li class="fragment"><span class="math inline">\(P(y|x,z)\)</span> for each value of <span class="math inline">\(x\)</span></li>
 </ul></li>
 <li class="fragment">what if <span class="math inline">\(Z\)</span> is continuous?</li>
-<li class="fragment">in practice, researchers rely on smoothness assumptions (e.g.&nbsp;regression) to estimate <span class="math inline">\(P(Y|x,z)\)</span> with a parametric model</li>
+<li class="fragment">in practice, researchers often rely on smoothness assumptions (e.g.&nbsp;regression) to estimate <span class="math inline">\(P(Y|x,z)\)</span> with a parametric model</li>
 <li class="fragment">this assumption <em>can</em> be based on substantive causal knowledge, but often seems inspired rather pragmatism or necessity</li>
-<li class="fragment">misspecification of this estimator leads to biased results (even if you know all the confounders)</li>
+<li class="fragment">misspecification of this estimator leads to biased results (even if you observed all the confounders)</li>
 </ul>
 </section>
 <section id="target-queries" class="slide level2 center">
@@ -307,6 +307,18 @@ Wouter van Amsterdam
 <li class="fragment"><p>i.e.&nbsp;the ATE collapses to the the regression parameter <span class="math inline">\(\beta_t\)</span> in a linear regression model of <span class="math inline">\(y\)</span> on <span class="math inline">\(t,z\)</span></p></li>
 </ul>
 </section>
+<section id="binary-outcome-logistic-regression" class="slide level2 center">
+<h2>Binary outcome: logistic regression</h2>
+<ul>
+<li class="fragment"><p>researchers make the following substantive assumption: the log-odds of the outcome is linear in the treatment and confounders: <span class="math display">\[\text{logit}(P(y=1|t,z)) = \beta_0 + \beta_t t + \beta_z z\]</span></p></li>
+<li class="fragment"><p>then the ATE is not equal to <span class="math inline">\(\beta_t\)</span> anymore, but can be computed from the regression model: <span class="math display">\[\begin{align}
+  \text{ATE} &amp;= E[Y|\text{do}(t=1)] - E[Y|\text{do}(t=0)] \\
+             &amp;= E_z[P(y=1|t=1,z)] - E_z[P(y=1|t=0,z)] \\
+             &amp;= E_z[\text{logit}^{-1}(\beta_0 + \beta_t * 1 + \beta_z z)] - E_z[\text{logit}^{-1}(\beta_0 + \beta_t * 0 + \beta_z z)]
+\end{align}\]</span></p></li>
+<li class="fragment"><p>after fitting a logistic regression model in R with <code>glm</code>, the ATE can be computed with the package <code>marginaleffects</code> (or <code>margins</code>)</p></li>
+</ul>
+</section>
 <section id="sec-metalearners" class="slide level2 center">
 <h2>General estimators for the ATE and the CATE (meta-learners)</h2>
 <ul>
@@ -326,8 +338,30 @@ Wouter van Amsterdam
 <li class="fragment">(many other variants combinations: this is a whole literature)</li>
 </ul>
 </section>
-<section id="intuitive-way-pointers" class="slide level2 center">
-<h2>Intuitive way-pointers:</h2>
+<section id="doubly-robust-estimators" class="slide level2 center">
+<h2>Doubly robust estimators</h2>
+<ul>
+<li class="fragment">In day 1, we saw that the ATE can be estimated with the propensity score:</li>
+</ul>
+<div class="fragment">
+<p><span class="math display">\[e(w) = P(T=1|W=w)\]</span></p>
+<ul>
+<li class="fragment">Doubly robust estimators combine the propensity score and outcome regression:</li>
+</ul>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\begin{align}
+    \hat{\tau}_{DR} &amp;= \frac{1}{n} \sum_{i=1}^n \left[ \frac{T_i Y_i}{\hat{e}(W_i)} - \frac{(1-T_i) Y_i}{1-\hat{e}(W_i)} + \hat{\mu_1}(W_i) - \hat{\mu_0}(W_i) \right]
+  \end{align}\]</span></p>
+<ul>
+<li class="fragment">They have the property that if either the propensity score model or the outcome regression model is correctly specified, the estimator is consistent for the ATE.</li>
+<li class="fragment">In addition, they may be more <em>efficient</em> than either method alone, especially when both models are correctly specified.</li>
+</ul>
+</div>
+</section>
+<section id="how-to-choose-between-estimators" class="slide level2 center">
+<h2>How to choose between estimators?</h2>
+<h3 id="intuitive-way-pointers">Intuitive way-pointers:</h3>
 <ul>
 <li class="fragment">where does the complexity come from?
 <ol type="a">

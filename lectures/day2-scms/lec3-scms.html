@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.9.38">
 
   <meta name="author" content="Wouter van Amsterdam">
-  <meta name="dcterms.date" content="2024-08-06">
+  <meta name="dcterms.date" content="2026-07-07">
   <title>Causal Inference and Causal Data Science Summerschool – Structural Causal Models</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -217,7 +217,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Structural Causal Models</h1>
-  <p class="subtitle">introduction</p>
+  <p class="subtitle">an introduction</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -227,7 +227,7 @@ Wouter van Amsterdam
 </div>
 </div>
 
-  <p class="date">2024-08-06</p>
+  <p class="date">2026-07-07</p>
 </section><section id="TOC">
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
@@ -257,27 +257,22 @@ Qs:
 <section id="in-past-lectures-on-dags" class="slide level2 center">
 <h2>In past lectures on DAGs</h2>
 <ol type="1">
-<li class="fragment">causal directed acyclic graphs (DAGs) encode assumptions on what variables cause what</li>
-<li class="fragment">an intervention is defined as a mutilation of this DAG where the treatment variable no longer ‘listens’ to its parents</li>
-<li class="fragment">a causal effect is the effect of an intervention</li>
-<li class="fragment">DAG patterns:
+<li class="fragment"><p>causal directed acyclic graphs (DAGs) encode assumptions on what variables cause what</p></li>
+<li class="fragment"><p>an intervention is defined as a mutilation of this DAG where the treatment variable no longer ‘listens’ to its parents</p></li>
+<li class="fragment"><p>a causal effect is the effect of an intervention</p></li>
+<li class="fragment"><p>DAG patterns:</p>
 <ul>
 <li class="fragment">fork (confounding)</li>
 <li class="fragment">chain (mediation)</li>
 <li class="fragment">collider</li>
 </ul></li>
-<li class="fragment">typically:</li>
-</ol>
-<ul>
-<li class="fragment">condition on confounders, don’t condition on mediators or colliders</li>
-</ul>
-<ol start="6" type="1">
-<li class="fragment">in more complex DAGs, use d-separation to check identifyability</li>
-<li class="fragment">backdoor criterion</li>
+<li class="fragment"><p>typically: condition on confounders, don’t condition on mediators or colliders</p></li>
+<li class="fragment"><p>in more complex DAGs, use d-separation to check identifyability</p></li>
+<li class="fragment"><p>backdoor criterion</p></li>
 </ol>
 </section>
 <section id="in-this-lecture-structural-causal-models-scms" class="slide level2 center">
-<h2>In this lecture: structural causal models (SCMs)</h2>
+<h2>In this lecture: Structural Causal Models (SCMs)</h2>
 <div class="quarto-layout-panel" data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -306,11 +301,10 @@ Qs:
 <li class="fragment">However,
 <ul>
 <li class="fragment">DAGs and RCTs do not cover all causal questions</li>
-<li class="fragment">SCMs go a level deeper than DAGs</li>
-<li class="fragment">DAGs naturally ‘arise’ from SCMs</li>
+<li class="fragment">SCMs go a level deeper than DAGs, DAGs naturally ‘arise’ from SCMs</li>
 <li class="fragment">some questions are not identified when only specifying a DAG, but we may have additional information that can lead to identification</li>
 <li class="fragment">understand ‘identifyability’</li>
-<li class="fragment">SCM thinking aligns [^according to me] with physical thinking about the world and is a natural way to think about causality</li>
+<li class="fragment">SCM thinking aligns with physical thinking about the world and is a natural way to think about causality</li>
 </ul></li>
 </ul>
 </section>
@@ -345,7 +339,7 @@ Qs:
 <li class="fragment"><code>los</code> = length of stay in hospital post surgery (days)</li>
 <li class="fragment"><code>survival</code> = survival time (years)</li>
 </ul></li>
-<li class="fragment"><em>background variables</em> (exogenous):
+<li class="fragment"><em>background variables</em> (exogenous, <code>u</code>nobserved):
 <ul>
 <li class="fragment"><code>u_surgery</code>, <code>u_los</code>, <code>u_survival</code></li>
 </ul></li>
@@ -362,7 +356,7 @@ Qs:
 </div>
 </section>
 <section id="sec-scm1" class="slide level2 center">
-<h2>Structural Causal Model 1</h2>
+<h2>Structural Causal Model 1: an R program</h2>
 <div class="cell" data-execute="false">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" data-code-line-numbers="1-3|4-6|7-9|11-16|18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a>f_surgery <span class="ot">&lt;-</span> <span class="cf">function</span>(u_surgery) { <span class="co"># pa_surgery = {}</span></span>
 <span id="cb1-2"><a></a>  u_surgery</span>
@@ -518,27 +512,17 @@ Qs:
 <div class="cell fragment" data-execute="false">
 <div class="cell-output cell-output-stdout">
 <pre><code> u_surgery      u_los u_survival 
-  5.299693   4.308564  12.199266 </code></pre>
-</div>
-</div>
-</div>
-<div class="fragment">
-<div class="cell" data-layout-align="center" data-execute="true">
-<div class="cell-output-display">
-<div id="fig-u_samples" class="quarto-float quarto-figure quarto-figure-center" data-fig-align="center">
-<figure class="quarto-float quarto-float-fig">
-<div aria-describedby="fig-u_samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img data-src="lec3-scms_files/figure-revealjs/fig-u_samples-1.png" class="quarto-figure quarto-figure-center" width="960">
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-u_samples-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: 1000 random samples of U
-</figcaption>
-</figure>
-</div>
+  5.081565   2.837682  10.127261 </code></pre>
 </div>
 </div>
 </div>
 </section>
+<section class="slide level2 center">
+
+
+<img data-src="lec3-scms_files/figure-revealjs/fig-u_samples-1.png" class="quarto-figure quarto-figure-center r-stretch" width="960" id="fig-u_samples"><p class="caption">
+Figure&nbsp;1: 1000 random samples of U
+</p></section>
 <section id="a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u" class="slide level2 center">
 <h2>A Probabilistic Causal Model is a SCM with a distribution over U</h2>
 <div class="cell" data-execute="true">
@@ -553,7 +537,7 @@ Figure&nbsp;1: 1000 random samples of U
 <div class="cell fragment" data-execute="true">
 <div class="cell-output cell-output-stdout">
 <pre><code> u_surgery      u_los u_survival    surgery        los   survival 
-  3.019182   1.401587  10.914728   3.019182   4.420770   9.297133 </code></pre>
+  3.059354   2.619146  11.098597   3.059354   5.678500  10.658389 </code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -602,9 +586,9 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <div class="cell-output cell-output-stdout">
 <pre><code>       model mean_survival
       &lt;char&gt;         &lt;num&gt;
-1:      scm1      8.489856
-2: submodel3      3.637293
-3: submodel7      7.637293</code></pre>
+1:      scm1      8.395415
+2: submodel3      3.344834
+3: submodel7      7.344834</code></pre>
 </div>
 </div>
 </section></section>
@@ -629,15 +613,14 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <section id="in-the-real-world" class="slide level2 center">
 <h2>In the real world</h2>
 <ul>
-<li class="fragment">knowing the SCM is a super-power: you basically know everything revelant about the system, but in the real world:</li>
+<li class="fragment">knowing the SCM is a super-power: you basically know everything revelant about the system, but in the real world:
+<ul>
 <li class="fragment">we do not observe <span class="math inline">\(U\)</span></li>
 <li class="fragment">we typically do not know <code>f_</code>
 <ul>
 <li class="fragment">we may be willing to place <em>assumptions</em> on <code>f_</code> (e.g.&nbsp;generalized linear models)</li>
 </ul></li>
-<li class="fragment">we are presented with realizations <span class="math inline">\(V_i\)</span> of this SCM over a random sample of U
-<ul>
-<li class="fragment">this is another assumption on the <em>sampling</em> but this is largely orthogonal to causal inference</li>
+<li class="fragment">we are presented with realizations <span class="math inline">\(V_i\)</span> of this SCM over a random sample of U</li>
 </ul></li>
 <li class="fragment">we may be interest in knowing:
 <ol type="1">
@@ -690,7 +673,7 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <img data-src="figs/whodunnit-gray.png" class="r-stretch"><p>If we had full data, we would have know it was <span class="math inline">\(M_3\)</span></p>
 <p>Unfortunately, it was dark an we only got a gray-scale image of the perpetrator</p>
 <div class="fragment">
-<p>All our suspects (models) lead to the same partial observations</p>
+<p>All our suspects (models) have the same partial observations but different answers to our question</p>
 </div>
 <div class="fragment">
 <p>Based on <em>observed data</em> and <em>assumptions</em> we cannot <em>identify</em> the answer to our question <span class="math inline">\(Q\)</span>,</p>
@@ -699,8 +682,8 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <p>i.e.&nbsp;multiple models with different answers for <span class="math inline">\(Q\)</span> fit the observed data equally well</p>
 </div>
 </section>
-<section id="not-identified-vs-estimand" class="slide level2 center">
-<h2>Not identified vs estimand</h2>
+<section id="not-identified-in-a-concrete-example" class="slide level2 center">
+<h2>Not identified in a concrete example</h2>
 
 <img data-src="figs/scm1_03.png" class="quarto-figure quarto-figure-center r-stretch"><p>The backdoor adjustment in this DAG means the correct estimand is:</p>
 <p><span class="math display">\[\begin{align}
@@ -712,6 +695,94 @@ Figure&nbsp;2: Realisations of endogenous variables V over random samples of U i
 <li class="fragment">But these latent variable models all fit the <em>observed</em> data equally well</li>
 <li class="fragment">So we cannot identify the treatment effect</li>
 </ul>
+</section>
+<section id="numeric-example-same-observations-two-scms" class="slide level2 center">
+<h2>Numeric example: same observations, two SCMs</h2>
+<p>Binary simplification of the slide’s DAG: <span class="math inline">\(Z \to T\)</span>, <span class="math inline">\(Z \to Y\)</span>, <span class="math inline">\(T \to Y\)</span>.</p>
+<p>Assume <span class="math inline">\(Z\)</span> is latent. Both models have</p>
+<p><span class="math display">\[
+P(Z=1)=0.5,\quad P(T=1|Z=0)=0.2,\quad P(T=1|Z=1)=0.8
+\]</span></p>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Model <span class="math inline">\(M_A\)</span></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(P(Y=1|T,Z)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Z=0\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Z=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(T=0\)</span></td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">1.00</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(T=1\)</span></td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">0.80</td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:50%;">
+<p>Model <span class="math inline">\(M_B\)</span></p>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th><span class="math inline">\(P(Y=1|T,Z)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Z=0\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Z=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(T=0\)</span></td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(T=1\)</span></td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">0.60</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+<p>Both imply the same observed data over <span class="math inline">\((T,Y)\)</span>:</p>
+<p><span class="math display">\[
+P(T=1)=0.5,\quad P(Y=1|T=1)=0.64,\quad P(Y=1|T=0)=0.36
+\]</span></p>
+</section>
+<section id="same-observations-different-causal-answers" class="slide level2 center">
+<h2>Same observations, different causal answers</h2>
+<p>If <span class="math inline">\(Z\)</span> were observed, the backdoor estimand would be</p>
+<p><span class="math display">\[
+P(Y=1|\text{do}(T=t))=\sum_z P(Y=1|T=t,Z=z)P(Z=z)
+\]</span></p>
+<p>For <span class="math inline">\(M_A\)</span>:</p>
+<p><span class="math display">\[
+P(Y=1|\text{do}(T=1))=0.40,\quad
+P(Y=1|\text{do}(T=0))=0.60
+\]</span></p>
+<p><span class="math display">\[
+\text{ATE}_{M_A}=-0.20
+\]</span></p>
+<p>For <span class="math inline">\(M_B\)</span>:</p>
+<p><span class="math display">\[
+P(Y=1|\text{do}(T=1))=0.70,\quad
+P(Y=1|\text{do}(T=0))=0.30
+\]</span></p>
+<p><span class="math display">\[
+\text{ATE}_{M_B}=0.40
+\]</span></p>
+</section>
+<section id="model-a-vs-model-b" class="slide level2 center">
+<h2>Model A vs Model B</h2>
+<p>Same observed <span class="math inline">\(P(T,Y)\)</span>, different <span class="math inline">\(Q(M)\)</span>.</p>
+<p>That is <strong>not identified</strong>.</p>
 </section>
 <section id="seeing-is-not-doing" class="slide level2 center">
 <h2>Seeing is not doing</h2>
@@ -751,8 +822,7 @@ Figure&nbsp;4: <span class="math inline">\(^2\)</span> because in the intervened
 </div>
 <div class="fragment">
 <ul>
-<li class="fragment"><span class="math inline">\(P(Y|\text{do}(T)) \neq P(Y|T)\)</span> is Pearl’s definition of confounding (def 6.2.1)</li>
-<li class="fragment">this shows why RCTs are special (i.e.&nbsp;no backdoor paths into <span class="math inline">\(T\)</span>)</li>
+<li class="fragment"><span class="math inline">\(P(Y|\text{do}(T)) \neq P(Y|T)\)</span> is Pearl’s definition of confounding (def 6.2.1) <!-- - this shows why RCTs are special (i.e. no backdoor paths into $T$) --></li>
 </ul>
 <!-- ## Definition 3.2.4 (Causal Effect Identifiability)
 
@@ -768,8 +838,10 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <li class="fragment">assumption 2: <span class="math inline">\(\mathbb{M}_2\)</span> SCMs with linear functions and Gaussian error terms</li>
 <li class="fragment">assumption 1+2: <span class="math inline">\(\mathbb{M} = \mathbb{M_1} \cap \mathbb{M_2}\)</span> (DAG + linear gaussian)</li>
 </ul></li>
-<li class="fragment">many more effects are identified in this setting</li>
-<li class="fragment">‘works’ with unobserved confounding, positivity violations</li>
+<li class="fragment">many more effects are identified in this setting
+<ul>
+<li class="fragment">settings with unobserved confounding and positivity violations may still be identified</li>
+</ul></li>
 <li class="fragment">caveats:
 <ul>
 <li class="fragment">much harder to determine identifyability (no analogue of backdoor-rule)</li>
@@ -942,6 +1014,7 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <h2>Computing counterfactuals</h2>
 <ul>
 <li class="fragment">notation: <span class="math inline">\(P(Y_{t'}  = y' | T=t,Y=y)\)</span> where <span class="math inline">\(Y_{t'}\)</span> means “set <span class="math inline">\(T=t'\)</span> through intervention”</li>
+<li class="fragment">this is called a <em>counterfactual</em> because it’s a probability statement incorporating two incompatible worlds: the world where <span class="math inline">\(T=t\)</span> and the world where <span class="math inline">\(T=t'\)</span></li>
 <li class="fragment">steps:
 <ol type="1">
 <li class="fragment">Abduction (update <span class="math inline">\(P(U)\)</span> from observed evidence)</li>
@@ -975,12 +1048,15 @@ The causal effect of $X$ on $Y$ is identifiable from a graph $G$ if the quantity
 <li class="fragment">DAGs:
 <ul>
 <li class="fragment"><em>soft intervention</em>: don’t set treatment to fixed value but replace function with other function of variables</li>
+<li class="fragment"><em>selection diagrams / transportability</em>: ask whether effects learned in one population apply to another</li>
 <li class="fragment">express patterns for missing data by including missingness indicators</li>
 </ul></li>
 <li class="fragment">SCMs:
 <ul>
 <li class="fragment">probability of sufficiency</li>
 <li class="fragment">probability of necessity</li>
+<li class="fragment">individual-level counterfactual explanations</li>
+<li class="fragment">counterfactual fairness</li>
 </ul></li>
 </ul>
 </section>
