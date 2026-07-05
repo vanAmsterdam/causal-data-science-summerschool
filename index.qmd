@@ -21,7 +21,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/vzYDu21X
 
 | time | activity   | content              | link |
 |---------------|-----------|---------------------------------------------------|-|
-| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              | |
+| 09:00 - 09:30 | Lecture   | Causal Inference: What, Why, and How              |[pdf](lectures/day1-potentialoutcomes/lecture_day1.pdf) |
 | 09:30 - 10:45 | Lecture   | Intro to Potential Outcomes I                     | |
 | 11:00 - 12:15 | Practical | Causal assumptions                                |[html](practicals/11_poutcomes/day1_practical.html) |
 | 12:30 - 13:15 | LUNCH     |                                                   | |
