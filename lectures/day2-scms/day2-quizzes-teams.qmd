@@ -1,0 +1,81 @@
+---
+title: Quizzes with team-support
+author: Wouter van Amsterdam
+date: 2026-07-07
+format: 
+    #latex:
+        #documentclass: beamer
+        #lof: true
+        #lot: true
+    #html:
+        #toc: true
+        #toc-depth: 2
+        #number-sections: true
+    revealjs:
+        theme: umcu.scss
+        # theme: [umcu.scss, ../custom_dev.scss]
+        incremental: true
+        width: 1600
+        height: 900
+        logo: umcu_blue.png
+        center: true
+execute:
+    warning: false
+    message: false
+categories:
+    - SCM
+    - DAG
+    - day2
+bibliography: bibliography.bib
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| execute: true
+
+suppressMessages({
+  library(purrr)
+  library(data.table)
+  library(ggplot2); theme_set(theme_bw())
+  library(knitr)
+})
+```
+
+## Individual quizzes with team support
+
+- Goals:
+  1. Check your understanding of the materials
+  2. To investigate the effect of team-support on quiz performance
+- Each student will go through 2 rounds of 6 exercises individually
+- Will test knowledge of Yesterday's materials and this morning's lecture
+  - Some questions are (deliberately) above what is currently covered and expected
+- Allowed are a scratch pad and a calculator
+- Answers will be collected anonymously
+
+## Round 1:
+
+0. Log in with personal id, submit test question to check connection
+1. 6 minutes to complete 6 exercises individually; submit when done (answers are auto-saved)
+2. After submission, select 1 question for team discussion (team of 2 or 3, teams pre-assigned)
+3. New, 2-minute phase for discussion for every student in the team, within that time potentially update your answer
+
+- Go to this URL: [https://cds-quizzes.streamlit.app/](https://cds-quizzes.streamlit.app/) and log in with personal token
+- Note: website can be a little sluggish, please be patient and do not refresh the page, may need to press "Submit" a second time
+  
+## Round 1, phase 1
+
+- Make individual exercises, submit answers
+- Choose question for team discussion, confirm that selection
+  
+## Round 1, phase 2
+
+- For every student, take turns to open the team discussion round, 2 minutes each (with timer)
+
+## Round 2: Another round of 6 exercises
+
+- Same as before but now: question for team discussion is **pre-selected** (no free choice)
+
+## Round 2, phase 1
+
+- Make individual exercises, submit answers
