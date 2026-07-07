@@ -83,9 +83,9 @@ data2 <- datas[["data2"]]
 
 The datasets can be downloaded here:
 
-[data1.csv](datas/data1.csv)
+[data1.csv](./datas/data1.csv)
 
-[data2.csv](datas/data2.csv)
+[data2.csv](./datas/data2.csv)
 
 ::: {.callout-note collapse="true"}
 

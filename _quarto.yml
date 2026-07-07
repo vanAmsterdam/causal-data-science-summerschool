@@ -1,5 +1,8 @@
 project:
   type: website
+  resources:
+    - practicals/22_scms/datas/data1.csv
+    - practicals/22_scms/datas/data2.csv
 
 website:
   title: "Causal Inference and Causal Data Science Summerschool"
@@ -11,4 +14,3 @@ format:
     theme: cosmo
     css: styles.css
     toc: true
-
