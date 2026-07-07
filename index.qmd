@@ -43,6 +43,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/vzYDu21X
 | 14:15 - 15:00 | Lecture   | Adjustment Methods II: Regression and Outcome Adjustment |[html](lectures/day2-scms/lec4.html) [pdf](lectures/day2-scms/lec4.pdf) |
 | 15:15 - 16:30 | practical | SCMs and meta-learners                                |[html](practicals/22_scms/index.html)|
 | | Practical | Bonus Exercises | [DAGs](practicals/21_dags/dags_bonus.html) |
+| | Practical | Team Quizz | [Questions](lectures/day2-scms/team-quizz-questions.html) [data](practicals/21_dags/datas/team_quizz.csv)|
 
 ### Day 3: Target Trial Emulation
 

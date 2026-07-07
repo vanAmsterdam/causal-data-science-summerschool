@@ -1,0 +1,57 @@
+---
+title: Quizzes with team-support - questions
+author: Wouter van Amsterdam
+date: 2026-07-07
+format: 
+    #latex:
+        #documentclass: beamer
+        #lof: true
+        #lot: true
+    #html:
+        #toc: true
+        #toc-depth: 2
+        #number-sections: true
+    revealjs:
+        theme: umcu.scss
+        # theme: [umcu.scss, ../custom_dev.scss]
+        incremental: true
+        width: 1600
+        height: 900
+        logo: umcu_blue.png
+        center: true
+execute:
+    warning: false
+    message: false
+categories:
+    - SCM
+    - DAG
+    - day2
+bibliography: bibliography.bib
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| execute: true
+
+suppressMessages({
+  library(purrr)
+  library(data.table)
+  library(ggplot2); theme_set(theme_bw())
+  library(knitr)
+})
+```
+
+## Individual quizzes with team support
+
+- each made 2 rounds of 6 qeustionns questions individually
+- round 1: select which question to discuss with team 
+- round 2: question for team discussion is randomly pre-selected
+- Questions:
+  1. what is the effect of team discussion on question answer correctness?
+  2. draw a directed acyclic graph for the problem
+  3. what do you expect in terms of association between team discussion and final answer correctness
+    - in round 1?
+    - in round 2?
+  4. can you design an analysis for answering the question using the data we generated?
+
