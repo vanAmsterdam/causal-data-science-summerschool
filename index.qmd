@@ -63,6 +63,7 @@ Please fill in the participant evaluation form [here](https://forms.gle/vzYDu21X
 
 | time | activity   | content              | link | 
 |---------------|-----------|----------------------------------------------------------|-|
+| | Test-your-knowledge | Day 3 material | [google form](https://forms.gle/126kjKPwCPfeFy5q6) | 
 | 09:00 - 09:45 | Lecture   | Causal Perspectives on Prediction Modeling I  |[html](lectures/day41-prediction/index.html) [pdf](lectures/day41-prediction/prediction.pdf)|
 | 10:00 - 10:45 | Lecture   | Causal Perspectives on Prediction Modeling II | |
 | 11:00 - 12:30 | practical | Causal Perspectives on Prediction Modeling    | [html](practicals/41_prediction/index.html)|
