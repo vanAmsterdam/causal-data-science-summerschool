@@ -24,6 +24,14 @@ $red: #D0103A;
   font-size: 1.4em;
 }
 
+#topalign-id h2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center; /* Adjust if needed */
+}
 
 .reveal h3 {
   color: $lightblue;
