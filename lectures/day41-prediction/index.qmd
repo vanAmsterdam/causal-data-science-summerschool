@@ -4,7 +4,8 @@ author: "Wouter van Amsterdam"
 date: "2024-08-08"
 format: 
     revealjs:
-        theme: [umcu.scss, ../custom_dev.scss]
+        # theme: [umcu.scss, ../custom_dev.scss]
+        theme: [umcu.scss]
         incremental: true
         width: 1920
         height: 1080
@@ -410,7 +411,99 @@ was the model predicting anything sensible?
 - typically requires a lot of data as: 
   - either many patients are concordant with the new policy, so small differences
   - many discordant patients, so down-weighted and small effective sample size
-    
+
+# What if we don't know a threshold a-priori? Rank-based treatment allocation
+
+## RATE setup: evaluate a fixed prioritization rule
+
+Take a model or rule $f:\mathbb{X}\to\mathbb{R}$ as given.
+
+- $f$ could be a risk model, CATE model, clinical score, or hand-crafted rule
+- larger $f(x)$ means higher priority for treatment
+- only the ranking matters; the numeric scale of $f(x)$ does not
+- evaluation asks whether treating higher-ranked patients first improves outcomes
+- no requirement that $f$ was trained to predict treatment effects
+
+<!-- This is the setup of RATE and related Qini / prescriptive-effect curves [@yadlowskyEvaluatingTreatment2023; @imaiExperimentalEvaluation2021]. -->
+
+## Turn ranks into treatment-allocation policies
+
+For each treatment budget $u\in[0,1]$, treat the top $u$ fraction according to $f$.
+
+$$
+\pi_{f,u}(x)=\mathbf{1}\{f(x)\ge q_{1-u}\}
+$$
+
+where $q_{1-u}$ is the $(1-u)$-quantile of $f(X)$.
+
+- $u=0$: treat nobody
+- $u=0.10$: treat the highest-ranked 10\%
+- $u=1$: treat everybody
+- sweeping $u$ from 0 to 1 gives a sequence of rank-based policies
+
+## Start with the incremental policy-value curve
+
+For this section, let larger $Y$ mean better outcomes. Flip signs if $Y$ is a harm.
+
+$$
+V_f(u)=E\left[\pi_{f,u}(X)Y(1)+\{1-\pi_{f,u}(X)\}Y(0)\right]
+$$
+
+- x-axis: fraction of the population treated, $u$
+- y-axis: average outcome in the **entire population** under policy $\pi_{f,u}$
+- $V_f(0)=E[Y(0)]$: nobody treated
+- $V_f(1)=E[Y(1)]$: everybody treated
+- the curve answers: what average outcome would we get if treatment capacity were 5\%, 10\%, 20\%, ...
+
+## Visualizing the policy-value curve
+
+::: {.r-stretch}
+
+![](figs/rate_policy_value_curve.png){fig-align="center"}
+
+:::
+
+## Estimating the curve in evaluation data
+
+In a randomized evaluation set with treatment probability $e_i=P(T_i=1\mid X_i)$:
+
+$$
+\widehat{V}_f(u)=\frac{1}{n}\sum_{i=1}^n
+\left[
+\frac{\pi_{f,u}(X_i)T_iY_i}{e_i}
++
+\frac{\{1-\pi_{f,u}(X_i)\}(1-T_i)Y_i}{1-e_i}
+\right]
+$$
+
+- score everyone with the fixed $f$
+- sort from high to low priority
+- for each $u$, estimate the mean outcome if top-ranked patients were treated and the rest were not
+- in observational data, this becomes causal evaluation: propensity weighting, standardization, or doubly robust estimators, plus the usual assumptions
+- this is the same procedure as in off-policy evaluation, but now the policy is rank-based
+
+## Summarize the curve with RATE
+
+RATE metrics are weighted areas under the TOC curve:
+
+$$
+\operatorname{RATE}_{\alpha}(f)=\int_0^1\alpha(u)\operatorname{TOC}_f(u)\,du
+$$
+
+- AUTOC: $\alpha(u)=1$
+- Qini coefficient: $\alpha(u)=u$
+- choose $\alpha$ based on which treatment budgets matter most
+- RATE evaluates a **ranking**, not calibrated treatment-effect predictions
+- use held-out or cross-fitted evaluation data; otherwise the curve can overstate value
+
+## c-for-benefit: concordance for predicted benefit
+
+c-for-benefit is another rank-based evaluation summary, but for a fixed **benefit score** $f$ [@hooglandEvaluatingIndividualized2023].
+
+1. match treated and untreated patients into pairs that are similar in covariates or predicted benefit
+2. for pair with treated member and untreated member, pair is *concordant* if the member with better observed outcome also had larger predicted 'benefit'
+3. compare all pairs, compute fraction of concordant pairs
+
 # Some warnings on bad evaluations
 
 ## Prediction model types
