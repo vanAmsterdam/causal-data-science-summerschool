@@ -52,7 +52,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2740581606dc327e82f18f789b69d8a0.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-7ac8651440ad03be692c54c3cf24e14d.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -166,11 +166,10 @@ Wouter van Amsterdam
 <nav role="doc-toc"> 
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li class="fragment"><a href="#/what-is-prediction" id="/toc-what-is-prediction">What is prediction?</a></li>
-<li class="fragment"><a href="#/a.-prediction-model-used-for-a-causal-task" id="/toc-a.-prediction-model-used-for-a-causal-task">2a. Prediction model used for a causal task</a></li>
-<li class="fragment"><a href="#/selffulfilling" id="/toc-selffulfilling">When accurate prediction models yield harmful self-fulfilling prophecies</a></li>
-<li class="fragment"><a href="#/sec-modeleval" id="/toc-sec-modeleval">How to evaluate the effect of a new treatment policy?</a></li>
+<li class="fragment"><a href="#/what-is-prediction-how-does-it-compare-to-causal-inference" id="/toc-what-is-prediction-how-does-it-compare-to-causal-inference">What is prediction? How does it compare to causal inference?</a></li>
 <li class="fragment"><a href="#/prediction-has-a-causal-interpretation" id="/toc-prediction-has-a-causal-interpretation">1. Prediction has a causal interpretation</a></li>
+<li class="fragment"><a href="#/a.-prediction-models-used-for-a-causal-task-decision-making" id="/toc-a.-prediction-models-used-for-a-causal-task-decision-making">2a. (Prediction) models used for a causal task (decision making)</a></li>
+<li class="fragment"><a href="#/some-warnings-on-bad-evaluations" id="/toc-some-warnings-on-bad-evaluations">Some warnings on bad evaluations</a></li>
 <li class="fragment"><a href="#/b.-improving-non-causal-prediction-models-with-causality" id="/toc-b.-improving-non-causal-prediction-models-with-causality">2b. improving non-causal prediction models with causality</a></li>
 </ul>
 </nav>
@@ -180,7 +179,7 @@ Wouter van Amsterdam
 <ul>
 <li class="fragment">questions of <em>association</em> are of the kind:
 <ul>
-<li class="fragment">what is the probability of <span class="math inline">\(Y\)</span> (potentially: after observing <span class="math inline">\(X\)</span>)?, e.g.:
+<li class="fragment">what is the probability of <span class="math inline">\(Y\)</span> (potentially: after observing <span class="math inline">\(X\)</span>)?, for example:
 <ul>
 <li class="fragment">what is the chance of rain tomorrow given that is was dry today?</li>
 <li class="fragment">what is the chance a patient with lung cancer lives more than 10% after diagnosis?</li>
@@ -199,14 +198,14 @@ Wouter van Amsterdam
 </ul>
 </section>
 <section>
-<section id="what-is-prediction" class="title-slide slide level1 center">
-<h1>What is prediction?</h1>
+<section id="what-is-prediction-how-does-it-compare-to-causal-inference" class="title-slide slide level1 center">
+<h1>What is prediction? How does it compare to causal inference?</h1>
 
 </section>
 <section id="examples-of-prediction-tasks" class="slide level2 center">
 <h2>Examples of prediction tasks</h2>
 <p>observe an <span class="math inline">\(X\)</span>, want to know what to expect for <span class="math inline">\(Y\)</span></p>
-<p><span class="fragment" data-fragment-index="1">1. X = patient caughs, Y = patient has lung cancer</span></p>
+<p><span class="fragment" data-fragment-index="1">1. X = patient coughs, Y = patient has lung cancer</span></p>
 <p><span class="fragment" data-fragment-index="2">2. X = ECG, Y = patient has heart attack</span></p>
 <p><span class="fragment" data-fragment-index="3">3. X = CT-scan, Y = patient dies within 2 years</span></p>
 <div class="r-stack">
@@ -294,38 +293,15 @@ Wouter van Amsterdam
 <li class="fragment">typical estimand <span class="math inline">\(E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\)</span></li>
 <li class="fragment">typical study: RCT (or observational causal inference study)</li>
 <li class="fragment">typical interpretation: <em>causal effect</em> of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span></li>
-<li class="fragment">primary use: know what change in <span class="math inline">\(Y\)</span> to expect when <em>changing the treatment policy</em></li>
+<li class="fragment">primary use: know what change in <span class="math inline">\(Y\)</span> to expect when <em>setting the treatment policy</em></li>
 </ul>
 </div></div>
-</section>
-<section id="what-do-we-mean-with-treatment-policy" class="slide level2 center">
-<h2>What do we mean with treatment policy?</h2>
-<p>A treatment policy <span class="math inline">\(\pi\)</span> is a procedure for determining the treatment</p>
-<p>Assuming <span class="math inline">\(T\)</span> is binary, <span class="math inline">\(\pi\)</span> can be:</p>
-<ul>
-<li class="fragment"><span class="math inline">\(\pi = 0.5\)</span> (a 1/1 RCT)</li>
-<li class="fragment">give blood pressure pill to patients with hypertension:</li>
-</ul>
-<p><span class="fragment"><span class="math display">\[\pi(blood pressure) = \begin{cases}
-  1, &amp;blood pressure &gt; 140mmHg\\
-  0, &amp;\text{otherwise}
-  \end{cases}\]</span></span></p>
-<ul>
-<li class="fragment">give statins to patients with more than 10% predicted risk of heart attack:</li>
-</ul>
-<p><span class="fragment"><span class="math display">\[\pi(X) = \begin{cases}
-  1, &amp;f(X) &gt; 0.1\\
-  0, &amp;\text{otherwise}
-  \end{cases}\]</span></span></p>
-<ul>
-<li class="fragment">the propensity score can be seen as a (non-deterministic) treatment policy</li>
-</ul>
 </section>
 <section id="where-can-prediction-and-causality-meet" class="slide level2 center">
 <h2>Where can prediction and causality meet?</h2>
 <ol type="1">
 <li class="fragment">prediction has a causal interpretation</li>
-<li class="fragment">prediction does not have a causal interpretation:
+<li class="fragment">prediction may or may not have a causal interpretation:
 <ol type="a">
 <li class="fragment">but is used for a causal task (e.g.&nbsp;treatment decision making)</li>
 <li class="fragment">but predictions can be improved with causal thinking in terms of e.g.:</li>
@@ -336,14 +312,159 @@ Wouter van Amsterdam
 </ol>
 </section></section>
 <section>
-<section id="a.-prediction-model-used-for-a-causal-task" class="title-slide slide level1 center">
-<h1>2a. Prediction model used for a causal task</h1>
+<section id="prediction-has-a-causal-interpretation" class="title-slide slide level1 center">
+<h1>1. Prediction has a causal interpretation</h1>
 
 </section>
-<section class="slide level2 center">
+<section id="what-can-we-mean-with-predictions-having-a-causal-interpretation" class="slide level2 center">
+<h2>What can we mean with predictions having a causal interpretation?</h2>
+<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
+<div class="quarto-layout-panel" data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="column quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<ol type="1">
+<li class="fragment"><span class="math inline">\(X\)</span> is an ancestor of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2,z_3\}\)</span>)</li>
+<li class="fragment"><span class="math inline">\(X\)</span> is a direct cause of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2\}\)</span>)</li>
+<li class="fragment"><span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1\}\)</span>), i.e.:</li>
+</ol>
+<div class="fragment">
+<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
+</div>
+<ol start="4" type="1">
+<li class="fragment"><span class="math inline">\(f: \mathbb{T} \times \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X\)</span> (<span class="math inline">\(T=\{z_1\},X=\{z_2,z_3,w\}\)</span>):</li>
+</ol>
+<div class="fragment">
+<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
+</div>
+</div><div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img data-src="tikzs/dag-preds.png"></p>
+</div>
+</div>
+</div>
+</section>
+<section id="interpretation-3.-all-covariates-are-causal" class="slide level2 center">
+<h2>interpretation 3. all covariates are <em>causal</em></h2>
+<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
+<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
+<ul>
+<li class="fragment">the requirements for this interpretation are very hard to satisfy (i.e.&nbsp;back-door rule holds for <strong>all</strong> variables)</li>
+<li class="fragment">too often this is assumed / interpreted this way (<em>table 2 fallacy</em> in health care literature)</li>
+</ul>
+</section>
+<section id="example-of-table-2-fallacy-when-mis-using-qrisk" class="slide level2 center">
+<h2>Example of table 2 fallacy when mis-using Qrisk</h2>
+<p><a href="https://www.qrisk.org">Qrisk3</a>: a risk prediction model for cardiovascular events in the coming 10-years. Widely used in the United Kingdom for deciding which patients should get statins</p>
 
+<img data-src="figs/qrisk3-screenshot.png" class="r-stretch"></section>
+<section id="qrisk3---risks" class="slide level2 center">
+<h2>Qrisk3 - risks:</h2>
+<p>can go wrong when:</p>
+<ul>
+<li class="fragment">e.g.&nbsp;fill in current length and weight
+<ul>
+<li class="fragment">reduce weight by 5 kgs</li>
+<li class="fragment">interpret difference as ‘effect of weight loss’</li>
+</ul></li>
+<li class="fragment">check or un-check blood pressure medication
+<ul>
+<li class="fragment">observe that with blood pressure medication, risk is higher</li>
+</ul></li>
+</ul>
+<!-- ## What else could go wrong?
 
-<img data-src="figs/8q8oy7_meme_crossover.jpg" class="quarto-figure quarto-figure-center r-stretch"></section>
+- Qrisk3 states it is validated, but validated for what?
+- Qrisk3 is validated for non-use! -->
+</section>
+<section id="interpretation-4.-some-covariates-are-causal" class="slide level2 center">
+<h2>interpretation 4. some covariates are <em>causal</em></h2>
+<h3 id="or-prediction-under-intervention">or: prediction-under-intervention</h3>
+<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
+<p><img data-src="tikzs/policy.png" height="500"></p>
+<ul>
+<li class="fragment">interpretation: <em>what is the expected value of <span class="math inline">\(Y\)</span> if we were to assign treatment <span class="math inline">\(t\)</span> by intervention, given that we know <span class="math inline">\(X=x\)</span> in this patient</em></li>
+</ul>
+<!-- --- 
+
+:::{.columns}
+
+::::{.column width="50%"}
+
+using *treatment naive* prediction models for decision support
+
+![](figs/8q8oy7_meme_crossover.jpg){fig-align="center"}
+
+::::
+
+::::{.column width="50%"}
+
+prediction-under-intervention
+
+![](figs/peanutbutter_chocolatesprinkles.jpg){.fragment fig-align="center"}
+
+::::
+::: -->
+</section>
+<section id="estimand-for-prediction-under-intervention-models" class="slide level2 center">
+<h2>Estimand for prediction-under-intervention models</h2>
+<p>What is the estimand?</p>
+<ul>
+<li class="fragment">prediction: <span class="math inline">\(E[Y|X]\)</span></li>
+<li class="fragment">average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\)</span></li>
+<li class="fragment">conditional average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1),X] - E[Y|\text{do}(T=0),X]\)</span></li>
+<li class="fragment">prediction-under-intervention: <span class="math inline">\(E[Y|\text{do}(T=t),X]\)</span></li>
+</ul>
+<p><span class="fragment">note:</span></p>
+<ul>
+<li class="fragment">from prediction-under-intervention models, the CATE can be derived</li>
+<li class="fragment">in these models and the CATE: <span class="math inline">\(T\)</span> has a causal interpretation, <span class="math inline">\(X\)</span> does not!
+<ul>
+<li class="fragment">i.e.&nbsp;<span class="math inline">\(X\)</span> does not <em>cause</em> the effect of treatment to be different</li>
+</ul></li>
+</ul>
+</section>
+<section id="developing-prediction-under-intervention-models" class="slide level2 center">
+<h2>Developing prediction-under-intervention models</h2>
+<ul>
+<li class="fragment"><p>requires causal inference assumptions or RCTs</p></li>
+<li class="fragment"><p>single RCTs often not big enough, or did not measure the right <span class="math inline">\(X\)</span>s</p></li>
+<li class="fragment"><p>when <span class="math inline">\(X\)</span> is not a sufficient adjustment set, but <span class="math inline">\(X+L\)</span> is, can adjust additionally for <span class="math inline">\(L\)</span> using e.g.&nbsp;propensity score methods or standardization</p></li>
+<li class="fragment"><p>assumption of no unobserved confounding often hard to justify in observational data</p></li>
+<li class="fragment"><p>but there’s more between heaven (RCT) and earth (confounder adjustment)</p>
+<ul>
+<li>proxy-variable methods <span class="citation" data-cites="miaoIdentifyingCausalEffects2018 vanamsterdamIndividualTreatmentEffect2022">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Miao et al. 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam et al. 2022</a>)</span></li>
+<li>constant relative treatment effect assumption <span class="citation" data-cites="alaaMachineLearningGuide2021 vanamsterdamConditionalAverageTreatment2023 candidodosreisUpdatedPREDICTBreast2017">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Alaa et al. 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam and Ranganath 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Candido dos Reis et al. 2017</a>)</span></li>
+<li>diff-in-diff</li>
+<li>instrumental variable analysis <span class="citation" data-cites="waldFittingStraightLines1940 puliGeneralControlFunctions2021 hartfordDeepIVFlexible2017">(<a href="#/references" role="doc-biblioref" onclick="">Wald 1940</a>; <a href="#/references" role="doc-biblioref" onclick="">Puli and Ranganath 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">Hartford et al. 2017</a>)</span></li>
+<li>front-door analysis</li>
+</ul></li>
+<li class="fragment"><p>not covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g.&nbsp;blood pressure control with multiple follow-up visits) <span class="citation" data-cites="luijkenRiskBasedDecisionMaking2024">(<a href="#/references" role="doc-biblioref" onclick="">Luijken et al. 2024</a>)</span></p></li>
+</ul>
+</section>
+<section id="evaluating-predictive-performance-of-prediction-under-intervention-models" class="slide level2 center">
+<h2>Evaluating predictive performance of prediction-under-intervention models</h2>
+<ul>
+<li class="fragment">Estimand for prediction-under-intervention: expected outcome under intervention, conditional on covariates <span class="math inline">\(X\)</span></li>
+<li class="fragment">prediction accuracy can be tested in RCTs, this <strong>is</strong> the target distribution</li>
+<li class="fragment">or in observational data with specialized methods accounting for confounding (e.g. <span class="citation" data-cites="boyerEstimatingEvaluatingCounterfactual2025 keoghPredictionInterventionsEvaluation2024">(<a href="#/references" role="doc-biblioref" onclick="">Boyer et al. 2025</a>; <a href="#/references" role="doc-biblioref" onclick="">Keogh and van Geloven 2024</a>)</span>)
+<ul>
+<li class="fragment">remember from Day 2: observational causal inference is using data we have and assumptions to make inferences about a setting on which we do not have data</li>
+</ul></li>
+<li class="fragment">in confounded observational data, typical metrics (e.g.&nbsp;AUC or calibration) are not sufficient as we want to predict well in data from <em>other distribution than observed data</em> (i.e.&nbsp;other treatment decisions)</li>
+<li class="fragment">evaluation approaches based on confounder adjustment methods:
+<ul>
+<li class="fragment">IPW reweighting</li>
+<li class="fragment">confounder adjustment / standardization</li>
+<li class="fragment">doubly robust methods</li>
+</ul></li>
+</ul>
+</section></section>
+<section>
+<section id="a.-prediction-models-used-for-a-causal-task-decision-making" class="title-slide slide level1 center">
+<h1>2a. (Prediction) models used for a causal task (decision making)</h1>
+<!-- --- 
+
+![](figs/8q8oy7_meme_crossover.jpg){fig-align="center"} -->
+</section>
 <section id="using-prediction-models-for-decision-making-is-often-thought-of-as-a-good-idea" class="slide level2 center">
 <h2>Using prediction models for decision making is often thought of as a good idea</h2>
 <p>For example:</p>
@@ -362,61 +483,153 @@ Wouter van Amsterdam
 </div>
 </div>
 </div>
+<ul>
+<li class="fragment">in abstract terms: prediction model <span class="math inline">\(f\)</span> induces a new treatment policy</li>
+</ul>
 </div>
 </section>
-<section class="slide level2 center">
-
+<section id="what-do-we-mean-with-treatment-policy" class="slide level2 center">
+<h2>What do we mean with treatment policy?</h2>
+<p>A treatment policy <span class="math inline">\(\pi\)</span> is a procedure for determining the treatment</p>
+<p>Assuming <span class="math inline">\(T\)</span> is binary, <span class="math inline">\(\pi\)</span> can be:</p>
+<ul>
+<li class="fragment"><span class="math inline">\(\pi = 0.5\)</span> (a 1/1 RCT)</li>
+<li class="fragment">deterministic guideline, e.g.&nbsp;give blood pressure pill to patients with hypertension:</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[\pi(\text{blood pressure}) = \begin{cases}
+  1, &amp;\text{blood pressure} &gt; 140\text{mmHg}\\
+  0, &amp;\text{otherwise}
+  \end{cases}\]</span></span></p>
+<ul>
+<li class="fragment"><strong>dependent on prediction models</strong>: give statins to patients with more than 10% predicted risk of heart attack; take <span class="math inline">\(f(X)\)</span> as a prediction model for the risk of heart attack:</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[\pi(X) = \begin{cases}
+  1, &amp;f(X) &gt; 0.1\\
+  0, &amp;\text{otherwise}
+  \end{cases}\]</span></span></p>
+<ul>
+<li class="fragment">the propensity score is an estimate of the current treatment policy, conditional on features <span class="math inline">\(X\)</span>:</li>
+</ul>
+<p><span class="fragment"><span class="math display">\[\pi_0(X) = P(T=1|X)\]</span></span></p>
+</section>
+<section id="lets-think-about-old-and-new-treatment-policies" class="slide level2 center">
+<h2>Let’s think about old and new treatment policies</h2>
+<div class="r-stack">
+<p><img data-src="figs/policy_changea1.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changea3.png" class="fragment" style="width:100.0%"></p>
+<p><img data-src="figs/policy_changeax.png" class="fragment" style="width:100.0%"></p>
+</div>
+</section>
+<section id="model-deployment-is-an-intervention-changing-treatments-and-outcomes" class="slide level2 center">
+<h2>Model deployment is an intervention, changing treatments and outcomes</h2>
+<div class="r-stack">
+<p><img data-src="figs/policy_changeb2.png"></p>
+<p><img data-src="figs/policy_changebx.png" class="fragment" style="width:100.0%"></p>
+</div>
+</section>
+<section id="how-do-we-learn-about-the-effect-of-an-intervention" class="slide level2 center">
+<h2>How do we learn about the effect of an intervention?</h2>
+<p>With causal inference!</p>
+<ul>
+<li class="fragment">for using a decision support model, the unit of intervention is the decision maker, typically <em>a healthcare provider</em></li>
+<li class="fragment">randomly assign <em>providers</em> to have access to the model or not</li>
+<li class="fragment">measure differences in <strong>treatment decisions</strong> and <strong>patient outcomes</strong></li>
+<li class="fragment">this called a cluster RCT: outcomes on patient level, who clustered within randomized units (e.g.&nbsp;healthcare providers, hospitals, schools, etc.)</li>
+<li class="fragment">if using model improves outcomes, use that one</li>
+</ul>
+<div class="fragment">
+<div class="callout callout-tip no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Using cluster RCTs to evaluated models for decision making is not a new idea <span class="citation" data-cites="cooperEvaluationMachinelearningMethods1997">(<a href="#/references" role="doc-biblioref" onclick="">Cooper et al. 1997</a>)</span></strong></p>
+</div>
+<div class="callout-content">
+<p>“As one possibility, suppose that a trial is performed in which clinicians are randomized either to have or not to have access to such a decision aid in making decisions about where to treat patients who present with pneumonia.”</p>
+</div>
+</div>
+</div>
+</div>
+<div class="fragment">
 <div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>This may lead to bad situations when:</strong></p>
+<p><strong>What we don’t learn</strong></p>
 </div>
 <div class="callout-content">
+<p>was the model predicting anything sensible?</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-policyeval" class="slide level2 center">
+<h2>What if we cannot do this (cluster randomized) trial?</h2>
+<h3 id="off-policy-evaluation">Off-policy evaluation</h3>
+<ul>
+<li class="fragment">What we want to know: what is expected value of <span class="math inline">\(Y\)</span> under a new treatment policy <span class="math inline">\(\pi_1\)</span>?</li>
+</ul>
 <ol type="1">
-<li class="fragment">ignoring the treatments patients may have had during training / validation of prediction model</li>
-<li class="fragment">only considering measures of predictive accuracy as sufficient evidence for safe deployment</li>
+<li class="fragment">have historic RCT data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>
+<ul>
+<li class="fragment">when <span class="math inline">\(\pi_1(x)\)</span> is deterministic (e.g.&nbsp;give the treatment when <span class="math inline">\(f(x) &gt; 0.1\)</span>), we get the following:
+<ol type="a">
+<li class="fragment">when randomized treatment is concordant with <span class="math inline">\(\pi_1\)</span>, keep the patient, otherwise, remove from the data</li>
+<li class="fragment">calculate average outcomes in the kept patients</li>
+</ol></li>
+<li class="fragment">this way, multiple alternative policies may be evaluated</li>
+</ul></li>
 </ol>
-</div>
-</div>
-</div>
+<!-- - a new *policy* can be evaluated in historic RCTs [e.g. @karmaliBloodPressureloweringTreatment2018]
+- ultimate test is cluster RCT
+- if not perfect, likely a better recipe than *treatment-naive* models -->
+</section>
+<section id="sec-policyeval" class="slide level2 center">
+<h2>What if we cannot do this (cluster randomized) trial?</h2>
+<h3 id="off-policy-evaluation-in-observational-data">Off-policy evaluation in observational data</h3>
+<ol start="2" type="1">
+<li class="fragment">have historic observational data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>:
+<ul>
+<li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
+<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span></li>
+<li class="fragment">we need to estimate <span class="math inline">\(q\)</span> (i.e.&nbsp;the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)</li>
+<li class="fragment">every patient gets a weight <span class="math inline">\(w = \frac{\pi_1(x)}{\pi_0(x)}\)</span> (i.e.&nbsp;the ratio of the target and observed treatment policy)</li>
+<li class="fragment">calculate weighted average outcomes in the observed data</li>
+<li class="fragment">(aka “importance sampling” in statistics / machine learning)</li>
+</ul></li>
+</ol>
+<!-- - a new *policy* can be evaluated in historic RCTs [e.g. @karmaliBloodPressureloweringTreatment2018]
+- ultimate test is cluster RCT
+- if not perfect, likely a better recipe than *treatment-naive* models -->
+</section>
+<section id="off-policy-evaluation-limitations" class="slide level2 center">
+<h2>Off-policy evaluation limitations:</h2>
+<ul>
+<li class="fragment">typically requires a lot of data as:
+<ul>
+<li class="fragment">either many patients are concordant with the new policy, so small differences</li>
+<li class="fragment">many discordant patients, so down-weighted and small effective sample size</li>
+</ul></li>
+</ul>
 </section></section>
 <section>
-<section id="selffulfilling" class="title-slide slide level1 center">
-<h1>When accurate prediction models yield harmful self-fulfilling prophecies</h1>
+<section id="some-warnings-on-bad-evaluations" class="title-slide slide level1 center">
+<h1>Some warnings on bad evaluations</h1>
 
 </section>
-<section class="slide level2 center">
-
-<div class="r-stack">
-<p><img data-src="figs/rt_example1.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example2.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example3.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example4.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example5.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example6.png" class="fragment" style="height:24cm"></p>
-<p><img data-src="figs/rt_example.png" class="fragment" style="height:24cm"></p>
-</div>
+<section id="prediction-model-types" class="slide level2 center">
+<h2>Prediction model types</h2>
+<ul>
+<li class="fragment"><em>treatment-naive</em> prediction models: <span class="math inline">\(E[Y|X]\)</span></li>
+<li class="fragment"><em>confounded (post-decision)</em> prediction models: <span class="math inline">\(E[Y|X,T] \neq E[Y|X,\text{do}(T)]\)</span></li>
+<li class="fragment"><em>prediction-under-intervention</em> models: <span class="math inline">\(E[Y|\text{do}(T),X]\)</span></li>
+</ul>
 </section>
-<section id="building-models-for-decision-support-without-regards-for-the-historic-treatment-policy-is-a-bad-idea" class="slide level2 center">
-<h2>Building models for decision support without regards for the historic treatment policy is a bad idea</h2>
-<div class="r-stack">
-<p><img data-src="figs/policy_changea1.png" class="fragment" style="width:100.0%"></p>
-<p><img data-src="figs/policy_changea3.png" class="fragment" style="width:100.0%"></p>
-<p><img data-src="figs/policy_changeax.png" class="fragment" style="width:100.0%"></p>
-<p><img data-src="figs/policy_changeb2.png" class="fragment" style="width:100.0%"></p>
-<p><img data-src="figs/policy_changebx.png" class="fragment" style="width:100.0%"></p>
-</div>
-</section>
-<section class="slide level2 center">
-
-<p><span class="r-fit-text">The question is not “is my model accurate before / after deployment”,</span></p>
-<p><span class="r-fit-text fragment">but did deploying the model improve patient outcomes?</span></p>
-</section>
-<section id="treatment-naive-prediction-models" class="slide level2 center">
-<h2>Treatment-naive prediction models</h2>
+<section id="treatment-naive-prediction-models-ignore-the-historic-treatment-policy" class="slide level2 center">
+<h2>Treatment-naive prediction models ignore the historic treatment policy</h2>
+<h3 id="and-can-lead-to-bad-situations-like-self-fulfilling-prophecies-vanamsterdamwhenaccurateprediction2025">And can lead to bad situations like self-fulfilling prophecies <span class="citation" data-cites="vanamsterdamWhenAccuratePrediction2025">(<a href="#/references" role="doc-biblioref" onclick="">Van Amsterdam et al. 2025</a>)</span></h3>
 <div class="r-stack">
 <p><img data-src="figs/txnaive1.png"></p>
 <p><img data-src="figs/txnaive2b.png" class="fragment"></p>
@@ -425,12 +638,18 @@ Wouter van Amsterdam
     E[Y|X] \class{fragment}{= E[E_{t~\sim \pi_0(X)}[Y|X,t]]}
 \end{align}\]</span></p>
 </section>
-<section class="slide level2 center">
-
-<p><span class="r-fit-text">Is this obvious?</span></p>
-<!--::: {.callout-tip}-->
-<!--It may seem obvious that you should not ignore historical treatments in your prediction models, if you want to improve treatment decisions, but many of these models are published daily, and some guidelines even allow for implementing these models based on predictve performance only-->
-<!--:::-->
+<section id="confounded-prediction-models-do-not-account-for-confounding" class="slide level2 center">
+<h2>Confounded prediction models do not account for confounding</h2>
+<div class="r-stack">
+<p><img data-src="figs/qrisk1.png" class="fragment"></p>
+<p><img data-src="figs/qrisk2.png" class="fragment"></p>
+</div>
+</section>
+<section id="prediction-under-intervention-models" class="slide level2 center">
+<h2>Prediction under intervention models</h2>
+<ul>
+<li class="fragment">When correctly estimated, decision rule “give treatment with best predicted outcome” leads to foreseeable improvements.</li>
+</ul>
 </section>
 <section id="prediction-modeling-is-very-popular-in-medical-research" class="slide level2 center">
 <h2>Prediction modeling is very popular in medical research</h2>
@@ -484,222 +703,6 @@ Wouter van Amsterdam
 </ol>
 </section></section>
 <section>
-<section id="sec-modeleval" class="title-slide slide level1 center">
-<h1>How to evaluate the effect of a new treatment policy?</h1>
-
-</section>
-<section id="deploying-a-model-is-an-intervention-that-changes-the-way-treatment-decisions-are-made" class="slide level2 center">
-<h2>Deploying a model is an intervention that changes the way treatment decisions are made</h2>
-
-<img data-src="figs/policy_changebx.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="how-do-we-learn-about-the-effect-of-an-intervention" class="slide level2 center">
-<h2>How do we learn about the effect of an intervention?</h2>
-<p>With causal inference!</p>
-<ul>
-<li class="fragment">for using a decision support model, the unit of intervention is usually <em>the doctor</em></li>
-<li class="fragment">randomly assign <em>doctors</em> to have access to the model or not</li>
-<li class="fragment">measure differences in <strong>treatment decisions</strong> and <strong>patient outcomes</strong></li>
-<li class="fragment">this called a cluster RCT</li>
-<li class="fragment">if using model improves outcomes, use that one</li>
-</ul>
-<div class="fragment">
-<div class="callout callout-tip no-icon callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<p><strong>Using cluster RCTs to evaluated models for decision making is not a new idea <span class="citation" data-cites="cooperEvaluationMachinelearningMethods1997">(<a href="#/references" role="doc-biblioref" onclick="">Cooper et al. 1997</a>)</span></strong></p>
-</div>
-<div class="callout-content">
-<p>“As one possibility, suppose that a trial is performed in which clinicians are randomized either to have or not to have access to such a decision aid in making decisions about where to treat patients who present with pneumonia.”</p>
-</div>
-</div>
-</div>
-</div>
-<div class="fragment">
-<div class="callout callout-warning callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>What we don’t learn</strong></p>
-</div>
-<div class="callout-content">
-<p>was the model predicting anything sensible?</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="sec-policyeval" class="slide level2 center">
-<h2>What if we cannot do this (cluster randomized) trial?</h2>
-<h3 id="off-policy-evaluation">Off-policy evaluation</h3>
-<ol type="1">
-<li class="fragment">have historic RCT data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>
-<ul>
-<li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
-<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = 0.5\)</span></li>
-<li class="fragment">note: when <span class="math inline">\(\pi_1(x)\)</span> is deterministic (e.g.&nbsp;give the treatment when <span class="math inline">\(f(x) &gt; 0.1\)</span>), we get the following:
-<ol type="a">
-<li class="fragment">when randomized treatment is concordant with <span class="math inline">\(\pi_1\)</span>, keep the patient (weight = 1), otherwise, remove from the data (weight = 0)</li>
-<li class="fragment">calculate average outcomes in the kept patients</li>
-</ol></li>
-<li class="fragment">this way, multiple alternative policies may be evaluated</li>
-</ul></li>
-<li class="fragment">have historic observational data, want to evaluate new policy <span class="math inline">\(\pi_1\)</span>:
-<ul>
-<li class="fragment">target distribution <span class="math inline">\(p(t|x)=\pi_1(x)\)</span></li>
-<li class="fragment">observed distribution <span class="math inline">\(q(t|x) = \pi_0(x)\)</span></li>
-<li class="fragment">we need to estimate <span class="math inline">\(q\)</span> (i.e.&nbsp;the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)</li>
-<li class="fragment">use importance sampling to estimate the expected value of <span class="math inline">\(Y\)</span> under <span class="math inline">\(\pi_1\)</span> from the observed data</li>
-</ul></li>
-</ol>
-</section>
-<section class="slide level2 center">
-
-<p>How to build prediction models for decision support?</p>
-</section></section>
-<section>
-<section id="prediction-has-a-causal-interpretation" class="title-slide slide level1 center">
-<h1>1. Prediction has a causal interpretation</h1>
-
-</section>
-<section id="what-can-we-mean-with-predictions-having-a-causal-interpretation" class="slide level2 center">
-<h2>What can we mean with predictions having a causal interpretation?</h2>
-<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
-<div class="quarto-layout-panel" data-layout-ncol="2">
-<div class="quarto-layout-row">
-<div class="column quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
-<ol type="1">
-<li class="fragment"><span class="math inline">\(X\)</span> is an ancestor of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2,z_3\}\)</span>)</li>
-<li class="fragment"><span class="math inline">\(X\)</span> is a direct cause of <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1,z_2\}\)</span>)</li>
-<li class="fragment"><span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span> (<span class="math inline">\(X=\{z_1\}\)</span>), i.e.:</li>
-</ol>
-<div class="fragment">
-<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
-</div>
-<ol start="4" type="1">
-<li class="fragment"><span class="math inline">\(f: \mathbb{T} \times \mathbb{X} \to \mathbb{Y}\)</span> describes the causal effect of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X\)</span> (<span class="math inline">\(T=\{z_1\},X=\{z_2,z_3,w\}\)</span>:</li>
-</ol>
-<div class="fragment">
-<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
-</div>
-</div><div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<p><img data-src="tikzs/dag-preds.png"></p>
-</div>
-</div>
-</div>
-</section>
-<section id="interpretation-3.-all-covariates-are-causal" class="slide level2 center">
-<h2>interpretation 3. all covariates are <em>causal</em></h2>
-<p>Let <span class="math inline">\(f: \mathbb{X} \to \mathbb{Y}\)</span> be a prediction model for outcome <span class="math inline">\(Y\)</span> using features <span class="math inline">\(X\)</span></p>
-<p><span class="math display">\[f(x) = E[Y|\text{do}(X=x)]\]</span></p>
-<ul>
-<li class="fragment">this is almost never true (i.e.&nbsp;back-door rule holds for <strong>all</strong> variables)</li>
-<li class="fragment">too often this is assumed / interpreted this way (<em>table 2 fallacy</em> in health care literature)</li>
-</ul>
-</section>
-<section id="example-of-table-2-fallacy-when-mis-using-qrisk" class="slide level2 center">
-<h2>Example of table 2 fallacy when mis-using Qrisk</h2>
-<p><a href="https://www.qrisk.org">Qrisk3</a>: a risk prediction model for cardiovascular events in the coming 10-years. Widely used in the United Kingdom for deciding which patients should get statins</p>
-
-<img data-src="figs/qrisk3-screenshot.png" class="r-stretch"></section>
-<section id="qrisk3---risks" class="slide level2 center">
-<h2>Qrisk3 - risks:</h2>
-<p>can go wrong when:</p>
-<ul>
-<li class="fragment">e.g.&nbsp;fill in current length and weight
-<ul>
-<li class="fragment">reduce weight by 5 kgs</li>
-<li class="fragment">interpret difference as ‘effect of weight loss’</li>
-</ul></li>
-<li class="fragment">check or un-check blood pressure medication
-<ul>
-<li class="fragment">observe that with blood pressure medication, risk is higher</li>
-</ul></li>
-</ul>
-</section>
-<section id="what-else-could-go-wrong" class="slide level2 center">
-<h2>What else could go wrong?</h2>
-<ul>
-<li class="fragment">Qrisk3 states it is validated, but validated for what?</li>
-<li class="fragment">Qrisk3 is validated for non-use!</li>
-</ul>
-</section>
-<section id="interpretation-4.-some-covariates-are-causal" class="slide level2 center">
-<h2>interpretation 4. some covariates are <em>causal</em></h2>
-<h3 id="or-prediction-under-intervention">or: prediction-under-intervention</h3>
-<p><span class="math display">\[f(t,x) = E[Y|\text{do}(T=t),X=x]\]</span></p>
-<p><img data-src="tikzs/policy.png" height="500"></p>
-<ul>
-<li class="fragment">interpretation: <em>what is the expected value of <span class="math inline">\(Y\)</span> if we were to assign treatment <span class="math inline">\(t\)</span> by intervention, given that we know <span class="math inline">\(X=x\)</span> in this patient</em></li>
-</ul>
-</section>
-<section class="slide level2 center">
-
-<div class="columns">
-<div class="column" style="width:50%;">
-<p>using <em>treatment naive</em> prediction models for decision support</p>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/8q8oy7_meme_crossover.jpg" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-</div><div class="column" style="width:50%;">
-<p>prediction-under-intervention</p>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="figs/peanutbutter_chocolatesprinkles.jpg" class="fragment quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-</div></div>
-</section>
-<section id="estimand-for-prediction-under-intervention-models" class="slide level2 center">
-<h2>Estimand for prediction-under-intervention models</h2>
-<p>What is the estimand?</p>
-<ul>
-<li class="fragment">prediction: <span class="math inline">\(E[Y|X]\)</span></li>
-<li class="fragment">average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1)] - E[Y|\text{do}(T=0)]\)</span></li>
-<li class="fragment">conditional average treatment effect: <span class="math inline">\(E[Y|\text{do}(T=1),X] - E[Y|\text{do}(T=0),X]\)</span></li>
-<li class="fragment">prediction-under-intervention: <span class="math inline">\(E[Y|\text{do}(T=t),X]\)</span></li>
-</ul>
-<p><span class="fragment">note:</span></p>
-<ul>
-<li class="fragment">from prediction-under-intervention models, the CATE can be derived</li>
-<li class="fragment">in these models and the CATE: <span class="math inline">\(T\)</span> has a causal interpretation, <span class="math inline">\(X\)</span> does not!
-<ul>
-<li class="fragment">i.e.&nbsp;<span class="math inline">\(X\)</span> does not <em>cause</em> the effect of treatment to be different</li>
-</ul></li>
-</ul>
-</section>
-<section id="developing-prediction-under-intervention-models" class="slide level2 center">
-<h2>Developing prediction-under-intervention models</h2>
-<ul>
-<li class="fragment"><p>requires causal inference assumptions or RCTs</p></li>
-<li class="fragment"><p>single RCTs often not big enough, or did not measure the right <span class="math inline">\(X\)</span>s</p></li>
-<li class="fragment"><p>when <span class="math inline">\(X\)</span> is not a sufficient adjustment set, but <span class="math inline">\(X+L\)</span> is, can use e.g.&nbsp;propensity score methods</p></li>
-<li class="fragment"><p>assumption of no unobserved confounding often hard to justify in observational data</p></li>
-<li class="fragment"><p>but there’s more between heaven (RCT) and earth (confounder adjustment)</p>
-<ul>
-<li>proxy-variable methods <span class="citation" data-cites="miaoIdentifyingCausalEffects2018 vanamsterdamIndividualTreatmentEffect2022">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Miao et al. 2018</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam et al. 2022</a>)</span></li>
-<li>constant relative treatment effect assumption <span class="citation" data-cites="alaaMachineLearningGuide2021 vanamsterdamConditionalAverageTreatment2023 candidodosreisUpdatedPREDICTBreast2017">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Alaa et al. 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">van Amsterdam and Ranganath 2023</a>; <a href="#/references" role="doc-biblioref" onclick="">Candido dos Reis et al. 2017</a>)</span></li>
-<li>diff-in-diff</li>
-<li>instrumental variable analysis <span class="citation" data-cites="waldFittingStraightLines1940 puliGeneralControlFunctions2021 hartfordDeepIVFlexible2017">(<a href="#/references" role="doc-biblioref" onclick="">Wald 1940</a>; <a href="#/references" role="doc-biblioref" onclick="">Puli and Ranganath 2021</a>; <a href="#/references" role="doc-biblioref" onclick="">Hartford et al. 2017</a>)</span></li>
-<li>front-door analysis</li>
-</ul></li>
-<li class="fragment"><p>not covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g.&nbsp;blood pressure control with multiple follow-up visits)</p></li>
-</ul>
-</section>
-<section id="evaluation-of-prediction-under-intervention-models" class="slide level2 center">
-<h2>Evaluation of prediction-under-intervention models</h2>
-<ul>
-<li class="fragment">prediction accuracy can be tested in RCTs, or in observational data with specialized methods accounting for confounding <span class="citation" data-cites="keoghPredictionInterventionsEvaluation2024">(e.g. <a href="#/references" role="doc-biblioref" onclick="">Keogh and van Geloven 2024</a>)</span></li>
-<li class="fragment">in confounded observational data, typical metrics (e.g.&nbsp;AUC or calibration) are not sufficient as we want to predict well in data from <em>other distribution than observed data</em> (i.e.&nbsp;other treatment decisions)</li>
-<li class="fragment">a new <em>policy</em> can be evaluated in historic RCTs <span class="citation" data-cites="karmaliBloodPressureloweringTreatment2018">(e.g. <a href="#/references" role="doc-biblioref" onclick=""><span class="nocase">Karmali et al.</span> 2018</a>)</span></li>
-<li class="fragment">ultimate test is cluster RCT</li>
-<li class="fragment">if not perfect, likely a better recipe than <em>treatment-naive</em> models</li>
-</ul>
-</section></section>
-<section>
 <section id="b.-improving-non-causal-prediction-models-with-causality" class="title-slide slide level1 center">
 <h1>2b. improving non-causal prediction models with causality</h1>
 <ul>
@@ -731,6 +734,7 @@ Wouter van Amsterdam
 <li class="fragment">prediction models that include (direct) causes may be more robust to changes as the chain between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is shorter</li>
 <li class="fragment">some machine learning algorithms like deep learning are very good at detecting ‘background’ signals, e.g.:
 <ul>
+<li class="fragment">cows typically stand on grass, so a model may use the grass to predict cows</li>
 <li class="fragment">detect the scanner type from a CT-scanner
 <ul>
 <li class="fragment">if hospital A has scanner type 1 and hospital B has scanner type 2</li>
@@ -803,6 +807,9 @@ Amsterdam, Wouter A. C. van, and Rajesh Ranganath. 2023. <span>“Conditional Av
 <div id="ref-vanamsterdamIndividualTreatmentEffect2022" class="csl-entry" role="listitem">
 Amsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, et al. 2022. <span>“Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage <span>III</span> Non-Small Cell Lung Cancer.”</span> <em>Scientific Reports</em> 12 (1, 1): 5848. <a href="https://doi.org/10.1038/s41598-022-09775-9">https://doi.org/10.1038/s41598-022-09775-9</a>.
 </div>
+<div id="ref-boyerEstimatingEvaluatingCounterfactual2025" class="csl-entry" role="listitem">
+Boyer, Christopher B., Issa J. Dahabreh, and Jon A. Steingrimsson. 2025. <span>“Estimating and <span>Evaluating Counterfactual Prediction Models</span>.”</span> <em>Statistics in Medicine</em> 44 (23–24): e70287. <a href="https://doi.org/10.1002/sim.70287">https://doi.org/10.1002/sim.70287</a>.
+</div>
 <div id="ref-candidodosreisUpdatedPREDICTBreast2017" class="csl-entry" role="listitem">
 Candido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, et al. 2017. <span>“An Updated <span>PREDICT</span> Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.”</span> <em>Breast Cancer Research</em> 19 (1): 58. <a href="https://doi.org/10/gbhgpq">https://doi.org/10/gbhgpq</a>.
 </div>
@@ -815,17 +822,20 @@ Cooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, et al. 1997. <spa
 <div id="ref-hartfordDeepIVFlexible2017" class="csl-entry" role="listitem">
 Hartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. <span>“Deep <span>IV</span>: <span>A Flexible Approach</span> for <span>Counterfactual Prediction</span>.”</span> <em>International <span>Conference</span> on <span>Machine Learning</span></em>, July 17, 1414–23. <a href="https://proceedings.mlr.press/v70/hartford17a.html">https://proceedings.mlr.press/v70/hartford17a.html</a>.
 </div>
-<div id="ref-karmaliBloodPressureloweringTreatment2018" class="csl-entry" role="listitem">
-<span class="nocase">Karmali, Kunal N., Donald M. Lloyd-Jones, Joep van der Leeuw, et al.</span> 2018. <span>“Blood Pressure-Lowering Treatment Strategies Based on Cardiovascular Risk Versus Blood Pressure: <span>A</span> Meta-Analysis of Individual Participant Data.”</span> <em>PLOS Medicine</em> 15 (3): e1002538. <a href="https://doi.org/10.1371/journal.pmed.1002538">https://doi.org/10.1371/journal.pmed.1002538</a>.
-</div>
 <div id="ref-keoghPredictionInterventionsEvaluation2024" class="csl-entry" role="listitem">
 Keogh, Ruth H., and Nan van Geloven. 2024. <span>“Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.”</span> Pre-published January 10. <a href="https://doi.org/10.48550/arXiv.2304.10005">https://doi.org/10.48550/arXiv.2304.10005</a>.
+</div>
+<div id="ref-luijkenRiskBasedDecisionMaking2024" class="csl-entry" role="listitem">
+Luijken, Kim, Paweł Morzywołek, Wouter van Amsterdam, et al. 2024. <span>“Risk-<span>Based Decision Making</span>: <span>Estimands</span> for <span>Sequential Prediction Under Interventions</span>.”</span> <em>Biometrical Journal</em> 66 (8): e70011. <a href="https://doi.org/10.1002/bimj.70011">https://doi.org/10.1002/bimj.70011</a>.
 </div>
 <div id="ref-miaoIdentifyingCausalEffects2018" class="csl-entry" role="listitem">
 Miao, Wang, Zhi Geng, and Eric J Tchetgen Tchetgen. 2018. <span>“Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.”</span> <em>Biometrika</em> 105 (4): 987–93. <a href="https://doi.org/10.1093/biomet/asy038">https://doi.org/10.1093/biomet/asy038</a>.
 </div>
 <div id="ref-puliGeneralControlFunctions2021" class="csl-entry" role="listitem">
 Puli, Aahlad Manas, and Rajesh Ranganath. 2021. <span>“General <span>Control Functions</span> for <span>Causal Effect Estimation</span> from <span>Instrumental Variables</span>.”</span> February 2. <a href="http://arxiv.org/abs/1907.03451">http://arxiv.org/abs/1907.03451</a>.
+</div>
+<div id="ref-vanamsterdamWhenAccuratePrediction2025" class="csl-entry" role="listitem">
+Van Amsterdam, Wouter A. C., Nan Van Geloven, Jesse H. Krijthe, Rajesh Ranganath, and Giovanni Cinà. 2025. <span>“When Accurate Prediction Models Yield Harmful Self-Fulfilling Prophecies.”</span> <em>Patterns</em> 6 (4): 101229. <a href="https://doi.org/10.1016/j.patter.2025.101229">https://doi.org/10.1016/j.patter.2025.101229</a>.
 </div>
 <div id="ref-waldFittingStraightLines1940" class="csl-entry" role="listitem">
 Wald, Abraham. 1940. <span>“The <span>Fitting</span> of <span>Straight Lines</span> If <span>Both Variables</span> Are <span>Subject</span> to <span>Error</span>.”</span> <em>The Annals of Mathematical Statistics</em> 11 (3): 284–300. <a href="https://doi.org/10.1214/aoms/1177731868">https://doi.org/10.1214/aoms/1177731868</a>.

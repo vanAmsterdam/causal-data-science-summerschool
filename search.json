@@ -375,21 +375,21 @@
     "href": "lectures/day2-scms/lec3-scms.html#specifying-a-distribution-for-exogenous-variables-u",
     "title": "Structural Causal Models",
     "section": "Specifying a distribution for exogenous variables U",
-    "text": "Specifying a distribution for exogenous variables U\n\nExogenous variables U represent random variation in the world.\nWe can specify a distribution for them (e.g. Gaussian, Uniform)\n\n\n\nsample_u &lt;- function() {\n    u_surgery  = runif(1,  2,  8)\n    u_los      = runif(1, -1,  7)\n    u_survival = runif(1,  8, 13)\n    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)\n}\nsample_u()\n\n\n\n u_surgery      u_los u_survival \n  4.784564   5.338546   9.979225"
+    "text": "Specifying a distribution for exogenous variables U\n\nExogenous variables U represent random variation in the world.\nWe can specify a distribution for them (e.g. Gaussian, Uniform)\n\n\n\nsample_u &lt;- function() {\n    u_surgery  = runif(1,  2,  8)\n    u_los      = runif(1, -1,  7)\n    u_survival = runif(1,  8, 13)\n    c(u_surgery=u_surgery, u_los=u_los, u_survival=u_survival)\n}\nsample_u()\n\n\n\n u_surgery      u_los u_survival \n  2.829749   1.459678  11.977451"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u",
     "href": "lectures/day2-scms/lec3-scms.html#a-probabilistic-causal-model-is-a-scm-with-a-distribution-over-u",
     "title": "Structural Causal Models",
     "section": "A Probabilistic Causal Model is a SCM with a distribution over U",
-    "text": "A Probabilistic Causal Model is a SCM with a distribution over U\n\nsample_pcm &lt;- function() {\n  U &lt;- sample_u()\n  V &lt;- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])\n  c(U, V)\n}\n  \nsample_pcm()\n\n\n\n u_surgery      u_los u_survival    surgery        los   survival \n  6.921291   2.294947  10.159010   6.921291   9.216237   5.532666 \n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Realisations of endogenous variables V over random samples of U in Figure 1"
+    "text": "A Probabilistic Causal Model is a SCM with a distribution over U\n\nsample_pcm &lt;- function() {\n  U &lt;- sample_u()\n  V &lt;- scm1(U[['u_surgery']], U[['u_los']], U[['u_survival']])\n  c(U, V)\n}\n  \nsample_pcm()\n\n\n\n u_surgery      u_los u_survival    surgery        los   survival \n  6.193353   0.956764   8.392286   6.193353   7.150117   3.155697 \n\n\n\n\n\n\n\n\n\n\n\nFigure 2: Realisations of endogenous variables V over random samples of U in Figure 1"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#calculating-a-treatment-effect-in-a-fully-specified-probabilistic-causal-model",
     "href": "lectures/day2-scms/lec3-scms.html#calculating-a-treatment-effect-in-a-fully-specified-probabilistic-causal-model",
     "title": "Structural Causal Models",
     "section": "Calculating a treatment effect in a fully specified probabilistic causal model",
-    "text": "Calculating a treatment effect in a fully specified probabilistic causal model\n\ntake random samples from U, push forward through submodel7 and submodel3\n\n\n# N = 1e3\n# us &lt;- map(1:N, ~sample_u())\n\nv3s &lt;- map(us, ~do.call(submodel3, as.list(.x)))\nv7s &lt;- map(us, ~do.call(submodel7, as.list(.x)))\n\nv3df &lt;- v3s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv7df &lt;- v7s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv3df[, idx:=.I]\nv7df[, idx:=.I]\n\ndfa &lt;- rbindlist(list(\n  scm1=vdf,\n  submodel3=v3df,\n  submodel7=v7df\n), idcol='model')\n\ndfa[, list(mean_survival=mean(survival)), by=\"model\"]\n\n\n\n       model mean_survival\n      &lt;char&gt;         &lt;num&gt;\n1:      scm1      8.486587\n2: submodel3      3.489005\n3: submodel7      7.489005"
+    "text": "Calculating a treatment effect in a fully specified probabilistic causal model\n\ntake random samples from U, push forward through submodel7 and submodel3\n\n\n# N = 1e3\n# us &lt;- map(1:N, ~sample_u())\n\nv3s &lt;- map(us, ~do.call(submodel3, as.list(.x)))\nv7s &lt;- map(us, ~do.call(submodel7, as.list(.x)))\n\nv3df &lt;- v3s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv7df &lt;- v7s |&gt; map(~data.table(t(.x))) |&gt; rbindlist()\nv3df[, idx:=.I]\nv7df[, idx:=.I]\n\ndfa &lt;- rbindlist(list(\n  scm1=vdf,\n  submodel3=v3df,\n  submodel7=v7df\n), idcol='model')\n\ndfa[, list(mean_survival=mean(survival)), by=\"model\"]\n\n\n\n       model mean_survival\n      &lt;char&gt;         &lt;num&gt;\n1:      scm1      8.480240\n2: submodel3      3.525427\n3: submodel7      7.525427"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#recap-of-definitions",
@@ -494,7 +494,7 @@
     "href": "lectures/day2-scms/lec3-scms.html#adam-versus-zoe",
     "title": "Structural Causal Models",
     "section": "Adam versus Zoe",
-    "text": "Adam versus Zoe\n\nAverage causal effects in subgroup with surgery=4:\n\n3-days LOS: 5.4\n7-days LOS: 9.4\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nwhat do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?"
+    "text": "Adam versus Zoe\n\nAverage causal effects in subgroup with surgery=4:\n\n3-days LOS: 5.5\n7-days LOS: 9.5\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nwhat do we expect for Adam and Zoe if they would have been kept in the hospital for 7 days?"
   },
   {
     "objectID": "lectures/day2-scms/lec3-scms.html#computing-counterfactuals-with-scms",
@@ -1614,14 +1614,14 @@
     "href": "lectures/day41-prediction/index.html#recap-causal-questions",
     "title": "Causal perspectives on prediction modeling",
     "section": "Recap: causal questions",
-    "text": "Recap: causal questions\n\nquestions of association are of the kind:\n\nwhat is the probability of \\(Y\\) (potentially: after observing \\(X\\))?, e.g.:\n\nwhat is the chance of rain tomorrow given that is was dry today?\nwhat is the chance a patient with lung cancer lives more than 10% after diagnosis?\n\nthese hands behind your back and passively observe the world-questions\n\ncausal questions are of the kind:\n\nhow would \\(Y\\) change when we intervene on \\(T\\)?, e.g.:\n\nif we would send all pregant women to the hospital for delivery, what would happen with neonatal outcomes?\nif we start a marketing campain, by how much would our revenue increase?\n\nthese tell us what would happen if we changed something"
+    "text": "Recap: causal questions\n\nquestions of association are of the kind:\n\nwhat is the probability of \\(Y\\) (potentially: after observing \\(X\\))?, for example:\n\nwhat is the chance of rain tomorrow given that is was dry today?\nwhat is the chance a patient with lung cancer lives more than 10% after diagnosis?\n\nthese hands behind your back and passively observe the world-questions\n\ncausal questions are of the kind:\n\nhow would \\(Y\\) change when we intervene on \\(T\\)?, e.g.:\n\nif we would send all pregant women to the hospital for delivery, what would happen with neonatal outcomes?\nif we start a marketing campain, by how much would our revenue increase?\n\nthese tell us what would happen if we changed something"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#examples-of-prediction-tasks",
     "href": "lectures/day41-prediction/index.html#examples-of-prediction-tasks",
     "title": "Causal perspectives on prediction modeling",
     "section": "Examples of prediction tasks",
-    "text": "Examples of prediction tasks\nobserve an \\(X\\), want to know what to expect for \\(Y\\)\n1. X = patient caughs, Y = patient has lung cancer\n2. X = ECG, Y = patient has heart attack\n3. X = CT-scan, Y = patient dies within 2 years\n\n\n\n\n\nRenziehausen (2024). ECG normalized-2.jpgCoronary spasm - a cause of acute coronary syndrome with ST-segment elevation and refractory cardiogenic shock - a case report. figshare. Figure. https://doi.org/10.6084/m9.figshare.26045203.v1\n\n\n\n\n\n\n\nM Sherigar, Jagannath; Finnegan, Joseen; McManus, Damien; F Lioe, Tong; AJ Spence, Roy (2011). CT Scan of chest showing one of the lung nodules. figshare. Figure. https://doi.org/10.6084/m9.figshare.16069.v1"
+    "text": "Examples of prediction tasks\nobserve an \\(X\\), want to know what to expect for \\(Y\\)\n1. X = patient coughs, Y = patient has lung cancer\n2. X = ECG, Y = patient has heart attack\n3. X = CT-scan, Y = patient dies within 2 years\n\n\n\n\n\nRenziehausen (2024). ECG normalized-2.jpgCoronary spasm - a cause of acute coronary syndrome with ST-segment elevation and refractory cardiogenic shock - a case report. figshare. Figure. https://doi.org/10.6084/m9.figshare.26045203.v1\n\n\n\n\n\n\n\nM Sherigar, Jagannath; Finnegan, Joseen; McManus, Damien; F Lioe, Tong; AJ Spence, Roy (2011). CT Scan of chest showing one of the lung nodules. figshare. Figure. https://doi.org/10.6084/m9.figshare.16069.v1"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#prediction-typical-approach",
@@ -1649,42 +1649,147 @@
     "href": "lectures/day41-prediction/index.html#causal-inference-versus-prediction",
     "title": "Causal perspectives on prediction modeling",
     "section": "Causal inference versus prediction",
-    "text": "Causal inference versus prediction\n\n\nprediction\n\ntypical estimand \\(E[Y|X]\\)\ntypical study: longitudinal cohort\ntypical interpretation: \\(X\\) predicts \\(Y\\)\nprimary use: know what \\(Y\\) to expect when observing a new \\(X\\) assuming no change in joint distribution\n\n\ncausal inference\n\ntypical estimand \\(E[Y|\\text{do}(T=1)] - E[Y|\\text{do}(T=0)]\\)\ntypical study: RCT (or observational causal inference study)\ntypical interpretation: causal effect of \\(T\\) on \\(Y\\)\nprimary use: know what change in \\(Y\\) to expect when changing the treatment policy"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#what-do-we-mean-with-treatment-policy",
-    "href": "lectures/day41-prediction/index.html#what-do-we-mean-with-treatment-policy",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "What do we mean with treatment policy?",
-    "text": "What do we mean with treatment policy?\nA treatment policy \\(\\pi\\) is a procedure for determining the treatment\nAssuming \\(T\\) is binary, \\(\\pi\\) can be:\n\n\\(\\pi = 0.5\\) (a 1/1 RCT)\ngive blood pressure pill to patients with hypertension:\n\n\\[\\pi(blood pressure) = \\begin{cases}\n  1, &blood pressure &gt; 140mmHg\\\\\n  0, &\\text{otherwise}\n  \\end{cases}\\]\n\ngive statins to patients with more than 10% predicted risk of heart attack:\n\n\\[\\pi(X) = \\begin{cases}\n  1, &f(X) &gt; 0.1\\\\\n  0, &\\text{otherwise}\n  \\end{cases}\\]\n\nthe propensity score can be seen as a (non-deterministic) treatment policy"
+    "text": "Causal inference versus prediction\n\n\nprediction\n\ntypical estimand \\(E[Y|X]\\)\ntypical study: longitudinal cohort\ntypical interpretation: \\(X\\) predicts \\(Y\\)\nprimary use: know what \\(Y\\) to expect when observing a new \\(X\\) assuming no change in joint distribution\n\n\ncausal inference\n\ntypical estimand \\(E[Y|\\text{do}(T=1)] - E[Y|\\text{do}(T=0)]\\)\ntypical study: RCT (or observational causal inference study)\ntypical interpretation: causal effect of \\(T\\) on \\(Y\\)\nprimary use: know what change in \\(Y\\) to expect when setting the treatment policy"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#where-can-prediction-and-causality-meet",
     "href": "lectures/day41-prediction/index.html#where-can-prediction-and-causality-meet",
     "title": "Causal perspectives on prediction modeling",
     "section": "Where can prediction and causality meet?",
-    "text": "Where can prediction and causality meet?\n\nprediction has a causal interpretation\nprediction does not have a causal interpretation:\n\nbut is used for a causal task (e.g. treatment decision making)\nbut predictions can be improved with causal thinking in terms of e.g.:\n\n\ninterpretability, robustness, ‘spurious correlations’, generalization, fairness, selection bias"
+    "text": "Where can prediction and causality meet?\n\nprediction has a causal interpretation\nprediction may or may not have a causal interpretation:\n\nbut is used for a causal task (e.g. treatment decision making)\nbut predictions can be improved with causal thinking in terms of e.g.:\n\n\ninterpretability, robustness, ‘spurious correlations’, generalization, fairness, selection bias"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#what-can-we-mean-with-predictions-having-a-causal-interpretation",
+    "href": "lectures/day41-prediction/index.html#what-can-we-mean-with-predictions-having-a-causal-interpretation",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "What can we mean with predictions having a causal interpretation?",
+    "text": "What can we mean with predictions having a causal interpretation?\nLet \\(f: \\mathbb{X} \\to \\mathbb{Y}\\) be a prediction model for outcome \\(Y\\) using features \\(X\\)\n\n\n\n\n\\(X\\) is an ancestor of \\(Y\\) (\\(X=\\{z_1,z_2,z_3\\}\\))\n\\(X\\) is a direct cause of \\(Y\\) (\\(X=\\{z_1,z_2\\}\\))\n\\(f: \\mathbb{X} \\to \\mathbb{Y}\\) describes the causal effect of \\(X\\) on \\(Y\\) (\\(X=\\{z_1\\}\\)), i.e.:\n\n\n\\[f(x) = E[Y|\\text{do}(X=x)]\\]\n\n\n\\(f: \\mathbb{T} \\times \\mathbb{X} \\to \\mathbb{Y}\\) describes the causal effect of \\(T\\) on \\(Y\\) conditional on \\(X\\) (\\(T=\\{z_1\\},X=\\{z_2,z_3,w\\}\\)):\n\n\n\\[f(t,x) = E[Y|\\text{do}(T=t),X=x]\\]"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#interpretation-3.-all-covariates-are-causal",
+    "href": "lectures/day41-prediction/index.html#interpretation-3.-all-covariates-are-causal",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "interpretation 3. all covariates are causal",
+    "text": "interpretation 3. all covariates are causal\nLet \\(f: \\mathbb{X} \\to \\mathbb{Y}\\) be a prediction model for outcome \\(Y\\) using features \\(X\\)\n\\[f(x) = E[Y|\\text{do}(X=x)]\\]\n\nthe requirements for this interpretation are very hard to satisfy (i.e. back-door rule holds for all variables)\ntoo often this is assumed / interpreted this way (table 2 fallacy in health care literature)"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#example-of-table-2-fallacy-when-mis-using-qrisk",
+    "href": "lectures/day41-prediction/index.html#example-of-table-2-fallacy-when-mis-using-qrisk",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Example of table 2 fallacy when mis-using Qrisk",
+    "text": "Example of table 2 fallacy when mis-using Qrisk\nQrisk3: a risk prediction model for cardiovascular events in the coming 10-years. Widely used in the United Kingdom for deciding which patients should get statins"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#qrisk3---risks",
+    "href": "lectures/day41-prediction/index.html#qrisk3---risks",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Qrisk3 - risks:",
+    "text": "Qrisk3 - risks:\ncan go wrong when:\n\ne.g. fill in current length and weight\n\nreduce weight by 5 kgs\ninterpret difference as ‘effect of weight loss’\n\ncheck or un-check blood pressure medication\n\nobserve that with blood pressure medication, risk is higher"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#interpretation-4.-some-covariates-are-causal",
+    "href": "lectures/day41-prediction/index.html#interpretation-4.-some-covariates-are-causal",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "interpretation 4. some covariates are causal",
+    "text": "interpretation 4. some covariates are causal\nor: prediction-under-intervention\n\\[f(t,x) = E[Y|\\text{do}(T=t),X=x]\\]\n\n\ninterpretation: what is the expected value of \\(Y\\) if we were to assign treatment \\(t\\) by intervention, given that we know \\(X=x\\) in this patient"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#estimand-for-prediction-under-intervention-models",
+    "href": "lectures/day41-prediction/index.html#estimand-for-prediction-under-intervention-models",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Estimand for prediction-under-intervention models",
+    "text": "Estimand for prediction-under-intervention models\nWhat is the estimand?\n\nprediction: \\(E[Y|X]\\)\naverage treatment effect: \\(E[Y|\\text{do}(T=1)] - E[Y|\\text{do}(T=0)]\\)\nconditional average treatment effect: \\(E[Y|\\text{do}(T=1),X] - E[Y|\\text{do}(T=0),X]\\)\nprediction-under-intervention: \\(E[Y|\\text{do}(T=t),X]\\)\n\nnote:\n\nfrom prediction-under-intervention models, the CATE can be derived\nin these models and the CATE: \\(T\\) has a causal interpretation, \\(X\\) does not!\n\ni.e. \\(X\\) does not cause the effect of treatment to be different"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#developing-prediction-under-intervention-models",
+    "href": "lectures/day41-prediction/index.html#developing-prediction-under-intervention-models",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Developing prediction-under-intervention models",
+    "text": "Developing prediction-under-intervention models\n\nrequires causal inference assumptions or RCTs\nsingle RCTs often not big enough, or did not measure the right \\(X\\)s\nwhen \\(X\\) is not a sufficient adjustment set, but \\(X+L\\) is, can adjust additionally for \\(L\\) using e.g. propensity score methods or standardization\nassumption of no unobserved confounding often hard to justify in observational data\nbut there’s more between heaven (RCT) and earth (confounder adjustment)\n\nproxy-variable methods (e.g. Miao et al. 2018; van Amsterdam et al. 2022)\nconstant relative treatment effect assumption (e.g. Alaa et al. 2021; van Amsterdam and Ranganath 2023; Candido dos Reis et al. 2017)\ndiff-in-diff\ninstrumental variable analysis (Wald 1940; Puli and Ranganath 2021; Hartford et al. 2017)\nfront-door analysis\n\nnot covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g. blood pressure control with multiple follow-up visits) (Luijken et al. 2024)"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#evaluating-predictive-performance-of-prediction-under-intervention-models",
+    "href": "lectures/day41-prediction/index.html#evaluating-predictive-performance-of-prediction-under-intervention-models",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Evaluating predictive performance of prediction-under-intervention models",
+    "text": "Evaluating predictive performance of prediction-under-intervention models\n\nEstimand for prediction-under-intervention: expected outcome under intervention, conditional on covariates \\(X\\)\nprediction accuracy can be tested in RCTs, this is the target distribution\nor in observational data with specialized methods accounting for confounding (e.g. (Boyer et al. 2025; Keogh and van Geloven 2024))\n\nremember from Day 2: observational causal inference is using data we have and assumptions to make inferences about a setting on which we do not have data\n\nin confounded observational data, typical metrics (e.g. AUC or calibration) are not sufficient as we want to predict well in data from other distribution than observed data (i.e. other treatment decisions)\nevaluation approaches based on confounder adjustment methods:\n\nIPW reweighting\nconfounder adjustment / standardization\ndoubly robust methods"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#using-prediction-models-for-decision-making-is-often-thought-of-as-a-good-idea",
     "href": "lectures/day41-prediction/index.html#using-prediction-models-for-decision-making-is-often-thought-of-as-a-good-idea",
     "title": "Causal perspectives on prediction modeling",
     "section": "Using prediction models for decision making is often thought of as a good idea",
-    "text": "Using prediction models for decision making is often thought of as a good idea\nFor example:\n\ngive chemotherapy to cancer patients with high predicted risk of recurrence\ngive statins to patients with a high risk of a heart attack\n\n\n\n\n\nTRIPOD+AI on prediction models (Collins et al. 2024)\n\n\n“Their primary use is to support clinical decision making, such as … initiate treatment or lifestyle changes.”"
+    "text": "Using prediction models for decision making is often thought of as a good idea\nFor example:\n\ngive chemotherapy to cancer patients with high predicted risk of recurrence\ngive statins to patients with a high risk of a heart attack\n\n\n\n\n\nTRIPOD+AI on prediction models (Collins et al. 2024)\n\n\n“Their primary use is to support clinical decision making, such as … initiate treatment or lifestyle changes.”\n\n\n\n\nin abstract terms: prediction model \\(f\\) induces a new treatment policy"
   },
   {
-    "objectID": "lectures/day41-prediction/index.html#building-models-for-decision-support-without-regards-for-the-historic-treatment-policy-is-a-bad-idea",
-    "href": "lectures/day41-prediction/index.html#building-models-for-decision-support-without-regards-for-the-historic-treatment-policy-is-a-bad-idea",
+    "objectID": "lectures/day41-prediction/index.html#what-do-we-mean-with-treatment-policy",
+    "href": "lectures/day41-prediction/index.html#what-do-we-mean-with-treatment-policy",
     "title": "Causal perspectives on prediction modeling",
-    "section": "Building models for decision support without regards for the historic treatment policy is a bad idea",
-    "text": "Building models for decision support without regards for the historic treatment policy is a bad idea"
+    "section": "What do we mean with treatment policy?",
+    "text": "What do we mean with treatment policy?\nA treatment policy \\(\\pi\\) is a procedure for determining the treatment\nAssuming \\(T\\) is binary, \\(\\pi\\) can be:\n\n\\(\\pi = 0.5\\) (a 1/1 RCT)\ndeterministic guideline, e.g. give blood pressure pill to patients with hypertension:\n\n\\[\\pi(\\text{blood pressure}) = \\begin{cases}\n  1, &\\text{blood pressure} &gt; 140\\text{mmHg}\\\\\n  0, &\\text{otherwise}\n  \\end{cases}\\]\n\ndependent on prediction models: give statins to patients with more than 10% predicted risk of heart attack; take \\(f(X)\\) as a prediction model for the risk of heart attack:\n\n\\[\\pi(X) = \\begin{cases}\n  1, &f(X) &gt; 0.1\\\\\n  0, &\\text{otherwise}\n  \\end{cases}\\]\n\nthe propensity score is an estimate of the current treatment policy, conditional on features \\(X\\):\n\n\\[\\pi_0(X) = P(T=1|X)\\]"
   },
   {
-    "objectID": "lectures/day41-prediction/index.html#treatment-naive-prediction-models",
-    "href": "lectures/day41-prediction/index.html#treatment-naive-prediction-models",
+    "objectID": "lectures/day41-prediction/index.html#lets-think-about-old-and-new-treatment-policies",
+    "href": "lectures/day41-prediction/index.html#lets-think-about-old-and-new-treatment-policies",
     "title": "Causal perspectives on prediction modeling",
-    "section": "Treatment-naive prediction models",
-    "text": "Treatment-naive prediction models\n\n\n\n\n\\[\\begin{align}\n    E[Y|X] \\class{fragment}{= E[E_{t~\\sim \\pi_0(X)}[Y|X,t]]}\n\\end{align}\\]"
+    "section": "Let’s think about old and new treatment policies",
+    "text": "Let’s think about old and new treatment policies"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#model-deployment-is-an-intervention-changing-treatments-and-outcomes",
+    "href": "lectures/day41-prediction/index.html#model-deployment-is-an-intervention-changing-treatments-and-outcomes",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Model deployment is an intervention, changing treatments and outcomes",
+    "text": "Model deployment is an intervention, changing treatments and outcomes"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#how-do-we-learn-about-the-effect-of-an-intervention",
+    "href": "lectures/day41-prediction/index.html#how-do-we-learn-about-the-effect-of-an-intervention",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "How do we learn about the effect of an intervention?",
+    "text": "How do we learn about the effect of an intervention?\nWith causal inference!\n\nfor using a decision support model, the unit of intervention is the decision maker, typically a healthcare provider\nrandomly assign providers to have access to the model or not\nmeasure differences in treatment decisions and patient outcomes\nthis called a cluster RCT: outcomes on patient level, who clustered within randomized units (e.g. healthcare providers, hospitals, schools, etc.)\nif using model improves outcomes, use that one\n\n\n\n\n\nUsing cluster RCTs to evaluated models for decision making is not a new idea (Cooper et al. 1997)\n\n\n“As one possibility, suppose that a trial is performed in which clinicians are randomized either to have or not to have access to such a decision aid in making decisions about where to treat patients who present with pneumonia.”\n\n\n\n\n\n\n\n\n\n\n\nWhat we don’t learn\n\n\nwas the model predicting anything sensible?"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#sec-policyeval",
+    "href": "lectures/day41-prediction/index.html#sec-policyeval",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "What if we cannot do this (cluster randomized) trial?",
+    "text": "What if we cannot do this (cluster randomized) trial?\nOff-policy evaluation in observational data\n\nhave historic observational data, want to evaluate new policy \\(\\pi_1\\):\n\ntarget distribution \\(p(t|x)=\\pi_1(x)\\)\nobserved distribution \\(q(t|x) = \\pi_0(x)\\)\nwe need to estimate \\(q\\) (i.e. the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)\nevery patient gets a weight \\(w = \\frac{\\pi_1(x)}{\\pi_0(x)}\\) (i.e. the ratio of the target and observed treatment policy)\ncalculate weighted average outcomes in the observed data\n(aka “importance sampling” in statistics / machine learning)"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#off-policy-evaluation-limitations",
+    "href": "lectures/day41-prediction/index.html#off-policy-evaluation-limitations",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Off-policy evaluation limitations:",
+    "text": "Off-policy evaluation limitations:\n\ntypically requires a lot of data as:\n\neither many patients are concordant with the new policy, so small differences\nmany discordant patients, so down-weighted and small effective sample size"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#prediction-model-types",
+    "href": "lectures/day41-prediction/index.html#prediction-model-types",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Prediction model types",
+    "text": "Prediction model types\n\ntreatment-naive prediction models: \\(E[Y|X]\\)\nconfounded (post-decision) prediction models: \\(E[Y|X,T] \\neq E[Y|X,\\text{do}(T)]\\)\nprediction-under-intervention models: \\(E[Y|\\text{do}(T),X]\\)"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#treatment-naive-prediction-models-ignore-the-historic-treatment-policy",
+    "href": "lectures/day41-prediction/index.html#treatment-naive-prediction-models-ignore-the-historic-treatment-policy",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Treatment-naive prediction models ignore the historic treatment policy",
+    "text": "Treatment-naive prediction models ignore the historic treatment policy\nAnd can lead to bad situations like self-fulfilling prophecies (Van Amsterdam et al. 2025)\n\n\n\n\n\\[\\begin{align}\n    E[Y|X] \\class{fragment}{= E[E_{t~\\sim \\pi_0(X)}[Y|X,t]]}\n\\end{align}\\]"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#confounded-prediction-models-do-not-account-for-confounding",
+    "href": "lectures/day41-prediction/index.html#confounded-prediction-models-do-not-account-for-confounding",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Confounded prediction models do not account for confounding",
+    "text": "Confounded prediction models do not account for confounding"
+  },
+  {
+    "objectID": "lectures/day41-prediction/index.html#prediction-under-intervention-models",
+    "href": "lectures/day41-prediction/index.html#prediction-under-intervention-models",
+    "title": "Causal perspectives on prediction modeling",
+    "section": "Prediction under intervention models",
+    "text": "Prediction under intervention models\n\nWhen correctly estimated, decision rule “give treatment with best predicted outcome” leads to foreseeable improvements."
   },
   {
     "objectID": "lectures/day41-prediction/index.html#prediction-modeling-is-very-popular-in-medical-research",
@@ -1729,90 +1834,6 @@
     "text": "What to do?\n\n\nEvaluate policy change (cluster randomized controlled trial)\nBuild models that are likely to have value for decision making"
   },
   {
-    "objectID": "lectures/day41-prediction/index.html#deploying-a-model-is-an-intervention-that-changes-the-way-treatment-decisions-are-made",
-    "href": "lectures/day41-prediction/index.html#deploying-a-model-is-an-intervention-that-changes-the-way-treatment-decisions-are-made",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Deploying a model is an intervention that changes the way treatment decisions are made",
-    "text": "Deploying a model is an intervention that changes the way treatment decisions are made"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#how-do-we-learn-about-the-effect-of-an-intervention",
-    "href": "lectures/day41-prediction/index.html#how-do-we-learn-about-the-effect-of-an-intervention",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "How do we learn about the effect of an intervention?",
-    "text": "How do we learn about the effect of an intervention?\nWith causal inference!\n\nfor using a decision support model, the unit of intervention is usually the doctor\nrandomly assign doctors to have access to the model or not\nmeasure differences in treatment decisions and patient outcomes\nthis called a cluster RCT\nif using model improves outcomes, use that one\n\n\n\n\n\nUsing cluster RCTs to evaluated models for decision making is not a new idea (Cooper et al. 1997)\n\n\n“As one possibility, suppose that a trial is performed in which clinicians are randomized either to have or not to have access to such a decision aid in making decisions about where to treat patients who present with pneumonia.”\n\n\n\n\n\n\n\n\n\n\n\nWhat we don’t learn\n\n\nwas the model predicting anything sensible?"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#sec-policyeval",
-    "href": "lectures/day41-prediction/index.html#sec-policyeval",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "What if we cannot do this (cluster randomized) trial?",
-    "text": "What if we cannot do this (cluster randomized) trial?\nOff-policy evaluation\n\nhave historic RCT data, want to evaluate new policy \\(\\pi_1\\)\n\ntarget distribution \\(p(t|x)=\\pi_1(x)\\)\nobserved distribution \\(q(t|x) = 0.5\\)\nnote: when \\(\\pi_1(x)\\) is deterministic (e.g. give the treatment when \\(f(x) &gt; 0.1\\)), we get the following:\n\nwhen randomized treatment is concordant with \\(\\pi_1\\), keep the patient (weight = 1), otherwise, remove from the data (weight = 0)\ncalculate average outcomes in the kept patients\n\nthis way, multiple alternative policies may be evaluated\n\nhave historic observational data, want to evaluate new policy \\(\\pi_1\\):\n\ntarget distribution \\(p(t|x)=\\pi_1(x)\\)\nobserved distribution \\(q(t|x) = \\pi_0(x)\\)\nwe need to estimate \\(q\\) (i.e. the propensity score), this procedure relies on the standard causal inference assumptions (no confounding, positivity)\nuse importance sampling to estimate the expected value of \\(Y\\) under \\(\\pi_1\\) from the observed data"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#what-can-we-mean-with-predictions-having-a-causal-interpretation",
-    "href": "lectures/day41-prediction/index.html#what-can-we-mean-with-predictions-having-a-causal-interpretation",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "What can we mean with predictions having a causal interpretation?",
-    "text": "What can we mean with predictions having a causal interpretation?\nLet \\(f: \\mathbb{X} \\to \\mathbb{Y}\\) be a prediction model for outcome \\(Y\\) using features \\(X\\)\n\n\n\n\n\\(X\\) is an ancestor of \\(Y\\) (\\(X=\\{z_1,z_2,z_3\\}\\))\n\\(X\\) is a direct cause of \\(Y\\) (\\(X=\\{z_1,z_2\\}\\))\n\\(f: \\mathbb{X} \\to \\mathbb{Y}\\) describes the causal effect of \\(X\\) on \\(Y\\) (\\(X=\\{z_1\\}\\)), i.e.:\n\n\n\\[f(x) = E[Y|\\text{do}(X=x)]\\]\n\n\n\\(f: \\mathbb{T} \\times \\mathbb{X} \\to \\mathbb{Y}\\) describes the causal effect of \\(T\\) on \\(Y\\) conditional on \\(X\\) (\\(T=\\{z_1\\},X=\\{z_2,z_3,w\\}\\):\n\n\n\\[f(t,x) = E[Y|\\text{do}(T=t),X=x]\\]"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#interpretation-3.-all-covariates-are-causal",
-    "href": "lectures/day41-prediction/index.html#interpretation-3.-all-covariates-are-causal",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "interpretation 3. all covariates are causal",
-    "text": "interpretation 3. all covariates are causal\nLet \\(f: \\mathbb{X} \\to \\mathbb{Y}\\) be a prediction model for outcome \\(Y\\) using features \\(X\\)\n\\[f(x) = E[Y|\\text{do}(X=x)]\\]\n\nthis is almost never true (i.e. back-door rule holds for all variables)\ntoo often this is assumed / interpreted this way (table 2 fallacy in health care literature)"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#example-of-table-2-fallacy-when-mis-using-qrisk",
-    "href": "lectures/day41-prediction/index.html#example-of-table-2-fallacy-when-mis-using-qrisk",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Example of table 2 fallacy when mis-using Qrisk",
-    "text": "Example of table 2 fallacy when mis-using Qrisk\nQrisk3: a risk prediction model for cardiovascular events in the coming 10-years. Widely used in the United Kingdom for deciding which patients should get statins"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#qrisk3---risks",
-    "href": "lectures/day41-prediction/index.html#qrisk3---risks",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Qrisk3 - risks:",
-    "text": "Qrisk3 - risks:\ncan go wrong when:\n\ne.g. fill in current length and weight\n\nreduce weight by 5 kgs\ninterpret difference as ‘effect of weight loss’\n\ncheck or un-check blood pressure medication\n\nobserve that with blood pressure medication, risk is higher"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#what-else-could-go-wrong",
-    "href": "lectures/day41-prediction/index.html#what-else-could-go-wrong",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "What else could go wrong?",
-    "text": "What else could go wrong?\n\nQrisk3 states it is validated, but validated for what?\nQrisk3 is validated for non-use!"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#interpretation-4.-some-covariates-are-causal",
-    "href": "lectures/day41-prediction/index.html#interpretation-4.-some-covariates-are-causal",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "interpretation 4. some covariates are causal",
-    "text": "interpretation 4. some covariates are causal\nor: prediction-under-intervention\n\\[f(t,x) = E[Y|\\text{do}(T=t),X=x]\\]\n\n\ninterpretation: what is the expected value of \\(Y\\) if we were to assign treatment \\(t\\) by intervention, given that we know \\(X=x\\) in this patient"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#estimand-for-prediction-under-intervention-models",
-    "href": "lectures/day41-prediction/index.html#estimand-for-prediction-under-intervention-models",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Estimand for prediction-under-intervention models",
-    "text": "Estimand for prediction-under-intervention models\nWhat is the estimand?\n\nprediction: \\(E[Y|X]\\)\naverage treatment effect: \\(E[Y|\\text{do}(T=1)] - E[Y|\\text{do}(T=0)]\\)\nconditional average treatment effect: \\(E[Y|\\text{do}(T=1),X] - E[Y|\\text{do}(T=0),X]\\)\nprediction-under-intervention: \\(E[Y|\\text{do}(T=t),X]\\)\n\nnote:\n\nfrom prediction-under-intervention models, the CATE can be derived\nin these models and the CATE: \\(T\\) has a causal interpretation, \\(X\\) does not!\n\ni.e. \\(X\\) does not cause the effect of treatment to be different"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#developing-prediction-under-intervention-models",
-    "href": "lectures/day41-prediction/index.html#developing-prediction-under-intervention-models",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Developing prediction-under-intervention models",
-    "text": "Developing prediction-under-intervention models\n\nrequires causal inference assumptions or RCTs\nsingle RCTs often not big enough, or did not measure the right \\(X\\)s\nwhen \\(X\\) is not a sufficient adjustment set, but \\(X+L\\) is, can use e.g. propensity score methods\nassumption of no unobserved confounding often hard to justify in observational data\nbut there’s more between heaven (RCT) and earth (confounder adjustment)\n\nproxy-variable methods (e.g. Miao et al. 2018; van Amsterdam et al. 2022)\nconstant relative treatment effect assumption (e.g. Alaa et al. 2021; van Amsterdam and Ranganath 2023; Candido dos Reis et al. 2017)\ndiff-in-diff\ninstrumental variable analysis (Wald 1940; Puli and Ranganath 2021; Hartford et al. 2017)\nfront-door analysis\n\nnot covered now: formulating correct estimands (and getting the right data) becomes much more complicated when considering dynamic treatment decision processes (e.g. blood pressure control with multiple follow-up visits)"
-  },
-  {
-    "objectID": "lectures/day41-prediction/index.html#evaluation-of-prediction-under-intervention-models",
-    "href": "lectures/day41-prediction/index.html#evaluation-of-prediction-under-intervention-models",
-    "title": "Causal perspectives on prediction modeling",
-    "section": "Evaluation of prediction-under-intervention models",
-    "text": "Evaluation of prediction-under-intervention models\n\nprediction accuracy can be tested in RCTs, or in observational data with specialized methods accounting for confounding (e.g. Keogh and van Geloven 2024)\nin confounded observational data, typical metrics (e.g. AUC or calibration) are not sufficient as we want to predict well in data from other distribution than observed data (i.e. other treatment decisions)\na new policy can be evaluated in historic RCTs (e.g. Karmali et al. 2018)\nultimate test is cluster RCT\nif not perfect, likely a better recipe than treatment-naive models"
-  },
-  {
     "objectID": "lectures/day41-prediction/index.html#interpretability",
     "href": "lectures/day41-prediction/index.html#interpretability",
     "title": "Causal perspectives on prediction modeling",
@@ -1824,7 +1845,7 @@
     "href": "lectures/day41-prediction/index.html#robustness-spurious-correlations-generalization",
     "title": "Causal perspectives on prediction modeling",
     "section": "Robustness / spurious correlations / generalization",
-    "text": "Robustness / spurious correlations / generalization\n\nprediction models are developed in some data, but are intended to be used elsewhere (in location, time, other)\nin causal language, shifts in distributions can be denoted as interventions on specific nodes\nprediction models that include (direct) causes may be more robust to changes as the chain between \\(X\\) and \\(Y\\) is shorter\nsome machine learning algorithms like deep learning are very good at detecting ‘background’ signals, e.g.:\n\ndetect the scanner type from a CT-scanner\n\nif hospital A has scanner type 1 and hospital B has scanner type 2\nand the outcome rates differ between the hospitals, models may (mis)use the scanner type to predict the outcome\nwhat will the model predict in hospital C? or when A or B buy a scanner of different type?\n\nmay be preventable with causality"
+    "text": "Robustness / spurious correlations / generalization\n\nprediction models are developed in some data, but are intended to be used elsewhere (in location, time, other)\nin causal language, shifts in distributions can be denoted as interventions on specific nodes\nprediction models that include (direct) causes may be more robust to changes as the chain between \\(X\\) and \\(Y\\) is shorter\nsome machine learning algorithms like deep learning are very good at detecting ‘background’ signals, e.g.:\n\ncows typically stand on grass, so a model may use the grass to predict cows\ndetect the scanner type from a CT-scanner\n\nif hospital A has scanner type 1 and hospital B has scanner type 2\nand the outcome rates differ between the hospitals, models may (mis)use the scanner type to predict the outcome\nwhat will the model predict in hospital C? or when A or B buy a scanner of different type?\n\nmay be preventable with causality"
   },
   {
     "objectID": "lectures/day41-prediction/index.html#fairness",
@@ -1859,6 +1880,6 @@
     "href": "lectures/day41-prediction/index.html#references",
     "title": "Causal perspectives on prediction modeling",
     "section": "References",
-    "text": "References\n\n\n\n\nAlaa, Ahmed M., Deepti Gurdasani, Adrian L. Harris, Jem Rashbass, and Mihaela van der Schaar. 2021. “Machine Learning to Guide the Use of Adjuvant Therapies for Breast Cancer.” Nature Machine Intelligence, June 24, 1–11. https://doi.org/10/gk6bh7.\n\n\nAmsterdam, Wouter A. C. van, and Rajesh Ranganath. 2023. “Conditional Average Treatment Effect Estimation with Marginally Constrained Models.” Journal of Causal Inference 11 (1): 20220027. https://doi.org/10.1515/jci-2022-0027.\n\n\nAmsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, et al. 2022. “Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage III Non-Small Cell Lung Cancer.” Scientific Reports 12 (1, 1): 5848. https://doi.org/10.1038/s41598-022-09775-9.\n\n\nCandido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, et al. 2017. “An Updated PREDICT Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.” Breast Cancer Research 19 (1): 58. https://doi.org/10/gbhgpq.\n\n\nCollins, Gary S., Karel G. M. Moons, Paula Dhiman, et al. 2024. “TRIPOD+AI Statement: Updated Guidance for Reporting Clinical Prediction Models That Use Regression or Machine Learning Methods.” BMJ 385 (April): e078378. https://doi.org/10.1136/bmj-2023-078378.\n\n\nCooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, et al. 1997. “An Evaluation of Machine-Learning Methods for Predicting Pneumonia Mortality.” Artificial Intelligence in Medicine 9 (2): 107–38. https://doi.org/10.1016/S0933-3657(96)00367-3.\n\n\nHartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. “Deep IV: A Flexible Approach for Counterfactual Prediction.” International Conference on Machine Learning, July 17, 1414–23. https://proceedings.mlr.press/v70/hartford17a.html.\n\n\nKarmali, Kunal N., Donald M. Lloyd-Jones, Joep van der Leeuw, et al. 2018. “Blood Pressure-Lowering Treatment Strategies Based on Cardiovascular Risk Versus Blood Pressure: A Meta-Analysis of Individual Participant Data.” PLOS Medicine 15 (3): e1002538. https://doi.org/10.1371/journal.pmed.1002538.\n\n\nKeogh, Ruth H., and Nan van Geloven. 2024. “Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.” Pre-published January 10. https://doi.org/10.48550/arXiv.2304.10005.\n\n\nMiao, Wang, Zhi Geng, and Eric J Tchetgen Tchetgen. 2018. “Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.” Biometrika 105 (4): 987–93. https://doi.org/10.1093/biomet/asy038.\n\n\nPuli, Aahlad Manas, and Rajesh Ranganath. 2021. “General Control Functions for Causal Effect Estimation from Instrumental Variables.” February 2. http://arxiv.org/abs/1907.03451.\n\n\nWald, Abraham. 1940. “The Fitting of Straight Lines If Both Variables Are Subject to Error.” The Annals of Mathematical Statistics 11 (3): 284–300. https://doi.org/10.1214/aoms/1177731868."
+    "text": "References\n\n\n\n\nAlaa, Ahmed M., Deepti Gurdasani, Adrian L. Harris, Jem Rashbass, and Mihaela van der Schaar. 2021. “Machine Learning to Guide the Use of Adjuvant Therapies for Breast Cancer.” Nature Machine Intelligence, June 24, 1–11. https://doi.org/10/gk6bh7.\n\n\nAmsterdam, Wouter A. C. van, and Rajesh Ranganath. 2023. “Conditional Average Treatment Effect Estimation with Marginally Constrained Models.” Journal of Causal Inference 11 (1): 20220027. https://doi.org/10.1515/jci-2022-0027.\n\n\nAmsterdam, Wouter A. C. van, Joost J. C. Verhoeff, Netanja I. Harlianto, et al. 2022. “Individual Treatment Effect Estimation in the Presence of Unobserved Confounding Using Proxies: A Cohort Study in Stage III Non-Small Cell Lung Cancer.” Scientific Reports 12 (1, 1): 5848. https://doi.org/10.1038/s41598-022-09775-9.\n\n\nBoyer, Christopher B., Issa J. Dahabreh, and Jon A. Steingrimsson. 2025. “Estimating and Evaluating Counterfactual Prediction Models.” Statistics in Medicine 44 (23–24): e70287. https://doi.org/10.1002/sim.70287.\n\n\nCandido dos Reis, Francisco J., Gordon C. Wishart, Ed M. Dicks, et al. 2017. “An Updated PREDICT Breast Cancer Prognostication and Treatment Benefit Prediction Model with Independent Validation.” Breast Cancer Research 19 (1): 58. https://doi.org/10/gbhgpq.\n\n\nCollins, Gary S., Karel G. M. Moons, Paula Dhiman, et al. 2024. “TRIPOD+AI Statement: Updated Guidance for Reporting Clinical Prediction Models That Use Regression or Machine Learning Methods.” BMJ 385 (April): e078378. https://doi.org/10.1136/bmj-2023-078378.\n\n\nCooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, et al. 1997. “An Evaluation of Machine-Learning Methods for Predicting Pneumonia Mortality.” Artificial Intelligence in Medicine 9 (2): 107–38. https://doi.org/10.1016/S0933-3657(96)00367-3.\n\n\nHartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. “Deep IV: A Flexible Approach for Counterfactual Prediction.” International Conference on Machine Learning, July 17, 1414–23. https://proceedings.mlr.press/v70/hartford17a.html.\n\n\nKeogh, Ruth H., and Nan van Geloven. 2024. “Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.” Pre-published January 10. https://doi.org/10.48550/arXiv.2304.10005.\n\n\nLuijken, Kim, Paweł Morzywołek, Wouter van Amsterdam, et al. 2024. “Risk-Based Decision Making: Estimands for Sequential Prediction Under Interventions.” Biometrical Journal 66 (8): e70011. https://doi.org/10.1002/bimj.70011.\n\n\nMiao, Wang, Zhi Geng, and Eric J Tchetgen Tchetgen. 2018. “Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.” Biometrika 105 (4): 987–93. https://doi.org/10.1093/biomet/asy038.\n\n\nPuli, Aahlad Manas, and Rajesh Ranganath. 2021. “General Control Functions for Causal Effect Estimation from Instrumental Variables.” February 2. http://arxiv.org/abs/1907.03451.\n\n\nVan Amsterdam, Wouter A. C., Nan Van Geloven, Jesse H. Krijthe, Rajesh Ranganath, and Giovanni Cinà. 2025. “When Accurate Prediction Models Yield Harmful Self-Fulfilling Prophecies.” Patterns 6 (4): 101229. https://doi.org/10.1016/j.patter.2025.101229.\n\n\nWald, Abraham. 1940. “The Fitting of Straight Lines If Both Variables Are Subject to Error.” The Annals of Mathematical Statistics 11 (3): 284–300. https://doi.org/10.1214/aoms/1177731868."
   }
 ]
