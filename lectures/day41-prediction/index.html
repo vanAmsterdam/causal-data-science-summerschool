@@ -52,7 +52,7 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-7ac8651440ad03be692c54c3cf24e14d.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2f3c8ced9f5007f092710f1e965b52cf.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -169,6 +169,7 @@ Wouter van Amsterdam
 <li class="fragment"><a href="#/what-is-prediction-how-does-it-compare-to-causal-inference" id="/toc-what-is-prediction-how-does-it-compare-to-causal-inference">What is prediction? How does it compare to causal inference?</a></li>
 <li class="fragment"><a href="#/prediction-has-a-causal-interpretation" id="/toc-prediction-has-a-causal-interpretation">1. Prediction has a causal interpretation</a></li>
 <li class="fragment"><a href="#/a.-prediction-models-used-for-a-causal-task-decision-making" id="/toc-a.-prediction-models-used-for-a-causal-task-decision-making">2a. (Prediction) models used for a causal task (decision making)</a></li>
+<li class="fragment"><a href="#/what-if-we-dont-know-a-threshold-a-priori-rank-based-treatment-allocation" id="/toc-what-if-we-dont-know-a-threshold-a-priori-rank-based-treatment-allocation">What if we don’t know a threshold a-priori? Rank-based treatment allocation</a></li>
 <li class="fragment"><a href="#/some-warnings-on-bad-evaluations" id="/toc-some-warnings-on-bad-evaluations">Some warnings on bad evaluations</a></li>
 <li class="fragment"><a href="#/b.-improving-non-causal-prediction-models-with-causality" id="/toc-b.-improving-non-causal-prediction-models-with-causality">2b. improving non-causal prediction models with causality</a></li>
 </ul>
@@ -615,6 +616,97 @@ prediction-under-intervention
 </ul>
 </section></section>
 <section>
+<section id="what-if-we-dont-know-a-threshold-a-priori-rank-based-treatment-allocation" class="title-slide slide level1 center">
+<h1>What if we don’t know a threshold a-priori? Rank-based treatment allocation</h1>
+
+</section>
+<section id="rate-setup-evaluate-a-fixed-prioritization-rule" class="slide level2 center">
+<h2>RATE setup: evaluate a fixed prioritization rule</h2>
+<p>Take a model or rule <span class="math inline">\(f:\mathbb{X}\to\mathbb{R}\)</span> as given.</p>
+<ul>
+<li class="fragment"><span class="math inline">\(f\)</span> could be a risk model, CATE model, clinical score, or hand-crafted rule</li>
+<li class="fragment">larger <span class="math inline">\(f(x)\)</span> means higher priority for treatment</li>
+<li class="fragment">only the ranking matters; the numeric scale of <span class="math inline">\(f(x)\)</span> does not</li>
+<li class="fragment">evaluation asks whether treating higher-ranked patients first improves outcomes</li>
+<li class="fragment">no requirement that <span class="math inline">\(f\)</span> was trained to predict treatment effects</li>
+</ul>
+<!-- This is the setup of RATE and related Qini / prescriptive-effect curves [@yadlowskyEvaluatingTreatment2023; @imaiExperimentalEvaluation2021]. -->
+</section>
+<section id="turn-ranks-into-treatment-allocation-policies" class="slide level2 center">
+<h2>Turn ranks into treatment-allocation policies</h2>
+<p>For each treatment budget <span class="math inline">\(u\in[0,1]\)</span>, treat the top <span class="math inline">\(u\)</span> fraction according to <span class="math inline">\(f\)</span>.</p>
+<p><span class="math display">\[
+\pi_{f,u}(x)=\mathbf{1}\{f(x)\ge q_{1-u}\}
+\]</span></p>
+<p>where <span class="math inline">\(q_{1-u}\)</span> is the <span class="math inline">\((1-u)\)</span>-quantile of <span class="math inline">\(f(X)\)</span>.</p>
+<ul>
+<li class="fragment"><span class="math inline">\(u=0\)</span>: treat nobody</li>
+<li class="fragment"><span class="math inline">\(u=0.10\)</span>: treat the highest-ranked 10%</li>
+<li class="fragment"><span class="math inline">\(u=1\)</span>: treat everybody</li>
+<li class="fragment">sweeping <span class="math inline">\(u\)</span> from 0 to 1 gives a sequence of rank-based policies</li>
+</ul>
+</section>
+<section id="start-with-the-incremental-policy-value-curve" class="slide level2 center">
+<h2>Start with the incremental policy-value curve</h2>
+<p>For this section, let larger <span class="math inline">\(Y\)</span> mean better outcomes. Flip signs if <span class="math inline">\(Y\)</span> is a harm.</p>
+<p><span class="math display">\[
+V_f(u)=E\left[\pi_{f,u}(X)Y(1)+\{1-\pi_{f,u}(X)\}Y(0)\right]
+\]</span></p>
+<ul>
+<li class="fragment">x-axis: fraction of the population treated, <span class="math inline">\(u\)</span></li>
+<li class="fragment">y-axis: average outcome in the <strong>entire population</strong> under policy <span class="math inline">\(\pi_{f,u}\)</span></li>
+<li class="fragment"><span class="math inline">\(V_f(0)=E[Y(0)]\)</span>: nobody treated</li>
+<li class="fragment"><span class="math inline">\(V_f(1)=E[Y(1)]\)</span>: everybody treated</li>
+<li class="fragment">the curve answers: what average outcome would we get if treatment capacity were 5%, 10%, 20%, …</li>
+</ul>
+</section>
+<section id="visualizing-the-policy-value-curve" class="slide level2 center">
+<h2>Visualizing the policy-value curve</h2>
+
+<img data-src="figs/rate_policy_value_curve.png" class="quarto-figure quarto-figure-center r-stretch"></section>
+<section id="estimating-the-curve-in-evaluation-data" class="slide level2 center">
+<h2>Estimating the curve in evaluation data</h2>
+<p>In a randomized evaluation set with treatment probability <span class="math inline">\(e_i=P(T_i=1\mid X_i)\)</span>:</p>
+<p><span class="math display">\[
+\widehat{V}_f(u)=\frac{1}{n}\sum_{i=1}^n
+\left[
+\frac{\pi_{f,u}(X_i)T_iY_i}{e_i}
++
+\frac{\{1-\pi_{f,u}(X_i)\}(1-T_i)Y_i}{1-e_i}
+\right]
+\]</span></p>
+<ul>
+<li class="fragment">score everyone with the fixed <span class="math inline">\(f\)</span></li>
+<li class="fragment">sort from high to low priority</li>
+<li class="fragment">for each <span class="math inline">\(u\)</span>, estimate the mean outcome if top-ranked patients were treated and the rest were not</li>
+<li class="fragment">in observational data, this becomes causal evaluation: propensity weighting, standardization, or doubly robust estimators, plus the usual assumptions</li>
+<li class="fragment">this is the same procedure as in off-policy evaluation, but now the policy is rank-based</li>
+</ul>
+</section>
+<section id="summarize-the-curve-with-rate" class="slide level2 center">
+<h2>Summarize the curve with RATE</h2>
+<p>RATE metrics are weighted areas under the TOC curve:</p>
+<p><span class="math display">\[
+\operatorname{RATE}_{\alpha}(f)=\int_0^1\alpha(u)\operatorname{TOC}_f(u)\,du
+\]</span></p>
+<ul>
+<li class="fragment">AUTOC: <span class="math inline">\(\alpha(u)=1\)</span></li>
+<li class="fragment">Qini coefficient: <span class="math inline">\(\alpha(u)=u\)</span></li>
+<li class="fragment">choose <span class="math inline">\(\alpha\)</span> based on which treatment budgets matter most</li>
+<li class="fragment">RATE evaluates a <strong>ranking</strong>, not calibrated treatment-effect predictions</li>
+<li class="fragment">use held-out or cross-fitted evaluation data; otherwise the curve can overstate value</li>
+</ul>
+</section>
+<section id="c-for-benefit-concordance-for-predicted-benefit" class="slide level2 center">
+<h2>c-for-benefit: concordance for predicted benefit</h2>
+<p>c-for-benefit is another rank-based evaluation summary, but for a fixed <strong>benefit score</strong> <span class="math inline">\(f\)</span> <span class="citation" data-cites="hooglandEvaluatingIndividualized2023">(<a href="#/references" role="doc-biblioref" onclick="">Hoogland et al. 2023</a>)</span>.</p>
+<ol type="1">
+<li class="fragment">match treated and untreated patients into pairs that are similar in covariates or predicted benefit</li>
+<li class="fragment">for pair with treated member and untreated member, pair is <em>concordant</em> if the member with better observed outcome also had larger predicted ‘benefit’</li>
+<li class="fragment">compare all pairs, compute fraction of concordant pairs</li>
+</ol>
+</section></section>
+<section>
 <section id="some-warnings-on-bad-evaluations" class="title-slide slide level1 center">
 <h1>Some warnings on bad evaluations</h1>
 
@@ -821,6 +913,9 @@ Cooper, Gregory F., Constantin F. Aliferis, Richard Ambrosino, et al. 1997. <spa
 </div>
 <div id="ref-hartfordDeepIVFlexible2017" class="csl-entry" role="listitem">
 Hartford, Jason, Greg Lewis, Kevin Leyton-Brown, and Matt Taddy. 2017. <span>“Deep <span>IV</span>: <span>A Flexible Approach</span> for <span>Counterfactual Prediction</span>.”</span> <em>International <span>Conference</span> on <span>Machine Learning</span></em>, July 17, 1414–23. <a href="https://proceedings.mlr.press/v70/hartford17a.html">https://proceedings.mlr.press/v70/hartford17a.html</a>.
+</div>
+<div id="ref-hooglandEvaluatingIndividualized2023" class="csl-entry" role="listitem">
+Hoogland, Jeroen, Orestis Efthimiou, Thao L. Nguyen, and Thomas P. A. Debray. 2023. <span>“Evaluating Individualized Treatment Effect Predictions: A Model-Based Perspective on Discrimination and Calibration Assessment.”</span> December 21. <a href="https://doi.org/10.48550/arXiv.2209.06101">https://doi.org/10.48550/arXiv.2209.06101</a>.
 </div>
 <div id="ref-keoghPredictionInterventionsEvaluation2024" class="csl-entry" role="listitem">
 Keogh, Ruth H., and Nan van Geloven. 2024. <span>“Prediction Under Interventions: Evaluation of Counterfactual Performance Using Longitudinal Observational Data.”</span> Pre-published January 10. <a href="https://doi.org/10.48550/arXiv.2304.10005">https://doi.org/10.48550/arXiv.2304.10005</a>.
