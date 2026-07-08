@@ -1,0 +1,19 @@
+{
+  "hash": "2390b0a941a1f7ed0168df4ad8efcc10",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Quizzes with team-support\nauthor: Wouter van Amsterdam\ndate: 2026-07-07\nformat: \n    #latex:\n        #documentclass: beamer\n        #lof: true\n        #lot: true\n    #html:\n        #toc: true\n        #toc-depth: 2\n        #number-sections: true\n    revealjs:\n        theme: umcu.scss\n        # theme: [umcu.scss, ../custom_dev.scss]\n        incremental: true\n        width: 1600\n        height: 900\n        logo: umcu_blue.png\n        center: true\nexecute:\n    warning: false\n    message: false\ncategories:\n    - SCM\n    - DAG\n    - day2\nbibliography: bibliography.bib\n---\n\n\n::: {.cell execute='true'}\n\n:::\n\n\n## Individual quizzes with team support\n\n- Goals:\n  1. Check your understanding of the materials\n  2. To investigate the effect of team-support on quiz performance\n- Each student will go through 2 rounds of 6 exercises individually\n- Will test knowledge of Yesterday's materials and this morning's lecture\n  - Some questions are (deliberately) above what is currently covered and expected\n- Allowed are a scratch pad and a calculator\n- Answers will be collected anonymously\n\n## Round 1:\n\n0. Log in with personal id, submit test question to check connection\n1. 6 minutes to complete 6 exercises individually; submit when done (answers are auto-saved)\n2. After submission, select 1 question for team discussion (team of 2 or 3, teams pre-assigned)\n3. New, 2-minute phase for discussion for every student in the team, within that time potentially update your answer\n\n- Go to this URL: [https://cds-quizzes.streamlit.app/](https://cds-quizzes.streamlit.app/) and log in with personal token\n- Note: website can be a little sluggish, please be patient and do not refresh the page, may need to press \"Submit\" a second time\n  \n## Round 1, phase 1\n\n- Make individual exercises, submit answers\n- Choose question for team discussion, confirm that selection\n  \n## Round 1, phase 2\n\n- For every student, take turns to open the team discussion round, 2 minutes each (with timer)\n\n## Round 2: Another round of 6 exercises\n\n- Same as before but now: question for team discussion is **pre-selected** (no free choice)\n\n## Round 2, phase 1\n\n- Make individual exercises, submit answers",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-after-body": [
+        "\n<script>\n  // htmlwidgets need to know to resize themselves when slides are shown/hidden.\n  // Fire the \"slideenter\" event (handled by htmlwidgets.js) when the current\n  // slide changes (different for each slide format).\n  (function () {\n    // dispatch for htmlwidgets\n    function fireSlideEnter() {\n      const event = window.document.createEvent(\"Event\");\n      event.initEvent(\"slideenter\", true, true);\n      window.document.dispatchEvent(event);\n    }\n\n    function fireSlideChanged(previousSlide, currentSlide) {\n      fireSlideEnter();\n\n      // dispatch for shiny\n      if (window.jQuery) {\n        if (previousSlide) {\n          window.jQuery(previousSlide).trigger(\"hidden\");\n        }\n        if (currentSlide) {\n          window.jQuery(currentSlide).trigger(\"shown\");\n        }\n      }\n    }\n\n    // hookup for slidy\n    if (window.w3c_slidy) {\n      window.w3c_slidy.add_observer(function (slide_num) {\n        // slide_num starts at position 1\n        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);\n      });\n    }\n\n  })();\n</script>\n\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
